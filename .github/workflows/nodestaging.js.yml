@@ -25,7 +25,11 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
-    - run: npm ci
-    - run: cp /home/ubuntu/adminenv/.env /home/ubuntu/adminstaging/_work/BROMAG-IN-ADMINPANEL/BROMAG-IN-ADMINPANEL
+    - name: Install dependencies
+      run: npm ci
+
+    - name: Copy .env file
+      run: cp /home/ubuntu/adminenv/.env /home/ubuntu/adminstaging/_work/BROMAG-IN-ADMINPANEL/BROMAG-IN-ADMINPANEL
+
     - run: npm run build --if-present
    
