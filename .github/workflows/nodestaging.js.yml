@@ -29,7 +29,7 @@ jobs:
       run: npm install
 
     - name: Copy .env file
-      run: cp /home/ubuntu/adminenv/.env /home/ubuntu/adminstaging/_work/BROMAG-IN-ADMINPANEL/BROMAG-IN-ADMINPANEL
+      run: cp /home/ubuntu/adminenv/.env /home/ubuntu/admin/_work/BROMAG-IN-ADMINPANEL/BROMAG-IN-ADMINPANEL
 
     - run: npm run build --if-present
    
