@@ -120,8 +120,6 @@ function Product() {
   const handleFinish = async (value) => {
     console.log(value, "value");
 
-    // return
-
     try {
       setLoadingButton(true);
       const discountedPrice = value.price - value.price * (value.offer / 100);
@@ -137,11 +135,11 @@ function Product() {
         data.append("file", get(value, "img.fileList[0].originFileObj"));
       }
       data.append("name", value.name);
-      data.append("price", value.price);
+      data.append("price", value?.price || "");
       data.append("categoryId", value.categoryId);
       data.append("subCategoryId", value.subCategoryId);
       data.append("isMultiTyped", isFoodTypesExist);
-      data.append("Types", JSON.stringify(value.Types));
+      data.append("types", JSON.stringify(value.types));
       data.append("isVeg", isVeg);
       data.append(
         "subCategoryName",
@@ -156,7 +154,7 @@ function Product() {
         })[0].name
       );
       data.append("status", value.status || false);
-      data.append("offer", value.offer);
+      data.append("offer", value.offer || "");
 
       // types.forEach((type, index) => {
       //   data.append(`type[${index}]`, type.type);
@@ -238,15 +236,16 @@ function Product() {
   };
 
   const handleEdit = (values) => {
-    setOpen(!open);
+    console.log("txt", { values });
     setImageUrl(values.image);
     form.setFieldsValue(values);
+    setOpen(!open);
     setUpdateId(values._id);
     setCurrentImage(values.image);
     setIsAvailable(values.status);
     setSelectedCategory(values.categoryId);
     setselectedSubCategory(values.subCategoryId);
-    if (values.types && values.types.length > 0) {
+    if (values?.types && values?.types?.length > 0) {
       populateTypes(values.types);
     }
     setFileList([
@@ -358,21 +357,35 @@ function Product() {
       key: "price",
       align: "center",
       render: (price, wholeData) => {
-        console.log("nameeeeeeeeeeeeeee-------", price);
+        console.log("nameeeeeeeeeeeeeee-------11", wholeData?.types);
         return (
           <>
-            {price ? (
+            {price && price !== "undefined" ? (
               <h1 className="text-[10px] md:text-[14px]">{price}</h1>
             ) : (
               <div>
-                {wholeData.types.map((type, index) => {
-                  return <p key={index}>{`${type.TypePrice}`}</p>;
+                {wholeData?.types.map((type, index) => {
+                  console.log("type", type);
+                  return <p key={index}>{`${type?.TypePrice}`}</p>;
                 })}
               </div>
             )}
           </>
         );
       },
+    },
+    {
+      title: <h1 className="text-[10px] md:text-[14px]">Types</h1>,
+      key: "types",
+      dataIndex: "types",
+      align: "center",
+      render: (_, record) => (
+        <div>
+          {record.types.map((type, index) => {
+            return <p key={index}>{`${index + 1}: ${type.Type}`}</p>;
+          })}
+        </div>
+      ),
     },
     {
       title: <h1 className="text-[10px] md:text-[14px]">Discount</h1>,
@@ -412,7 +425,9 @@ function Product() {
                 })}
               </div>
             ) : (
-              <h1 className="text-[10px] md:text-[14px]">{singleDiscountPrice}</h1>
+              <h1 className="text-[10px] md:text-[14px]">
+                {singleDiscountPrice}
+              </h1>
             )}
           </>
         );
@@ -452,19 +467,7 @@ function Product() {
         );
       },
     },
-    {
-      title: <h1 className="text-[10px] md:text-[14px]">Types</h1>,
-      key: "types",
-      dataIndex: "types",
-      align: "center",
-      render: (_, record) => (
-        <div>
-          {record.types.map((type, index) => {
-            return <p key={index}>{`${index + 1}: ${type.Type}`}</p>;
-          })}
-        </div>
-      ),
-    },
+
     {
       title: <h1 className="text-[10px] md:text-[14px]">Status</h1>,
       dataIndex: "status",
@@ -714,7 +717,7 @@ function Product() {
         <Drawer
           open={open}
           destroyOnClose
-          title={"Add Menu"}
+          title={updateId ? "Edit Menu" : "Add Menu"}
           onClose={() => {
             setOpen(!open);
             form.resetFields();
@@ -858,7 +861,7 @@ function Product() {
 
             {isFoodTypesExist && (
               <>
-                <Form.List name="Types" initialValue={[""]}>
+                <Form.List name="types" initialValue={[""]}>
                   {(fields, { add, remove }) => (
                     <>
                       {fields.map(({ key, name, ...restField }, index) => (

@@ -64,19 +64,19 @@ function CallForOrder() {
   const [types, setTypes] = useState([]);
 
   const handleTypeChange = (value) => {
-    var splitValues = value.split('-');
+    var splitValues = value?.split("-");
 
     // Extracting the price (assuming it's the second element after the split)
-    var priceStr = splitValues[1].trim();
-    var foodtype = splitValues[1].trim();
-    
+    var priceStr = splitValues[1]?.trim();
+    var foodtype = splitValues[1]?.trim();
+
     // Converting the price to a number
     var price = parseInt(priceStr);
-    
+
     // Logging the extracted and converted price
     console.log(price);
     console.log(value, " i am valuee");
-    const selectedTypeObject = selectedType.find(
+    const selectedTypeObject = selectedType?.find(
       (type) => type.price === price && type.type === foodtype
     );
     setTypes((prevTypes) => [...prevTypes, selectedTypeObject]);
@@ -136,7 +136,7 @@ function CallForOrder() {
 
   useEffect(() => {
     setKdsOrders(
-      data.filter((res) => {
+      data?.filter((res) => {
         return (
           res.status !== "Order Accepted" && res.status !== "Order received"
         );
@@ -337,7 +337,7 @@ function CallForOrder() {
           deliveryCharge: get(value, "deliveryStatus") === "Delivery" ? 50 : 0,
           transactionCharge: (total * 5) / 100,
           packingCharge: (total * 10) / 100,
-         
+
           // types: types.map((type) => ({ type: type.type, price: type.price })),
           callForOrderInstrcution: formattedInstructions,
           status: "Order received",
@@ -375,7 +375,6 @@ function CallForOrder() {
         form.resetFields();
         setTotal("");
         fetchData();
-        
       } catch (err) {
         console.log(err);
         notification.error({ message: "Something went wrong" });
@@ -955,7 +954,7 @@ function CallForOrder() {
 
   useEffect(() => {
     if (
-      data.find((res) => {
+      data?.find((res) => {
         return res.status === "Order ready to preparing";
       }) !== undefined
     ) {
@@ -1245,8 +1244,7 @@ function CallForOrder() {
       notification.error({ message: "Something went wrong" });
     }
   };
-
-  console.log(fields);
+  console.log({ foodInformationList, selectedProduct });
 
   return (
     <div className="pt-28 md:pl-[20vw]">
@@ -1465,7 +1463,7 @@ function CallForOrder() {
                                 const selectedProduct = menu.find(
                                   (product) => product.name === e
                                 );
-                              console.log(selectedProduct.types,"type");
+                                console.log(selectedProduct.types, "type");
                                 setSelectedType(selectedProduct?.types || []);
                               }}
                               id="food"
@@ -1570,7 +1568,7 @@ function CallForOrder() {
                               })[0]?.offer
                             )}
                         </Col>
-                        {selectedType && ( 
+                        {selectedType && (
                           <Col span={24}>
                             <Form.Item
                               label="Type"
@@ -1661,7 +1659,7 @@ function CallForOrder() {
         <div>
           <h1 className="font-bold">Ordered Food Details</h1>
           <div className="flex flex-wrap gap-8">
-            {foodInformationList.map((res, i) => {
+            {foodInformationList?.map((res, i) => {
               return (
                 <div className="flex  gap-5 pt-5" key={i}>
                   <div>
@@ -1680,9 +1678,7 @@ function CallForOrder() {
                     <p className="text-black font-bold">
                       Quantity: {res.quantity}
                     </p>
-                    <p className="text-black font-bold">
-                      Type: {res.type}
-                    </p>
+                    <p className="text-black font-bold">Type: {res.type}</p>
 
                     {/* {selectedProduct?.types?.map((data) => {
                       return data.price === res.type ? (
@@ -1700,21 +1696,22 @@ function CallForOrder() {
                       <div className="flex-1 mx-2">
                         {selectedProduct?.callForOrderInstrcution?.map(
                           (data, index) => {
-                          
-
                             return data?.productId === res?.food ? (
                               <pre
                                 key={index}
                                 className="text-black font-bold font-sans leading-normal"
-                               
                               >
-                               {data?.instruction.split('\n').map((line, lineIndex) => (
-            <span key={lineIndex}>
-              {lineIndex > 0 && <br />} {/* Add line break except for the first line */}
-              &bull; {line} {/* Unicode bullet point and the line content */}
-            </span>
-          ))}
-                              </pre> 
+                                {data?.instruction
+                                  ?.split("\n")
+                                  .map((line, lineIndex) => (
+                                    <span key={lineIndex}>
+                                      {lineIndex > 0 && <br />}{" "}
+                                      {/* Add line break except for the first line */}
+                                      &bull; {line}{" "}
+                                      {/* Unicode bullet point and the line content */}
+                                    </span>
+                                  ))}
+                              </pre>
                             ) : null;
                           }
                         )}
