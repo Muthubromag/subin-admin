@@ -22,8 +22,8 @@ function Feedback() {
   const { Option } = Select;
   const [updateId, setUpdateId] = useState("");
   const user = useSelector((state) => state.user.user);
-  const [currentPage,setCurrentPage]=useState(1)
-  const [loadingButton,setLoadingButton]=useState(false)
+  const [currentPage, setCurrentPage] = useState(1);
+  const [loadingButton, setLoadingButton] = useState(false);
 
   const fetchData = async () => {
     try {
@@ -31,9 +31,8 @@ function Feedback() {
       const result = await axios.get(
         `${process.env.REACT_APP_URL}/getfeedback`
       );
-      setData(get(result, "data.data",[]));
+      setData(get(result, "data.data", []));
     } catch (e) {
-      
     } finally {
       setLoading(false);
     }
@@ -44,22 +43,21 @@ function Feedback() {
   }, []);
 
   const handleFinish = async (values) => {
-
-   try{
-    setLoadingButton(true)
-    await axios.put(
-      `${process.env.REACT_APP_URL}/updatefeedback/${updateId}`,
-      values
-    );
-    notification.success({ message: "feedback Updated successfully" });
-    form.resetFields();
-    fetchData();
-    setOpen(!open);
-   }catch(err){
-    notification.error({message:"Something went wrong"})
-   }finally{
-    setLoadingButton(false)
-   }
+    try {
+      setLoadingButton(true);
+      await axios.put(
+        `${process.env.REACT_APP_URL}/updatefeedback/${updateId}`,
+        values
+      );
+      notification.success({ message: "feedback Updated successfully" });
+      form.resetFields();
+      fetchData();
+      setOpen(!open);
+    } catch (err) {
+      notification.error({ message: "Something went wrong" });
+    } finally {
+      setLoadingButton(false);
+    }
   };
 
   const handleEdit = (value) => {
@@ -115,7 +113,9 @@ function Feedback() {
       key: "message",
       align: "center",
       render: (name) => {
-        return <h1 className="text-[10px] md:text-[14px] lg:w-[20vw]">{name}</h1>;
+        return (
+          <h1 className="text-[10px] md:text-[14px] lg:w-[20vw]">{name}</h1>
+        );
       },
     },
     {
@@ -124,13 +124,10 @@ function Feedback() {
       key: "suggestions",
       align: "center",
       render: (name) => {
-        
-        return (
-          name === undefined ? (
-            <p>No suggestions</p>
-          ) : (
-            <h1 className="text-[10px] md:text-[14px]">{name}</h1>
-          )
+        return name === undefined ? (
+          <p>No suggestions</p>
+        ) : (
+          <h1 className="text-[10px] md:text-[14px]">{name}</h1>
         );
       },
     },
@@ -170,7 +167,10 @@ function Feedback() {
         return <h1 className="text-[10px] md:text-[14px]">{name}</h1>;
       },
     },
-    {
+  ];
+
+  if (user?.name?.includes("admin")) {
+    columns.push({
       title: <h1 className="text-[10px] md:text-[14px]">Edit</h1>,
       width: 100,
       align: "center",
@@ -182,9 +182,8 @@ function Feedback() {
           />
         );
       },
-    },
-    
-  ];
+    });
+  }
 
   const Partnercolumns = [
     {
@@ -218,7 +217,7 @@ function Feedback() {
         return <h1 className="text-[10px] md:text-[14px]">{name}</h1>;
       },
     },
-    
+
     {
       title: <h1 className="text-[10px] md:text-[14px]">Ratings</h1>,
       dataIndex: "ratings",
@@ -255,26 +254,29 @@ function Feedback() {
         return <h1 className="text-[10px] md:text-[14px]">{name}</h1>;
       },
     },
-   
   ];
   return (
     <div className="mt-28 md:pl-[20vw]">
       <Spin spinning={loading}>
         <div className="w-[98vw] md:w-[75vw] lg:w-[78vw]">
-        <Table
-          columns={ get(user, "name", "")?.split("@")?.includes("menu") ? Partnercolumns : columns}
-          dataSource={data}
-          pagination={{
-            pageSize: 5,
-            current: currentPage,
-            onChange: (page) => {
-              setCurrentPage(page);
-            },
-          }}
-          scroll={{x:1500}}
-          className="overflow-x-scroll"
-        />
-          </div>
+          <Table
+            columns={
+              get(user, "name", "")?.split("@")?.includes("menu")
+                ? Partnercolumns
+                : columns
+            }
+            dataSource={data}
+            pagination={{
+              pageSize: 5,
+              current: currentPage,
+              onChange: (page) => {
+                setCurrentPage(page);
+              },
+            }}
+            scroll={{ x: 1500 }}
+            className="overflow-x-scroll"
+          />
+        </div>
       </Spin>
 
       <Drawer
@@ -288,7 +290,6 @@ function Feedback() {
         title={"Feedback Details"}
       >
         <Form form={form} layout="vertical" onFinish={handleFinish}>
-         
           <Form.Item
             name="userName"
             label="User Name"
@@ -334,7 +335,7 @@ function Feedback() {
           >
             <Input.TextArea type="text" size="large" />
           </Form.Item>
-         
+
           <Form.Item
             name="ratings"
             label="Ratings"
@@ -364,7 +365,11 @@ function Feedback() {
               >
                 Cancel
               </Button>
-              <Button htmlType="submit" loading={loadingButton} className="bg-green-500 text-white">
+              <Button
+                htmlType="submit"
+                loading={loadingButton}
+                className="bg-green-500 text-white"
+              >
                 Update
               </Button>
             </div>

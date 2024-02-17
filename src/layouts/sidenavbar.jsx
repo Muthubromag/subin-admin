@@ -31,7 +31,7 @@ function Sidenavbar() {
       );
       dispatch(changeUserValues(get(result, "data")));
     } catch (err) {
-      
+      console.log(err);
     }
   };
 
@@ -51,6 +51,7 @@ function Sidenavbar() {
     if (get(user, "name")?.split("@")?.includes("menu")) {
       return (
         item.key === "sub1" ||
+        item.key === "sub10" ||
         item.key === "/" ||
         item.key === "/video" ||
         item.key === "/feedback" ||
@@ -66,6 +67,7 @@ function Sidenavbar() {
         item.key === "/" ||
         item.key === "sub2" ||
         item.key === "/inventory" ||
+        item.key === "sub10" ||
         item.key === "sub3"
       );
     } else if (get(user, "name")?.split("@")?.includes("frontdesk")) {
@@ -73,19 +75,21 @@ function Sidenavbar() {
         item.key === "/" ||
         item.key === "sub2" ||
         item.key === "/tablebooking" ||
-        item.key === "sub3"
+        item.key === "sub3" ||
+        item.key === "sub10"
       );
     } else if (get(user, "name")?.split("@")?.includes("partner")) {
       return (
         item.key === "/" ||
         item.key === "sub2" ||
+        item.key === "sub10" ||
         item.key === "/feedback" ||
         item.key === "/inventory" ||
         item.key === "/wallet" ||
         item.key === "/notifications" ||
         item.key === "sub3" ||
-        item.key === "sub1"||
-        item.key === "/tablebooking" 
+        item.key === "sub1" ||
+        item.key === "/tablebooking"
       );
     }
 
