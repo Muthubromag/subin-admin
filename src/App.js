@@ -42,7 +42,7 @@ import Footer from "./Footer";
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path="/" element={<RootLayout />}>
-      <Route index path="/" element={<Dashboard />} />
+      <Route path="/" element={<Dashboard />} />
       <Route path="banner" element={<Banner />} />
       <Route path="user" element={<User />} />
       <Route path="category" element={<Category />} />
@@ -53,12 +53,14 @@ const router = createBrowserRouter(
       <Route path="inventory" element={<Inventory />} />
       <Route path="video" element={<Video />} />
       <Route path="notifications" element={<Notification />} />
+      <Route path="conotifications" element={<Notification />} />
+      <Route path="takeawaynotifications" element={<Notification />} />
       <Route path="product" element={<Product />} />
       <Route path="onlineorder" element={<OnlineOrder />} />
       <Route path="takeaway" element={<TakeAway />} />
       {/* <Route path="dinning" element={<Dinning />} /> */}
       <Route path="callfororder" element={<CallForOrder />} />
-      <Route path="login" element={<Login />} />
+      <Route index path="login" element={<Login />} />
       <Route path="scratchcard" element={<ScratchCard />} />
       <Route path="footer" element={<Footer />} />
       <Route path="adminuser" element={<AdminUser />} />

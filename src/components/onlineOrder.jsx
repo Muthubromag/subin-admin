@@ -67,7 +67,7 @@ function OnlineOrder() {
       data.filter((res) => {
         return (
           get(res, "status") !== "Order accepted" &&
-          get(res, "status") !== "placed"
+          get(res, "status") !== "Order placed"
         );
       })
     );
@@ -115,7 +115,7 @@ function OnlineOrder() {
     setPreviewData(!previewData);
     setFoodInformationList(orderedFood);
     setSelectedProduct(instructions);
-    console.log(instructions,"i am insstruu");
+    console.log(instructions, "i am insstruu");
   };
 
   const closePreviewModal = () => {
@@ -405,7 +405,8 @@ function OnlineOrder() {
           status === "Order ready to pick" ||
           status === "Order out for delivery" ||
           status === "Order reached nearest to you";
-        const isbeforeKds = status === "Order accepted" || status === "placed";
+        const isbeforeKds =
+          status === "Order accepted" || status === "Order placed";
 
         return (
           <>
@@ -570,7 +571,8 @@ function OnlineOrder() {
           status === "Order ready to pick" ||
           status === "Order out for delivery" ||
           status === "Order reached nearest to you";
-        const isbeforeKds = status === "Order accepted" || status === "placed";
+        const isbeforeKds =
+          status === "Order accepted" || status === "Order placed";
 
         return (
           <>
@@ -1012,13 +1014,19 @@ function OnlineOrder() {
               return (
                 <div className="flex  gap-5 pt-5" key={i}>
                   <div>
-                    <Image width={100} src={res.pic}   key={i}/>
+                    <Image width={100} src={res.pic} key={i} />
                   </div>
                   <div>
-                    <p className="text-black font-bold">Food Name: {res?.foodName}</p>
-                   
-                    <p className="text-black font-bold">Quantity: {res?.foodQuantity}</p>
-                    <p className="text-black font-bold">Type: {res?.type?.type}</p>
+                    <p className="text-black font-bold">
+                      Food Name: {res?.foodName}
+                    </p>
+
+                    <p className="text-black font-bold">
+                      Quantity: {res?.foodQuantity}
+                    </p>
+                    <p className="text-black font-bold">
+                      Type: {res?.type?.type}
+                    </p>
 
                     {selectedProduct?.instructions?.map((instructionObject) => {
                       return Object.entries(instructionObject)?.map(

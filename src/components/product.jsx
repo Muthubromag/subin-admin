@@ -264,6 +264,7 @@ function Product() {
         name: value.name,
         image: value.image,
         status: status,
+        active: true,
       };
 
       await axios.put(
@@ -351,6 +352,20 @@ function Product() {
         return <h1 className="text-[10px] md:text-[14px]">{name}</h1>;
       },
     },
+
+    {
+      title: <h1 className="text-[10px] md:text-[14px]">Types</h1>,
+      key: "types",
+      dataIndex: "types",
+      align: "center",
+      render: (_, record) => (
+        <div>
+          {record.types.map((type, index) => {
+            return <p key={index}>{`${index + 1}: ${type.Type}`}</p>;
+          })}
+        </div>
+      ),
+    },
     {
       title: <h1 className="text-[10px] md:text-[14px]">Original Price</h1>,
       dataIndex: "price",
@@ -374,19 +389,7 @@ function Product() {
         );
       },
     },
-    {
-      title: <h1 className="text-[10px] md:text-[14px]">Types</h1>,
-      key: "types",
-      dataIndex: "types",
-      align: "center",
-      render: (_, record) => (
-        <div>
-          {record.types.map((type, index) => {
-            return <p key={index}>{`${index + 1}: ${type.Type}`}</p>;
-          })}
-        </div>
-      ),
-    },
+
     {
       title: <h1 className="text-[10px] md:text-[14px]">Discount</h1>,
       dataIndex: "offer",
@@ -908,7 +911,9 @@ function Product() {
                               rules={[
                                 {
                                   message: "Enter valid Offer Percentage",
-                                  pattern: new RegExp(/^[1-9][0-9]?$|^99$/),
+                                  pattern: new RegExp(
+                                    /^[0-9]$|^[1-9][0-9]?$|^99$/
+                                  ),
                                 },
                               ]}
                             >
