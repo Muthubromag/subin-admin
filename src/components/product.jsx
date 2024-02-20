@@ -139,7 +139,7 @@ function Product() {
       data.append("categoryId", value.categoryId);
       data.append("subCategoryId", value.subCategoryId);
       data.append("isMultiTyped", isFoodTypesExist);
-      data.append("types", JSON.stringify(value.types));
+      data.append("types", JSON.stringify(value?.types));
       data.append("isVeg", isVeg);
       data.append(
         "subCategoryName",
@@ -350,6 +350,20 @@ function Product() {
       align: "center",
       render: (name) => {
         return <h1 className="text-[10px] md:text-[14px]">{name}</h1>;
+      },
+    },
+    {
+      title: <h1 className="text-[10px] md:text-[14px]">Category</h1>,
+      dataIndex: "isVeg",
+      key: "isVeg",
+      align: "center",
+      render: (isVeg) => {
+        console.log({ isVeg });
+        return (
+          <h1 className="text-[10px] md:text-[14px]">
+            {isVeg ? "Veg" : "Non Veg"}
+          </h1>
+        );
       },
     },
 
@@ -908,8 +922,10 @@ function Product() {
                             <Form.Item
                               {...restField}
                               name={[name, "TypeOfferPercentage"]}
+                              initialValue={0}
                               rules={[
                                 {
+                                  required: true,
                                   message: "Enter valid Offer Percentage",
                                   pattern: new RegExp(
                                     /^[0-9]$|^[1-9][0-9]?$|^99$/
