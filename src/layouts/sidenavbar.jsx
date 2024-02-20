@@ -125,7 +125,7 @@ function Sidenavbar() {
                   : get(user, "name")?.split("@")?.includes("menu") ||
                     get(user, "name")?.split("@")?.includes("banner")
                   ? MenuFilter
-                  : items
+                  : get(user, "name")?.split("@")?.includes("admin")?items:MenuFilter
               }
               defaultOpenKeys={open}
               onOpenChange={(keys) => setOpen(keys)}
