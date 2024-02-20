@@ -374,6 +374,15 @@ function OnlineOrder() {
       },
     },
     {
+      title: <h1 className="text-[10px] md:text-[14px]">Payment</h1>,
+      dataIndex: "payment_mode",
+      key: "payment_mode",
+      align: "center",
+      render: (data) => {
+        return <h1 className="text-[10px] md:text-[14px]">{data}</h1>;
+      },
+    },
+    {
       title: <h1 className="text-[10px] md:text-[14px]">Time</h1>,
       dataIndex: "createdAt",
       key: "createdAt",
@@ -1024,29 +1033,27 @@ function OnlineOrder() {
                     <p className="text-black font-bold">
                       Quantity: {res?.foodQuantity}
                     </p>
-                    <p className="text-black font-bold">
-                      Type: {res?.type?.type}
-                    </p>
-
-                    {selectedProduct?.instructions?.map((instructionObject) => {
-                      return Object.entries(instructionObject)?.map(
-                        ([key, values]) => (
-                          <div key={key} className="w-full flex">
-                            <p className="text-black font-bold mr-2">
-                              Instruction:{" "}
-                            </p>
-                            <ul>
-                              {values?.map((value, index) => (
-                                <li className="font-bold" key={index}>
-                                  {" "}
-                                  * {value}
-                                </li>
-                              ))}
-                            </ul>
-                          </div>
-                        )
-                      );
+                    {/* <p className="text-black font-bold">
+                      Type: {res?.orderType}
+                    </p> */}
+                   {selectedProduct?.instructions?.[0]?.[res?.id]?.length? <div key={res?.id} className="w-full flex">
+                      <p className="text-black font-bold mr-2">
+                        Instruction:{" "}
+                      </p>
+                      <ul>
+                        
+                    {selectedProduct?.instructions?.[0]?.[res?.id]?.map((instructions,index) => {
+                     return(
+                      <li className="font-bold" key={index}>
+                      {" "}
+                      * {instructions}
+                    </li>
+                     )
                     })}
+                      
+                      </ul>
+                    </div>:null}
+
                   </div>
                 </div>
               );

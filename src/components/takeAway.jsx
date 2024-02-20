@@ -175,6 +175,7 @@ console.log(result," iam amama");
     setPreviewData(!previewData);
     setFoodInformationList(orderedFood);
     setSelectedProduct(instructions);
+    console.log({instructions:instructions?.instructionsTakeaway,orderedFood}, "i am insstruu");
   };
   const closePreviewModal = () => {
     setPreviewData(null);
@@ -334,6 +335,15 @@ console.log(result," iam amama");
       title: <h1 className="text-[10px] md:text-[14px]">Bill Amount</h1>,
       dataIndex: "billAmount",
       key: "billAmount",
+      align: "center",
+      render: (name) => {
+        return <h1 className="text-[10px] md:text-[14px]">{name}</h1>;
+      },
+    },
+    {
+      title: <h1 className="text-[10px] md:text-[14px]">Payment mode</h1>,
+      dataIndex: "payment_mode",
+      key: "payment_mode",
       align: "center",
       render: (name) => {
         return <h1 className="text-[10px] md:text-[14px]">{name}</h1>;
@@ -503,6 +513,15 @@ console.log(result," iam amama");
       title: <h1 className="text-[10px] md:text-[14px]">Bill Amount</h1>,
       dataIndex: "billAmount",
       key: "billAmount",
+      align: "center",
+      render: (name) => {
+        return <h1 className="text-[10px] md:text-[14px]">{name}</h1>;
+      },
+    },
+    {
+      title: <h1 className="text-[10px] md:text-[14px]">Payment mode</h1>,
+      dataIndex: "payment_mode",
+      key: "payment_mode",
       align: "center",
       render: (name) => {
         return <h1 className="text-[10px] md:text-[14px]">{name}</h1>;
@@ -986,6 +1005,7 @@ console.log(result," iam amama");
           <h1 className="font-bold">Ordered Food Details</h1>
           <div className="flex flex-wrap gap-8">
             {foodInformationList.map((res, i) => {
+              console.log({res,inst:selectedProduct?.instructionsTakeaway?.[0]?.[res?.id],selectedProduct})
               return (
                 <div className="flex  gap-5 pt-5" key={i}>
                   <div>
@@ -995,26 +1015,24 @@ console.log(result," iam amama");
                     <p className="text-black font-bold">Food Name: {res?.foodName}</p>
                
                     <p className="text-black font-bold">Quantity: {res?.foodQuantity}</p>
-                    <p className="text-black font-bold">Type: {res?.type}</p>
-                    {selectedProduct?.instructionsTakeaway?.map((instructionObject) => {
-                      return Object.entries(instructionObject)?.map(
-                        ([key, values]) => (
-                          <div key={key} className="w-full flex">
-                            <p className="text-black font-bold mr-2">
-                              Instruction:{" "}
-                            </p>
-                            <ul>
-                              {values?.map((value, index) => (
-                                <li className="font-bold" key={index}>
-                                  {" "}
-                                  * {value}
-                                </li>
-                              ))}
-                            </ul>
-                          </div>
-                        )
-                      );
+                    {/* <p className="text-black font-bold">Type: {res?.type}</p> */}
+                    {selectedProduct?.instructionsTakeaway?.[0]?.[res?.id]?.length? <div key={res?.id} className="w-full flex">
+                      <p className="text-black font-bold mr-2">
+                        Instruction:{" "}
+                      </p>
+                      <ul>
+                        
+                    {selectedProduct?.instructionsTakeaway?.[0]?.[res?.id]?.map((instructions,index) => {
+                     return(
+                      <li className="font-bold" key={index}>
+                      {" "}
+                      * {instructions}
+                    </li>
+                     )
                     })}
+                      
+                      </ul>
+                    </div>:null}
                   </div>
                 </div>
               );
