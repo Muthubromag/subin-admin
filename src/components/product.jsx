@@ -119,7 +119,7 @@ function Product() {
 
   const handleFinish = async (value) => {
     console.log(value, "value");
-
+   
     try {
       setLoadingButton(true);
       const discountedPrice = value.price - value.price * (value.offer / 100);
@@ -389,7 +389,7 @@ function Product() {
         console.log("nameeeeeeeeeeeeeee-------11", wholeData?.types);
         return (
           <>
-            {price && price !== "undefined" ? (
+            {price && price !== "undefined" && Number(price) ? (
               <h1 className="text-[10px] md:text-[14px]">{price}</h1>
             ) : (
               <div>
@@ -862,9 +862,10 @@ function Product() {
                 <Form.Item
                   name="offer"
                   label="Offer"
+                  initialValue={0}
                   rules={[
                     {
-                      required: true,
+                      required: false,
                       message: "Please enter offer",
                     },
                   ]}
