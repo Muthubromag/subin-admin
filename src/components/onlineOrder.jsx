@@ -350,13 +350,15 @@ function OnlineOrder() {
             {name &&
               name.map((res, i) => {
                 return (
-                  <div key={i} className="lg:w-[20vw] flex flex-col">
-                    <p>Street:{res.streetName}</p>
-                    <p>LandMark:{res.landMark}</p>
-                    <p>City:{res.city}</p>
-                    <p>Pincode:{res.picCode}</p>
-                    <p>Street:{res.streetName}</p>
-                    <p>State:{res.customerState}</p>
+                  <div key={i} className="lg:w-[20vw] flex flex-col capitalize">
+                       <p>Order for : {res.name}</p>
+                    <p>Type : {res.addressType}</p>
+                    <p>Street : {res.streetName}</p>
+                    <p>LandMark : {res.landMark}</p>
+                    <p>City : {res.city}</p>
+                    <p>Pincode : {res.picCode}</p>
+                    <p>Street : {res.streetName}</p>
+                    <p>State : {res.customerState}</p>
                   </div>
                 );
               })}
