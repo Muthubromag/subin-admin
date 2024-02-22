@@ -77,13 +77,14 @@ function CallForOrder() {
     console.log(price);
     console.log(value, " i am valuee");
     const selectedTypeObject = selectedType?.find(
-      (type) => type.price === price && type.type === foodtype
+      (type) => type.TypeOfferPrice === price && type.Type === foodtype
     );
     setTypes((prevTypes) => [...prevTypes, selectedTypeObject]);
   };
 
   const updateTotalAmount = (e, key) => {
     const orderedFoods = form.getFieldValue("orderedFood");
+    console.log("calledddd i",{orderedFoods})
     const newTotalAmounts = orderedFoods.map((food) => {
       const quantity = food.quantity || 0;
       const selectedFood = menu.find((item) => item.name === food.food);
@@ -91,12 +92,14 @@ function CallForOrder() {
       return quantity * foodPrice;
     });
     setTotal(sum(newTotalAmounts));
-
-    orderedFoods.map((res, index) => {
-      return res.ref_id === key
-        ? (res.img = menu.find((res) => res.name === e)?.image)
-        : res;
-    });
+  // console.log("calledddd s",{orderedFoods},{menu},key)
+  //   orderedFoods.map((res, index) => {
+  //     console.log("calledddd rs",{res})
+  //     return res.ref_id === key
+  //       ? (res.img = menu.find((md) => md.name === res?.food)?.image)
+  //       : res;
+  //   });
+  //   console.log("calledddd as",{orderedFoods},key)
   };
 
   const calculateModalWidth = () => {
@@ -308,8 +311,7 @@ function CallForOrder() {
   };
 
   const handleFinish = async (value) => {
-    console.log("calledddd");
-    console.log(value);
+
     const formattedInstructions = value.orderedFood.map((food, index) => ({
       productId: food.food,
       instruction: food.instruction,
@@ -404,13 +406,15 @@ function CallForOrder() {
           ),
           orderedFood: get(value, "orderedFood", ""),
           location: get(value, "location", ""),
-          types: types.map((type) => ({ type: type.type, price: type.price })),
+          types: types.map((type) => ({ type: type.Type, price: type.TypeOfferPrice })),
           callForOrderInstrcution: formattedInstructions,
           orderId:
             "BIPL031023" +
             uuidv4()?.slice(0, 4)?.toUpperCase() +
             moment(new Date()).format("DMy"),
         };
+
+        console.log({formData})
         await axios.put(
           `${process.env.REACT_APP_URL}/updatecallorder/${updateId}`,
           formData
@@ -423,6 +427,7 @@ function CallForOrder() {
         setOpen(!open);
         setTotal("");
       } catch (err) {
+        console.log({err})
       } finally {
         setButtonLoader(false);
       }
@@ -570,7 +575,7 @@ function CallForOrder() {
       render: (_, record) => (
         <div>
           {record.types?.map((type, index) => (
-            <p key={index}>{`${index + 1}: ${type?.type} ${type?.price}`}</p>
+            <p key={index}>{`${index + 1}: ${type?.Type} ${type?.TypeOfferPrice}`}</p>
           ))}
         </div>
       ),
@@ -1245,7 +1250,7 @@ function CallForOrder() {
     }
   };
   console.log({ foodInformationList, selectedProduct });
-
+console.log({menu})
   return (
     <div className="pt-28 md:pl-[20vw]">
       <div className="w-[99vw] md:w-[80vw]">
@@ -1424,7 +1429,7 @@ function CallForOrder() {
           </Form.Item>
 
           {/* ================================================= */}
-
+{console.log({selectedType})}
           <Form.Item
             id="order_foods"
             name="orderedFood"
@@ -1432,10 +1437,15 @@ function CallForOrder() {
             rules={[{ required: true }]}
           >
             <Form.List name="orderedFood">
-              {(fields, { add, remove }) => (
+              {(fields, { add, remove }) => 
+              
+              (
                 <>
                   {fields.map(({ key, name, fieldKey, ...restField }) => (
+
+               
                     <div key={key}>
+                           {console.log({restField})}
                       <Row gutter={8}>
                         <Col span={12}>
                           <Form.Item
@@ -1460,7 +1470,7 @@ function CallForOrder() {
                               }
                               onChange={(e) => {
                                 updateTotalAmount(e, key);
-                                const selectedProduct = menu.find(
+                                const selectedProduct = menu?.find(
                                   (product) => product.name === e
                                 );
                                 console.log(selectedProduct.types, "type");
@@ -1468,6 +1478,7 @@ function CallForOrder() {
                               }}
                               id="food"
                             >
+                              {console.log({menu})}
                               {menu &&
                                 menu.map((res, i) => (
                                   <Option
@@ -1475,7 +1486,7 @@ function CallForOrder() {
                                     value={res.name}
                                     disabled={!res.status}
                                   >
-                                    {res.name}
+                                    {res?.name}
                                   </Option>
                                 ))}
                             </Select>
@@ -1579,9 +1590,9 @@ function CallForOrder() {
                                 {selectedType?.map((typeObject) => (
                                   <Option
                                     key={typeObject._id}
-                                    value={`${typeObject.type} - ${typeObject.price} - ${typeObject._id}`}
+                                    value={`${typeObject.Type} - ${typeObject.TypeOfferPrice} - ${typeObject._id}`}
                                   >
-                                    {`${typeObject.type} - ${typeObject.price}`}
+                                    {`${typeObject.Type} - ${typeObject.TypeOfferPrice}`}
                                   </Option>
                                 ))}
                               </Select>
