@@ -313,8 +313,8 @@ function CallForOrder() {
   const handleFinish = async (value) => {
 
     const formattedInstructions = value.orderedFood.map((food, index) => ({
-      productId: food.food,
-      instruction: food.instruction,
+      productId: food.foodName,
+      instruction: food.instructions,
     }));
 
     console.log(formattedInstructions);
@@ -388,7 +388,7 @@ function CallForOrder() {
         setButtonLoader(true);
 
         console.log(get(value, "orderedFood", ""));
-
+       console.log("----types",{types})
         const formData = {
           customerName: get(value, "customerName", ""),
           mobileNumber: get(value, "mobileNumber", ""),
@@ -406,7 +406,7 @@ function CallForOrder() {
           ),
           orderedFood: get(value, "orderedFood", ""),
           location: get(value, "location", ""),
-          types: types.map((type) => ({ type: type.Type, price: type.TypeOfferPrice })),
+          types: types?.map((type) => ({ type: type?.Type, price: type?.TypeOfferPrice })),
           callForOrderInstrcution: formattedInstructions,
           orderId:
             "BIPL031023" +
@@ -567,19 +567,19 @@ function CallForOrder() {
         </div>
       ),
     },
-    {
-      title: <h1 className="text-[10px] md:text-[14px]">Types</h1>,
-      key: "types",
-      dataIndex: "types",
-      align: "center",
-      render: (_, record) => (
-        <div>
-          {record.types?.map((type, index) => (
-            <p key={index}>{`${index + 1}: ${type?.Type} ${type?.TypeOfferPrice}`}</p>
-          ))}
-        </div>
-      ),
-    },
+    // {
+    //   title: <h1 className="text-[10px] md:text-[14px]">Types</h1>,
+    //   key: "types",
+    //   dataIndex: "types",
+    //   align: "center",
+    //   render: (_, record) => (
+    //     <div>
+    //       {record.types?.map((type, index) => (
+    //         <p key={index}>{`${index + 1}: ${type?.Type} ${type?.TypeOfferPrice}`}</p>
+    //       ))}
+    //     </div>
+    //   ),
+    // },
     {
       title: <h1 className="text-[10px] md:text-[14px]">Bill Amount</h1>,
       dataIndex: "grandTotal",
@@ -612,6 +612,7 @@ function CallForOrder() {
       width: 100,
       align: "center",
       render: (values) => {
+        console.log({edit:values})
         return (
           <EditNoteOutlinedIcon
             className=" text-green-500 cursor-pointer !text-[24px]"
@@ -1429,7 +1430,7 @@ console.log({menu})
           </Form.Item>
 
           {/* ================================================= */}
-{console.log({selectedType})}
+{console.log({updateId})}
           <Form.Item
             id="order_foods"
             name="orderedFood"
@@ -1451,7 +1452,7 @@ console.log({menu})
                           <Form.Item
                             label={`Food ${name + 1}`}
                             {...restField}
-                            name={[name, "food"]}
+                            name={[name, "foodName"]}
                             rules={[
                               {
                                 required: true,
@@ -1476,9 +1477,9 @@ console.log({menu})
                                 console.log(selectedProduct.types, "type");
                                 setSelectedType(selectedProduct?.types || []);
                               }}
-                              id="food"
+                              id="foodName"
                             >
-                              {console.log({menu})}
+                           
                               {menu &&
                                 menu.map((res, i) => (
                                   <Option
@@ -1491,11 +1492,11 @@ console.log({menu})
                                 ))}
                             </Select>
                           </Form.Item>
-
+                          {console.log({formvalues:form.getFieldsValue()})}
                           {form.getFieldValue([
                             "orderedFood",
                             name,
-                            "food",
+                            "foodName",
                           ]) && (
                             <div className="hidden">
                               Selected Food Price:
@@ -1517,7 +1518,7 @@ console.log({menu})
                         <Col span={8}>
                           <Form.Item
                             {...restField}
-                            name={[name, "quantity"]}
+                            name={[name, "foodQuantity"]}
                             rules={[
                               {
                                 required: true,
@@ -1537,14 +1538,14 @@ console.log({menu})
                           {form.getFieldValue([
                             "orderedFood",
                             name,
-                            "quantity",
+                            "foodQuantity",
                           ]) && (
                             <div>
                               Quantity:{" "}
                               {form.getFieldValue([
                                 "orderedFood",
                                 name,
-                                "quantity",
+                                "foodQuantity",
                               ])}
                             </div>
                           )}
@@ -1563,7 +1564,7 @@ console.log({menu})
                             form.getFieldValue([
                               "orderedFood",
                               name,
-                              "quantity",
+                              "foodQuantity",
                             ])
                           ) &&
                             !isNaN(
@@ -1573,7 +1574,7 @@ console.log({menu})
                                   form.getFieldValue([
                                     "orderedFood",
                                     name,
-                                    "food",
+                                    "foodName",
                                   ])
                                 );
                               })[0]?.offer
@@ -1671,25 +1672,28 @@ console.log({menu})
           <h1 className="font-bold">Ordered Food Details</h1>
           <div className="flex flex-wrap gap-8">
             {foodInformationList?.map((res, i) => {
+
+              let instruction=selectedProduct?.callForOrderInstrcution?.[0]?.[res.id]
               return (
                 <div className="flex  gap-5 pt-5" key={i}>
                   <div>
                     <Image
                       width={100}
-                      src={res.image}
+                      src={res?.pic}
                       alt="recipe image"
                       preview={false}
                       key={i}
                     />
                   </div>
                   <div>
-                    <p className="text-black font-bold">
-                      Food Name: {res.food}
+                    <p className="text-black font-bold capitalize">
+                      Food : {res.foodName}
                     </p>
                     <p className="text-black font-bold">
-                      Quantity: {res.quantity}
+                      Quantity : {res.foodQuantity}
                     </p>
                     <p className="text-black font-bold">Type: {res.type}</p>
+                    <p className="text-black font-bold">Price: {res.foodPrice}</p>
 
                     {/* {selectedProduct?.types?.map((data) => {
                       return data.price === res.type ? (
@@ -1699,36 +1703,35 @@ console.log({menu})
                         </p>
                       ) : null;
                     })} */}
-
+{instruction?
                     <div className="flex">
                       <div className="flex">
-                        <p className="text-black font-bold">Instruction :</p>
+                        <p className="text-black font-bold">Instructions :</p>
                       </div>
                       <div className="flex-1 mx-2">
-                        {selectedProduct?.callForOrderInstrcution?.map(
-                          (data, index) => {
-                            return data?.productId === res?.food ? (
-                              <pre
-                                key={index}
-                                className="text-black font-bold font-sans leading-normal"
-                              >
-                                {data?.instruction
-                                  ?.split("\n")
-                                  .map((line, lineIndex) => (
-                                    <span key={lineIndex}>
-                                      {lineIndex > 0 && <br />}{" "}
-                                      {/* Add line break except for the first line */}
-                                      &bull; {line}{" "}
-                                      {/* Unicode bullet point and the line content */}
-                                    </span>
-                                  ))}
-                              </pre>
-                            ) : null;
-                          }
-                        )}
+                  
+
+                        {instruction?
+                        <pre
+                        key={res?.id}
+                        className="text-black font-bold font-sans leading-normal"
+                      >
+                        {instruction
+                          ?.split("\n")
+                          .map((line, lineIndex) => (
+                            <span key={lineIndex}>
+                              {lineIndex > 0 && <br />}{" "}
+                              {/* Add line break except for the first line */}
+                              &bull; {line}{" "}
+                              {/* Unicode bullet point and the line content */}
+                            </span>
+                          ))}
+                      </pre>
+                        
+                        :null}
                         {/* Other content in the right column */}
                       </div>
-                    </div>
+                    </div>:null}
                   </div>
                 </div>
               );
