@@ -25,7 +25,7 @@ import moment from "moment";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import { v4 as uuidv4 } from "uuid";
 // import { initializeSocket } from "../helper/socketService";
-
+import "../assets/css/callorder.css";
 function CallForOrder() {
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState([]);
@@ -84,7 +84,7 @@ function CallForOrder() {
 
   const updateTotalAmount = (e, key) => {
     const orderedFoods = form.getFieldValue("orderedFood");
-    console.log("calledddd i",{orderedFoods})
+    console.log("calledddd i", { orderedFoods });
     const newTotalAmounts = orderedFoods.map((food) => {
       const quantity = food.quantity || 0;
       const selectedFood = menu.find((item) => item.name === food.food);
@@ -92,14 +92,14 @@ function CallForOrder() {
       return quantity * foodPrice;
     });
     setTotal(sum(newTotalAmounts));
-  // console.log("calledddd s",{orderedFoods},{menu},key)
-  //   orderedFoods.map((res, index) => {
-  //     console.log("calledddd rs",{res})
-  //     return res.ref_id === key
-  //       ? (res.img = menu.find((md) => md.name === res?.food)?.image)
-  //       : res;
-  //   });
-  //   console.log("calledddd as",{orderedFoods},key)
+    // console.log("calledddd s",{orderedFoods},{menu},key)
+    //   orderedFoods.map((res, index) => {
+    //     console.log("calledddd rs",{res})
+    //     return res.ref_id === key
+    //       ? (res.img = menu.find((md) => md.name === res?.food)?.image)
+    //       : res;
+    //   });
+    //   console.log("calledddd as",{orderedFoods},key)
   };
 
   const calculateModalWidth = () => {
@@ -184,7 +184,7 @@ function CallForOrder() {
       };
 
       await axios.put(
-        `${process.env.REACT_APP_URL}/updatecallorder/${Id._id}`,
+        `${process.env.REACT_APP_URL}/updateCallOrderStatus/${Id._id}`,
         formData
       );
 
@@ -203,7 +203,7 @@ function CallForOrder() {
       };
 
       await axios.put(
-        `${process.env.REACT_APP_URL}/updatecallorder/${Id._id}`,
+        `${process.env.REACT_APP_URL}/updateCallOrderStatus/${Id._id}`,
         formData
       );
 
@@ -311,7 +311,6 @@ function CallForOrder() {
   };
 
   const handleFinish = async (value) => {
-
     const formattedInstructions = value.orderedFood.map((food, index) => ({
       productId: food.foodName,
       instruction: food.instructions,
@@ -388,7 +387,7 @@ function CallForOrder() {
         setButtonLoader(true);
 
         console.log(get(value, "orderedFood", ""));
-       console.log("----types",{types})
+        console.log("----types", { types });
         const formData = {
           customerName: get(value, "customerName", ""),
           mobileNumber: get(value, "mobileNumber", ""),
@@ -406,7 +405,10 @@ function CallForOrder() {
           ),
           orderedFood: get(value, "orderedFood", ""),
           location: get(value, "location", ""),
-          types: types?.map((type) => ({ type: type?.Type, price: type?.TypeOfferPrice })),
+          types: types?.map((type) => ({
+            type: type?.Type,
+            price: type?.TypeOfferPrice,
+          })),
           callForOrderInstrcution: formattedInstructions,
           orderId:
             "BIPL031023" +
@@ -414,12 +416,12 @@ function CallForOrder() {
             moment(new Date()).format("DMy"),
         };
 
-        console.log({formData})
+        console.log({ formData });
         await axios.put(
           `${process.env.REACT_APP_URL}/updatecallorder/${updateId}`,
           formData
         );
-        notification.success({ message: "Category Updated successfully" });
+        notification.success({ message: "Call order Updated successfully" });
         setTypes([]);
         setUpdateId("");
         form.resetFields();
@@ -427,7 +429,7 @@ function CallForOrder() {
         setOpen(!open);
         setTotal("");
       } catch (err) {
-        console.log({err})
+        console.log({ err });
       } finally {
         setButtonLoader(false);
       }
@@ -446,7 +448,7 @@ function CallForOrder() {
         startTime: formattedTime,
       };
       await axios.put(
-        `${process.env.REACT_APP_URL}/updatecallorder/${timeOrders}`,
+        `${process.env.REACT_APP_URL}/updateCallOrderStatus/${timeOrders}`,
         formData
       );
       notification.success({ message: "order status updated successfully" });
@@ -612,7 +614,7 @@ function CallForOrder() {
       width: 100,
       align: "center",
       render: (values) => {
-        console.log({edit:values})
+        console.log({ edit: values });
         return (
           <EditNoteOutlinedIcon
             className=" text-green-500 cursor-pointer !text-[24px]"
@@ -773,8 +775,8 @@ function CallForOrder() {
     },
     {
       title: <h1 className="text-[10px] md:text-[14px]">Bill Amount</h1>,
-      dataIndex: "billAmount",
-      key: "billAmount",
+      dataIndex: "grandTotal",
+      key: "grandTotal",
       align: "center",
       render: (name) => {
         return <h1 className="text-[10px] md:text-[14px]">{name}</h1>;
@@ -1251,7 +1253,7 @@ function CallForOrder() {
     }
   };
   console.log({ foodInformationList, selectedProduct });
-console.log({menu})
+  console.log({ menu });
   return (
     <div className="pt-28 md:pl-[20vw]">
       <div className="w-[99vw] md:w-[80vw]">
@@ -1430,7 +1432,7 @@ console.log({menu})
           </Form.Item>
 
           {/* ================================================= */}
-{console.log({updateId})}
+          {console.log({ updateId })}
           <Form.Item
             id="order_foods"
             name="orderedFood"
@@ -1438,190 +1440,235 @@ console.log({menu})
             rules={[{ required: true }]}
           >
             <Form.List name="orderedFood">
-              {(fields, { add, remove }) => 
-              
-              (
+              {(fields, { add, remove }) => (
                 <>
-                  {fields.map(({ key, name, fieldKey, ...restField }) => (
+                  {fields.map(({ key, name, fieldKey, ...restField }) => {
+                    console.log({
+                      key,
+                      name,
+                      fieldKey,
+                      ...restField,
+                      selectedType,
+                      formvalues: form.getFieldsValue(),
+                    });
+                    let lastitem = form.getFieldValue("orderedFood")?.length;
 
-               
-                    <div key={key}>
-                           {console.log({restField})}
-                      <Row gutter={8}>
-                        <Col span={12}>
-                          <Form.Item
-                            label={`Food ${name + 1}`}
-                            {...restField}
-                            name={[name, "foodName"]}
-                            rules={[
-                              {
-                                required: true,
-                                message: "Please select a food",
-                              },
-                            ]}
-                          >
-                            <Select
-                              showSearch
-                              placeholder="Select food"
-                              style={{ width: "100%" }}
-                              filterOption={(input, option) =>
-                                option.children
-                                  .toLowerCase()
-                                  .indexOf(input.toLowerCase()) >= 0
-                              }
-                              onChange={(e) => {
-                                updateTotalAmount(e, key);
-                                const selectedProduct = menu?.find(
-                                  (product) => product.name === e
-                                );
-                                console.log(selectedProduct.types, "type");
-                                setSelectedType(selectedProduct?.types || []);
-                              }}
-                              id="foodName"
+                    let typess = menu?.filter(
+                      (td) =>
+                        td?.name ===
+                        form.getFieldValue(["orderedFood", name, "foodName"])
+                    )?.[0]?.types;
+                    console.log({
+                      key,
+                      name,
+                      fieldKey,
+                      ...restField,
+                      selectedType,
+                      typess,
+                      formvalues: form.getFieldsValue(),
+                    });
+                    return (
+                      <div
+                        key={key}
+                        className={name === lastitem - 1 ? "" : "food_spliter"}
+                      >
+                        {console.log({ restField })}
+                        <Row gutter={8}>
+                          <Col span={12}>
+                            <Form.Item
+                              label={`Food ${name + 1}`}
+                              {...restField}
+                              name={[name, "foodName"]}
+                              rules={[
+                                {
+                                  required: true,
+                                  message: "Please select a food",
+                                },
+                              ]}
                             >
-                           
-                              {menu &&
-                                menu.map((res, i) => (
-                                  <Option
-                                    key={i}
-                                    value={res.name}
-                                    disabled={!res.status}
-                                  >
-                                    {res?.name}
-                                  </Option>
-                                ))}
-                            </Select>
-                          </Form.Item>
-                          {console.log({formvalues:form.getFieldsValue()})}
-                          {form.getFieldValue([
-                            "orderedFood",
-                            name,
-                            "foodName",
-                          ]) && (
-                            <div className="hidden">
-                              Selected Food Price:
-                              {
+                              <Select
+                                showSearch
+                                placeholder="Select food"
+                                style={{ width: "100%" }}
+                                filterOption={(input, option) =>
+                                  option.children
+                                    .toLowerCase()
+                                    .indexOf(input.toLowerCase()) >= 0
+                                }
+                                onChange={(e) => {
+                                  form.setFields([
+                                    {
+                                      name: ["orderedFood", name, "type"],
+                                      value: "",
+                                    },
+                                  ]);
+
+                                  updateTotalAmount(e, key);
+                                  const selectedProduct = menu?.find(
+                                    (product) => product.name === e
+                                  );
+                                  console.log(selectedProduct.types, "type");
+                                  setSelectedType(selectedProduct?.types || []);
+                                }}
+                                id="foodName"
+                              >
+                                {menu &&
+                                  menu.map((res, i) => (
+                                    <Option
+                                      key={i}
+                                      value={res.name}
+                                      disabled={!res.status}
+                                    >
+                                      {res?.name}
+                                    </Option>
+                                  ))}
+                              </Select>
+                            </Form.Item>
+                            {console.log({ formvalues: form.getFieldsValue() })}
+                            {form.getFieldValue([
+                              "orderedFood",
+                              name,
+                              "foodName",
+                            ]) && (
+                              <div className="hidden">
+                                Selected Food Price:
+                                {
+                                  menu.filter((res) => {
+                                    return (
+                                      res.name ===
+                                      form.getFieldValue([
+                                        "orderedFood",
+                                        name,
+                                        "food",
+                                      ])
+                                    );
+                                  })[0]?.offer
+                                }
+                              </div>
+                            )}
+                          </Col>
+                          <Col span={8}>
+                            <Form.Item
+                              {...restField}
+                              name={[name, "foodQuantity"]}
+                              rules={[
+                                {
+                                  required: true,
+                                  message: "Please enter quantity",
+                                  min: 1,
+                                
+                                 
+                                },
+                              ]}
+                              className="!pt-[30px]"
+                            >
+                              <Input
+                                id="qty"
+                                placeholder="Quantity"
+                                style={{ width: "100%" }}
+                                onChange={updateTotalAmount}
+                                size="large"
+                                min={1}
+                                type={"number"}
+                              />
+                            </Form.Item>
+                            {form.getFieldValue([
+                              "orderedFood",
+                              name,
+                              "foodQuantity",
+                            ]) && (
+                              <div>
+                                Quantity:{" "}
+                                {form.getFieldValue([
+                                  "orderedFood",
+                                  name,
+                                  "foodQuantity",
+                                ])}
+                              </div>
+                            )}
+                          </Col>
+                          <Col span={4}>
+                            <Button
+                              id="remove_button"
+                              onClick={() => remove(name)}
+                              style={{ width: "60%" }}
+                              className="!mt-[35px] flex items-center justify-center text-black text-[20px]"
+                            >
+                              -
+                            </Button>
+
+                            {!isNaN(
+                              form.getFieldValue([
+                                "orderedFood",
+                                name,
+                                "foodQuantity",
+                              ])
+                            ) &&
+                              !isNaN(
                                 menu.filter((res) => {
                                   return (
                                     res.name ===
                                     form.getFieldValue([
                                       "orderedFood",
                                       name,
-                                      "food",
+                                      "foodName",
                                     ])
                                   );
                                 })[0]?.offer
-                              }
-                            </div>
-                          )}
-                        </Col>
-                        <Col span={8}>
-                          <Form.Item
-                            {...restField}
-                            name={[name, "foodQuantity"]}
-                            rules={[
-                              {
-                                required: true,
-                                message: "Please enter quantity",
-                              },
-                            ]}
-                            className="!pt-[30px]"
-                          >
-                            <Input
-                              id="qty"
-                              placeholder="Quantity"
-                              style={{ width: "100%" }}
-                              onChange={updateTotalAmount}
-                              size="large"
-                            />
-                          </Form.Item>
-                          {form.getFieldValue([
-                            "orderedFood",
-                            name,
-                            "foodQuantity",
-                          ]) && (
-                            <div>
-                              Quantity:{" "}
-                              {form.getFieldValue([
-                                "orderedFood",
-                                name,
-                                "foodQuantity",
-                              ])}
-                            </div>
-                          )}
-                        </Col>
-                        <Col span={4}>
-                          <Button
-                            id="remove_button"
-                            onClick={() => remove(name)}
-                            style={{ width: "60%" }}
-                            className="!mt-[35px] flex items-center justify-center text-black text-[20px]"
-                          >
-                            -
-                          </Button>
-
-                          {!isNaN(
-                            form.getFieldValue([
-                              "orderedFood",
-                              name,
-                              "foodQuantity",
-                            ])
-                          ) &&
-                            !isNaN(
-                              menu.filter((res) => {
-                                return (
-                                  res.name ===
-                                  form.getFieldValue([
-                                    "orderedFood",
-                                    name,
-                                    "foodName",
-                                  ])
-                                );
-                              })[0]?.offer
-                            )}
-                        </Col>
-                        {selectedType && (
+                              )}
+                          </Col>
+                          {typess?.length ? (
+                            <Col span={24}>
+                              <Form.Item
+                                label="Type"
+                                {...restField}
+                                name={[name, "type"]}
+                                rules={[
+                                  {
+                                    required: typess?.length ? true : false,
+                                    message: "Please select a type",
+                                  },
+                                ]}
+                              >
+                                <Select onChange={handleTypeChange}>
+                                  {typess?.map((typeObject) => (
+                                    <Option
+                                      key={typeObject._id}
+                                      value={`${typeObject.Type} - ${typeObject.TypeOfferPrice} - ${typeObject._id}`}
+                                    >
+                                      {`${typeObject.Type} - ${typeObject.TypeOfferPrice}`}
+                                    </Option>
+                                  ))}
+                                </Select>
+                              </Form.Item>
+                            </Col>
+                          ) : null}
                           <Col span={24}>
                             <Form.Item
-                              label="Type"
-                              {...restField}
-                              name={[name, "type"]}
+                              name={[name, "instruction"]}
+                              label="Enter Food Instruction"
                             >
-                              <Select onChange={handleTypeChange}>
-                                {selectedType?.map((typeObject) => (
-                                  <Option
-                                    key={typeObject._id}
-                                    value={`${typeObject.Type} - ${typeObject.TypeOfferPrice} - ${typeObject._id}`}
-                                  >
-                                    {`${typeObject.Type} - ${typeObject.TypeOfferPrice}`}
-                                  </Option>
-                                ))}
-                              </Select>
+                              <Input.TextArea
+                                id="instruction"
+                                type="text"
+                                placeholder="instruction..."
+                                size="small"
+                                onChange={(e) =>
+                                  handleInstructionChange(e, name)
+                                }
+                                style={{
+                                  padding: "8px 12px", // Adjust padding as needed
+                                  lineHeight: "1.5",
+                                  fontFamily: "inherit",
+                                }}
+                              />
                             </Form.Item>
                           </Col>
-                        )}
-                        <Col span={24}>
-                          <Form.Item
-                            name={[name, "instruction"]}
-                            label="Enter Food Instruction"
-                          >
-                            <Input.TextArea
-                              id="instruction"
-                              type="text"
-                              placeholder="instruction..."
-                              size="small"
-                              onChange={(e) => handleInstructionChange(e, name)}
-                              style={{
-                                padding: "8px 12px", // Adjust padding as needed
-                                lineHeight: "1.5",
-                                fontFamily: "inherit",
-                              }}
-                            />
-                          </Form.Item>
-                        </Col>
-                      </Row>
-                    </div>
-                  ))}
+                        </Row>
+                      </div>
+                    );
+                  })}
+
                   <Form.Item>
                     <Button
                       type="dashed"
@@ -1672,8 +1719,7 @@ console.log({menu})
           <h1 className="font-bold">Ordered Food Details</h1>
           <div className="flex flex-wrap gap-8">
             {foodInformationList?.map((res, i) => {
-
-              let instruction=selectedProduct?.callForOrderInstrcution?.[0]?.[res.id]
+              let instruction = res.instruction;
               return (
                 <div className="flex  gap-5 pt-5" key={i}>
                   <div>
@@ -1693,7 +1739,9 @@ console.log({menu})
                       Quantity : {res.foodQuantity}
                     </p>
                     <p className="text-black font-bold">Type: {res.type}</p>
-                    <p className="text-black font-bold">Price: {res.foodPrice}</p>
+                    {/* <p className="text-black font-bold">
+                      Price: {res.foodPrice}
+                    </p> */}
 
                     {/* {selectedProduct?.types?.map((data) => {
                       return data.price === res.type ? (
@@ -1703,35 +1751,33 @@ console.log({menu})
                         </p>
                       ) : null;
                     })} */}
-{instruction?
-                    <div className="flex">
+                    {instruction ? (
                       <div className="flex">
-                        <p className="text-black font-bold">Instructions :</p>
+                        <div className="flex">
+                          <p className="text-black font-bold">Instructions :</p>
+                        </div>
+                        <div className="flex-1 mx-2">
+                          {instruction ? (
+                            <pre
+                              key={res?.id}
+                              className="text-black font-bold font-sans leading-normal"
+                            >
+                              {instruction
+                                ?.split("\n")
+                                .map((line, lineIndex) => (
+                                  <span key={lineIndex}>
+                                    {lineIndex > 0 && <br />}{" "}
+                                    {/* Add line break except for the first line */}
+                                    &bull; {line}{" "}
+                                    {/* Unicode bullet point and the line content */}
+                                  </span>
+                                ))}
+                            </pre>
+                          ) : null}
+                          {/* Other content in the right column */}
+                        </div>
                       </div>
-                      <div className="flex-1 mx-2">
-                  
-
-                        {instruction?
-                        <pre
-                        key={res?.id}
-                        className="text-black font-bold font-sans leading-normal"
-                      >
-                        {instruction
-                          ?.split("\n")
-                          .map((line, lineIndex) => (
-                            <span key={lineIndex}>
-                              {lineIndex > 0 && <br />}{" "}
-                              {/* Add line break except for the first line */}
-                              &bull; {line}{" "}
-                              {/* Unicode bullet point and the line content */}
-                            </span>
-                          ))}
-                      </pre>
-                        
-                        :null}
-                        {/* Other content in the right column */}
-                      </div>
-                    </div>:null}
+                    ) : null}
                   </div>
                 </div>
               );

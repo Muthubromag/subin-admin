@@ -73,6 +73,8 @@ function Product() {
     setTypes(newTypes);
   };
 
+  console.log({ category, selectedCategory });
+
   const addTypeField = () => {
     setTypes([...types, { type: "", price: "" }]);
   };
@@ -119,7 +121,7 @@ function Product() {
 
   const handleFinish = async (value) => {
     console.log(value, "value");
-   
+
     try {
       setLoadingButton(true);
       const discountedPrice = value.price - value.price * (value.offer / 100);
@@ -243,7 +245,9 @@ function Product() {
     setUpdateId(values._id);
     setCurrentImage(values.image);
     setIsAvailable(values.status);
-    setSelectedCategory(values.categoryId);
+
+    let cat = category?.filter((td) => td?._id === values?.categoryId)?.[0];
+    setSelectedCategory({ id: values.categoryId, type: cat?.type || "food" });
     setselectedSubCategory(values.subCategoryId);
     if (values?.types && values?.types?.length > 0) {
       populateTypes(values.types);
@@ -758,14 +762,18 @@ function Product() {
               <Select
                 placeholder="Select Category"
                 size="large"
-                onChange={(e) => {
-                  setSelectedCategory(e);
+                onChange={(e, option) => {
+                  console.log("first", { e, option });
+                  setSelectedCategory({
+                    id: e,
+                    type: option?.objectValue?.type,
+                  });
                   handleSubcategoryFilter(e);
                 }}
               >
                 {category.map((res, i) => {
                   return (
-                    <Option value={res._id} key={i}>
+                    <Option value={res._id} key={i} objectValue={res}>
                       {res?.name}
                     </Option>
                   );
@@ -818,32 +826,34 @@ function Product() {
             </Form.Item>
 
             {/* <Button onClick={()=>setIsFoodTypesExist(!isFoodTypesExist)}>Toggle</Button> */}
-            <div className="flex justify-center items-center gap-4">
-              <Switch
-                default
-                checked={isVeg}
-                checkedChildren="Veg"
-                unCheckedChildren="Non-Veg"
-                className={`mb-10 w-32`}
-                onChange={() => {
-                  setIsVeg(!isVeg);
-                }}
-                style={{ backgroundColor: isVeg ? "#008000" : "#FF0000" }}
-              />
+            {selectedCategory?.type === "food" ? (
+              <div className="flex justify-center items-center gap-4">
+                <Switch
+                  default
+                  checked={isVeg}
+                  checkedChildren="Veg"
+                  unCheckedChildren="Non-Veg"
+                  className={`mb-10 w-32`}
+                  onChange={() => {
+                    setIsVeg(!isVeg);
+                  }}
+                  style={{ backgroundColor: isVeg ? "#008000" : "#FF0000" }}
+                />
 
-              <Switch
-                checked={isFoodTypesExist}
-                checkedChildren="Multiple Type"
-                unCheckedChildren="Single Type"
-                className={`mb-10 w-32 `}
-                onChange={() => {
-                  setIsFoodTypesExist(!isFoodTypesExist);
-                }}
-                style={{
-                  backgroundColor: isFoodTypesExist ? "#CD5C08" : "#000000",
-                }}
-              />
-            </div>
+                <Switch
+                  checked={isFoodTypesExist}
+                  checkedChildren="Multiple Type"
+                  unCheckedChildren="Single Type"
+                  className={`mb-10 w-32 `}
+                  onChange={() => {
+                    setIsFoodTypesExist(!isFoodTypesExist);
+                  }}
+                  style={{
+                    backgroundColor: isFoodTypesExist ? "#CD5C08" : "#000000",
+                  }}
+                />
+              </div>
+            ) : null}
 
             {!isFoodTypesExist && (
               <>
