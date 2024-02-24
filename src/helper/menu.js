@@ -63,7 +63,12 @@ export const items = [
         </NavLink>,
         "/callfororder"
       ),
-      // getItem(<NavLink to="dinning" className="text-[10px] lg:text-[14px]">Dinning</NavLink>, '/dinning'),
+      getItem(
+        <NavLink to="dinning" className="text-[10px] lg:text-[14px]">
+          Dinning
+        </NavLink>,
+        "/dinning"
+      ),
       getItem(
         <NavLink to="takeaway" className="text-[10px] lg:text-[14px]">
           Take away
@@ -149,7 +154,12 @@ export const items = [
         </NavLink>,
         "/conotifications"
       ),
-      // getItem(<NavLink to="dinning" className="text-[10px] lg:text-[14px]">Dinning</NavLink>, '/dinning'),
+      getItem(
+        <NavLink to="dinning" className="text-[10px] lg:text-[14px]">
+          Dinning
+        </NavLink>,
+        "/dinning"
+      ),
       getItem(
         <NavLink
           to="takeawaynotifications"

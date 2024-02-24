@@ -184,7 +184,7 @@ function CallForOrder() {
       };
 
       await axios.put(
-        `${process.env.REACT_APP_URL}/updatecallorder/${Id._id}`,
+        `${process.env.REACT_APP_URL}/updateCallOrderStatus/${Id._id}`,
         formData
       );
 
@@ -203,7 +203,7 @@ function CallForOrder() {
       };
 
       await axios.put(
-        `${process.env.REACT_APP_URL}/updatecallorder/${Id._id}`,
+        `${process.env.REACT_APP_URL}/updateCallOrderStatus/${Id._id}`,
         formData
       );
 
@@ -448,7 +448,7 @@ function CallForOrder() {
         startTime: formattedTime,
       };
       await axios.put(
-        `${process.env.REACT_APP_URL}/updatecallorder/${timeOrders}`,
+        `${process.env.REACT_APP_URL}/updateCallOrderStatus/${timeOrders}`,
         formData
       );
       notification.success({ message: "order status updated successfully" });
@@ -775,8 +775,8 @@ function CallForOrder() {
     },
     {
       title: <h1 className="text-[10px] md:text-[14px]">Bill Amount</h1>,
-      dataIndex: "billAmount",
-      key: "billAmount",
+      dataIndex: "grandTotal",
+      key: "grandTotal",
       align: "center",
       render: (name) => {
         return <h1 className="text-[10px] md:text-[14px]">{name}</h1>;
@@ -1555,6 +1555,9 @@ function CallForOrder() {
                                 {
                                   required: true,
                                   message: "Please enter quantity",
+                                  min: 1,
+                                
+                                 
                                 },
                               ]}
                               className="!pt-[30px]"
@@ -1565,6 +1568,8 @@ function CallForOrder() {
                                 style={{ width: "100%" }}
                                 onChange={updateTotalAmount}
                                 size="large"
+                                min={1}
+                                type={"number"}
                               />
                             </Form.Item>
                             {form.getFieldValue([
@@ -1714,7 +1719,7 @@ function CallForOrder() {
           <h1 className="font-bold">Ordered Food Details</h1>
           <div className="flex flex-wrap gap-8">
             {foodInformationList?.map((res, i) => {
-              let instruction =res.instruction;
+              let instruction = res.instruction;
               return (
                 <div className="flex  gap-5 pt-5" key={i}>
                   <div>
