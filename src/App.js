@@ -22,7 +22,7 @@ import {
   TableBooking,
   OnlineOrder,
   TakeAway,
-  // Dinning,
+  Dinning,
   CallForOrder,
   ScratchCard,
   AdminUser,
@@ -58,7 +58,7 @@ const router = createBrowserRouter(
       <Route path="product" element={<Product />} />
       <Route path="onlineorder" element={<OnlineOrder />} />
       <Route path="takeaway" element={<TakeAway />} />
-      {/* <Route path="dinning" element={<Dinning />} /> */}
+      <Route path="dinning" element={<Dinning />} />
       <Route path="callfororder" element={<CallForOrder />} />
       <Route index path="login" element={<Login />} />
       <Route path="scratchcard" element={<ScratchCard />} />

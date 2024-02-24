@@ -35,9 +35,11 @@ function Category() {
   const [isAvailable, setIsAvailable] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [fileList, setFileList] = useState([]);
+  const [type, setType] = useState("food");
   const [imageKey, setImageKey] = useState("");
   const [loadingButton, setLoadingButton] = useState(false);
   const user = useSelector((state) => state.user.user);
+  console.log({ type });
 
   const fetchData = async () => {
     try {
@@ -47,7 +49,6 @@ function Category() {
       );
       setData(get(result, "data.data", []));
     } catch (e) {
-      
     } finally {
       setLoading(false);
     }
@@ -63,7 +64,7 @@ function Category() {
 
   const handleFinish = async (value) => {
     try {
-      setLoadingButton(true)
+      setLoadingButton(true);
       const data = new FormData();
       if (updateId !== "") {
         data.append(
@@ -75,6 +76,7 @@ function Category() {
         data.append("file", get(value, "img.fileList[0].originFileObj"));
       }
       data.append("name", value.name);
+      data.append("type", type);
       data.append("status", value.status === undefined ? false : value.status);
 
       const url = updateId
@@ -98,7 +100,7 @@ function Category() {
       setFileList([]);
       setIsAvailable(false);
     } catch (err) {
-      notification.error({message:"Something went wrong"})
+      notification.error({ message: "Something went wrong" });
       if (get(err, "response.data")?.split(" ")?.includes("limit")) {
         Modal.warning({
           title: get(err, "response.data"),
@@ -123,10 +125,10 @@ function Category() {
           },
         });
       }
-    }finally{
-      setLoadingButton(false)
+    } finally {
+      setLoadingButton(false);
     }
-  }
+  };
 
   const handleEdit = (val) => {
     setOpen(!open);
@@ -136,6 +138,7 @@ function Category() {
     ]);
     form.setFieldsValue(val);
     setUpdateId(val._id);
+    setType(val?.type || "food");
     setIsAvailable(val.status);
     setImageKey(val.category_image_key);
   };
@@ -195,7 +198,7 @@ function Category() {
       fetchData();
       notification.success({ message: "Status updated successfully" });
     } catch (err) {
-      notification.error({message:"Something went wrong"})
+      notification.error({ message: "Something went wrong" });
     }
   };
 
@@ -407,6 +410,7 @@ function Category() {
           setImageUrl("");
           setIsAvailable(false);
           setFileList([]);
+          setType("food");
         }}
         width={400}
         title={<p>Add Cuisines</p>}
@@ -431,6 +435,21 @@ function Category() {
           >
             <Input type="text" placeholder="Category name..." size="large" />
           </Form.Item>
+          <div className="flex justify-start items-start gap-4">
+            <Switch
+              default
+              checked={type === "food"}
+              checkedChildren="Food"
+              unCheckedChildren="Drink"
+              className={`mb-10 w-32`}
+              onChange={() => {
+                setType(type === "food" ? "drink" : "food");
+              }}
+              style={{
+                backgroundColor: type === "food" ? "#008000" : "#FF0000",
+              }}
+            />
+          </div>
           <Form.Item
             label="Cuisines Availability"
             name="status"
@@ -453,9 +472,7 @@ function Category() {
             <Upload
               onChange={handleChange}
               fileList={fileList}
-              onPreview={(e) => {
-             
-              }}
+              onPreview={(e) => {}}
               maxCount={1}
               listType="picture-card"
               multiple={false}
