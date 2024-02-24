@@ -421,7 +421,7 @@ function CallForOrder() {
           `${process.env.REACT_APP_URL}/updatecallorder/${updateId}`,
           formData
         );
-        notification.success({ message: "Category Updated successfully" });
+        notification.success({ message: "Call order Updated successfully" });
         setTypes([]);
         setUpdateId("");
         form.resetFields();
@@ -1714,8 +1714,7 @@ function CallForOrder() {
           <h1 className="font-bold">Ordered Food Details</h1>
           <div className="flex flex-wrap gap-8">
             {foodInformationList?.map((res, i) => {
-              let instruction =
-                selectedProduct?.callForOrderInstrcution?.[0]?.[res.id];
+              let instruction =res.instruction;
               return (
                 <div className="flex  gap-5 pt-5" key={i}>
                   <div>
@@ -1735,9 +1734,9 @@ function CallForOrder() {
                       Quantity : {res.foodQuantity}
                     </p>
                     <p className="text-black font-bold">Type: {res.type}</p>
-                    <p className="text-black font-bold">
+                    {/* <p className="text-black font-bold">
                       Price: {res.foodPrice}
-                    </p>
+                    </p> */}
 
                     {/* {selectedProduct?.types?.map((data) => {
                       return data.price === res.type ? (
