@@ -20,9 +20,7 @@ function Footer() {
         `${process.env.REACT_APP_URL}/get_socialmedia`
       );
       setSocialMediaData(get(setSocialMediaDatas, "data.data", []));
-    } catch (err) {
-      
-    }
+    } catch (err) {}
   };
 
   useEffect(() => {
@@ -35,16 +33,16 @@ function Footer() {
       label: "Footer Settings",
       children: <FooterSettings data={data} fetchData={fetchData} />,
     },
-    {
-      key: "2",
-      label: "Social media settings",
-      children: <SocialMediaSettings data={data} SocialfetchData={fetchData} />,
-    },
-    {
-      key: "3",
-      label: "Theme Settings",
-      children: <ThemeSettings data={data} fetchData={fetchData} />,
-    },
+    // {
+    //   key: "2",
+    //   label: "Social media settings",
+    //   children: <SocialMediaSettings data={data} SocialfetchData={fetchData} />,
+    // },
+    // {
+    //   key: "3",
+    //   label: "Theme Settings",
+    //   children: <ThemeSettings data={data} fetchData={fetchData} />,
+    // },
     {
       key: "4",
       label: "Who We Are",

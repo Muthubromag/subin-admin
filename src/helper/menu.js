@@ -109,13 +109,13 @@ export const items = [
     "/inventory",
     <InventoryIcon className="!text-[17px] !text-[#CD5C08]" />
   ),
-  getItem(
-    <NavLink to="wallet" className="text-[10px] lg:text-[14px]">
-      Wallet
-    </NavLink>,
-    "/wallet",
-    <WalletIcon className="!text-[17px] !text-[#CD5C08]" />
-  ),
+  // getItem(
+  //   <NavLink to="wallet" className="text-[10px] lg:text-[14px]">
+  //     Wallet
+  //   </NavLink>,
+  //   "/wallet",
+  //   <WalletIcon className="!text-[17px] !text-[#CD5C08]" />
+  // ),
   getItem(
     <NavLink to="feedback" className="text-[10px] lg:text-[14px]">
       Feedback
