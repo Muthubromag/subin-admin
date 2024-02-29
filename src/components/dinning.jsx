@@ -27,8 +27,7 @@ function Dinning() {
   const [currentPage, setCurrentPage] = useState(1);
   const [foodInformationList, setFoodInformationList] = useState([]);
   const [currentTime, setCurrentTime] = useState(new Date());
-  const [form]=Form.useForm()
-
+  const [form] = Form.useForm();
 
   const fetchData = async () => {
     try {
@@ -39,7 +38,6 @@ function Dinning() {
 
       setData(get(result, "data.data"));
     } catch (e) {
-      
     } finally {
       setLoading(false);
     }
@@ -52,17 +50,19 @@ function Dinning() {
   useEffect(() => {
     setKdsOrders(
       data.filter((res) => {
-        return get(res,"status","") !== "Order accepted" && get(res,"status","") !== "Order placed";
+        return (
+          get(res, "status", "") !== "Order accepted" &&
+          get(res, "status", "") !== "Order placed"
+        );
       })
     );
   }, [data]);
 
   const handleStatusChange = async (val, Status) => {
-    
     if (Status === "Order ready to preparing") {
       setTimeSlot(!timeSlot);
       setTimeOrders(val);
-    } else if (Status === "Order ready to pick") {
+    } else if (Status === "Order ready to serve") {
       const now = new Date();
       const currentHours = ("0" + now.getHours()).slice(-2) % 12;
       const currentMinutes = ("0" + now.getMinutes()).slice(-2);
@@ -99,7 +99,7 @@ function Dinning() {
       notification.success({ message: "order status updated successfully" });
       fetchData();
     } catch (err) {
-      notification.error({message:"Something went wrong"})
+      notification.error({ message: "Something went wrong" });
     }
   };
 
@@ -134,20 +134,19 @@ function Dinning() {
         timePicked: val,
         startTime: formattedTime,
       };
-    
+
       await axios.put(
         `${process.env.REACT_APP_URL}/updatedinningorder/${timeOrders._id}`,
         formData
       );
       notification.success({ message: "order status updated successfully" });
       fetchData();
-      setTimeSlot(!timeSlot)
-     form.resetFields()
+      setTimeSlot(!timeSlot);
+      form.resetFields();
     } catch (e) {
-      notification.error({message:"Something went wrong"})
+      notification.error({ message: "Something went wrong" });
     }
   };
-
 
   const openPreviewModal = (orderedFood) => {
     setPreviewData(!previewData);
@@ -159,7 +158,7 @@ function Dinning() {
   };
 
   const getNextStatusOptionsinKds = (currentStatus) => {
-    const statusOptions = ["Order ready to preparing", "Order ready to pick"];
+    const statusOptions = ["Order ready to preparing", "Order ready to serve"];
 
     const currentIndex = statusOptions.indexOf(currentStatus);
 
@@ -294,7 +293,7 @@ function Dinning() {
         );
       },
     },
-   
+
     {
       title: <h1 className="text-[10px] md:text-[14px]">Status</h1>,
       dataIndex: "status",
@@ -306,7 +305,7 @@ function Dinning() {
         const isDelivered = status === "Order served";
         const isCancelled = status === "Cancelled";
         const isPick =
-          status === "Order ready to pick" ||
+          status === "Order ready to serve" ||
           status === "Order served" ||
           status === "Order picked";
         const isbeforeKds =
@@ -471,16 +470,16 @@ function Dinning() {
       align: "center",
       render: (orderedFood) => (
         <div className="group bg-white ml-10 shadow-md w-[80px] rounded-md flex flex-col items-center justify-center h-[35px]">
-        <Button
-          onClick={() => openPreviewModal(orderedFood)}
-          type="link"
-          size="small"
-          className="!text-black  flex items-center justify-center"
-        >
-          <VisibilityIcon className="!text-[15px]" />
-          <p className="ml-2 text-[12px md:text-[14px]">View</p>
-        </Button>
-      </div>
+          <Button
+            onClick={() => openPreviewModal(orderedFood)}
+            type="link"
+            size="small"
+            className="!text-black  flex items-center justify-center"
+          >
+            <VisibilityIcon className="!text-[15px]" />
+            <p className="ml-2 text-[12px md:text-[14px]">View</p>
+          </Button>
+        </div>
       ),
     },
     {
@@ -571,13 +570,16 @@ function Dinning() {
   ];
 
   useEffect(() => {
-    if( data.find(
-      (res) => (get(res,"status","") === "Order ready to preparing") !== undefined
-    )){
+    if (
+      data.find(
+        (res) =>
+          (get(res, "status", "") === "Order ready to preparing") !== undefined
+      )
+    ) {
       const interval = setInterval(() => {
         setCurrentTime(new Date());
       }, 1000);
-  
+
       return () => {
         clearInterval(interval);
       };
@@ -704,10 +706,10 @@ function Dinning() {
           <div className="text-[10px]  md:text-[14px]">
             {record.timePicked === undefined ? (
               <div>No slots</div>
-            ) : get(record,"status") === "Order ready to preparing" ? (
+            ) : get(record, "status") === "Order ready to preparing" ? (
               <div>
                 <p className="text-green-500 font-bold">
-                  Start Time:{get(record,"startTime")}
+                  Start Time:{get(record, "startTime")}
                 </p>
                 <p className="text-blue-500 font-bold">
                   Destination:
@@ -726,9 +728,13 @@ function Dinning() {
                     className={`${hours === 0 ? "hidden" : "block"}`}
                   >{`${hours}hrs`}</span>
                   <span
-                    className={`${minutes === 0 ? "hidden" : "block"} ${hours===0?"pl-0":"pl-1"}`}
+                    className={`${minutes === 0 ? "hidden" : "block"} ${
+                      hours === 0 ? "pl-0" : "pl-1"
+                    }`}
                   >{`${minutes}mins`}</span>
-                  <span className={`${minutes===0?"pl-0":"pl-1"}`}>{`${seconds}secs`}</span>
+                  <span
+                    className={`${minutes === 0 ? "pl-0" : "pl-1"}`}
+                  >{`${seconds}secs`}</span>
                 </p>
               </div>
             )}
@@ -770,11 +776,17 @@ function Dinning() {
             )}
 
             {isCancelled ? (
-              <Button id="cancel_button" className="bg-red-500 text-white border-none w-[100%]">
+              <Button
+                id="cancel_button"
+                className="bg-red-500 text-white border-none w-[100%]"
+              >
                 Cancelled
               </Button>
             ) : isDelivered ? (
-              <Button id="delivery_button" className="bg-green-500 text-white border-none w-[100%]">
+              <Button
+                id="delivery_button"
+                className="bg-green-500 text-white border-none w-[100%]"
+              >
                 Served
               </Button>
             ) : (
@@ -805,17 +817,19 @@ function Dinning() {
             columns={
               get(user, "name", "")?.split("@")?.includes("kds")
                 ? kdsColumns
-                :  get(user, "name", "")?.split("@")?.includes("frontdesk")||
-                get(user, "name", "")?.split("@")?.includes("partner")
+                : get(user, "name", "")?.split("@")?.includes("frontdesk") ||
+                  get(user, "name", "")?.split("@")?.includes("partner")
                 ? columnsOperations
                 : columns
             }
             dataSource={
-              get(user, "name", "")?.split("@")?.includes("kds") ? kdsOrders : data
+              get(user, "name", "")?.split("@")?.includes("kds")
+                ? kdsOrders
+                : data
             }
             scroll={{
               x:
-              get(user, "name", "")?.split("@")?.includes("partner") ||
+                get(user, "name", "")?.split("@")?.includes("partner") ||
                 get(user, "name", "")?.split("@")?.includes("kds") ||
                 get(user, "name", "")?.split("@")?.includes("frontdesk")
                   ? 1500
