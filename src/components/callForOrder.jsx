@@ -446,6 +446,10 @@ function CallForOrder() {
       const formData = {
         timePicked: val,
         startTime: formattedTime,
+        preparingStart: moment().format("YYYY-MM-DD HH:mm:ss"),
+        preparingEnd: moment()
+          .add(val, "seconds")
+          .format("YYYY-MM-DD HH:mm:ss"),
       };
       await axios.put(
         `${process.env.REACT_APP_URL}/updateCallOrderStatus/${timeOrders}`,
@@ -1556,8 +1560,6 @@ function CallForOrder() {
                                   required: true,
                                   message: "Please enter quantity",
                                   min: 1,
-                                
-                                 
                                 },
                               ]}
                               className="!pt-[30px]"
