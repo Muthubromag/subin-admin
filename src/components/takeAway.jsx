@@ -48,7 +48,7 @@ function TakeAway() {
       const result = await axios.get(
         `${process.env.REACT_APP_URL}/gettakeaway`
       );
-console.log(result," iam amama");
+      console.log(result, " iam amama");
       setData(get(result, "data.data", []));
 
       const inventory = await axios.get(
@@ -84,6 +84,10 @@ console.log(result," iam amama");
       const formData = {
         timePicked: val,
         startTime: formattedTime,
+        preparingStart: moment().format("YYYY-MM-DD HH:mm:ss"),
+        preparingEnd: moment()
+          .add(val, "seconds")
+          .format("YYYY-MM-DD HH:mm:ss"),
       };
 
       await axios.put(
@@ -175,7 +179,10 @@ console.log(result," iam amama");
     setPreviewData(!previewData);
     setFoodInformationList(orderedFood);
     setSelectedProduct(instructions);
-    console.log({instructions:instructions?.instructionsTakeaway,orderedFood}, "i am insstruu");
+    console.log(
+      { instructions: instructions?.instructionsTakeaway, orderedFood },
+      "i am insstruu"
+    );
   };
   const closePreviewModal = () => {
     setPreviewData(null);
@@ -1005,34 +1012,45 @@ console.log(result," iam amama");
           <h1 className="font-bold">Ordered Food Details</h1>
           <div className="flex flex-wrap gap-8">
             {foodInformationList.map((res, i) => {
-              console.log({res,inst:selectedProduct?.instructionsTakeaway?.[0]?.[res?.id],selectedProduct})
+              console.log({
+                res,
+                inst: selectedProduct?.instructionsTakeaway?.[0]?.[res?.id],
+                selectedProduct,
+              });
               return (
                 <div className="flex  gap-5 pt-5" key={i}>
                   <div>
                     <Image width={100} src={res.pic} />
                   </div>
                   <div>
-                    <p className="text-black font-bold">Food Name: {res?.foodName}</p>
-               
-                    <p className="text-black font-bold">Quantity: {res?.foodQuantity}</p>
+                    <p className="text-black font-bold">
+                      Food Name: {res?.foodName}
+                    </p>
+
+                    <p className="text-black font-bold">
+                      Quantity: {res?.foodQuantity}
+                    </p>
                     {/* <p className="text-black font-bold">Type: {res?.type}</p> */}
-                    {selectedProduct?.instructionsTakeaway?.[0]?.[res?.id]?.length? <div key={res?.id} className="w-full flex">
-                      <p className="text-black font-bold mr-2">
-                        Instruction:{" "}
-                      </p>
-                      <ul>
-                        
-                    {selectedProduct?.instructionsTakeaway?.[0]?.[res?.id]?.map((instructions,index) => {
-                     return(
-                      <li className="font-bold" key={index}>
-                      {" "}
-                      * {instructions}
-                    </li>
-                     )
-                    })}
-                      
-                      </ul>
-                    </div>:null}
+                    {selectedProduct?.instructionsTakeaway?.[0]?.[res?.id]
+                      ?.length ? (
+                      <div key={res?.id} className="w-full flex">
+                        <p className="text-black font-bold mr-2">
+                          Instruction:{" "}
+                        </p>
+                        <ul>
+                          {selectedProduct?.instructionsTakeaway?.[0]?.[
+                            res?.id
+                          ]?.map((instructions, index) => {
+                            return (
+                              <li className="font-bold" key={index}>
+                                {" "}
+                                * {instructions}
+                              </li>
+                            );
+                          })}
+                        </ul>
+                      </div>
+                    ) : null}
                   </div>
                 </div>
               );

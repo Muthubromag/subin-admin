@@ -140,7 +140,12 @@ function OnlineOrder() {
         status: "Order ready to preparing",
         timePicked: val,
         startTime: formattedTime,
+        preparingStart: moment().format("YYYY-MM-DD HH:mm:ss"),
+        preparingEnd: moment()
+          .add(val, "seconds")
+          .format("YYYY-MM-DD HH:mm:ss"),
       };
+
       await axios.put(
         `${process.env.REACT_APP_URL}/updateonlineorder/${timeOrders._id}`,
         formData
@@ -351,7 +356,7 @@ function OnlineOrder() {
               name.map((res, i) => {
                 return (
                   <div key={i} className="lg:w-[20vw] flex flex-col capitalize">
-                       <p>Order for : {res.name}</p>
+                    <p>Order for : {res.name}</p>
                     <p>Type : {res.addressType}</p>
                     <p>Street : {res.streetName}</p>
                     <p>LandMark : {res.landMark}</p>
@@ -1038,24 +1043,25 @@ function OnlineOrder() {
                     {/* <p className="text-black font-bold">
                       Type: {res?.orderType}
                     </p> */}
-                   {selectedProduct?.instructions?.[0]?.[res?.id]?.length? <div key={res?.id} className="w-full flex">
-                      <p className="text-black font-bold mr-2">
-                        Instruction:{" "}
-                      </p>
-                      <ul>
-                        
-                    {selectedProduct?.instructions?.[0]?.[res?.id]?.map((instructions,index) => {
-                     return(
-                      <li className="font-bold" key={index}>
-                      {" "}
-                      * {instructions}
-                    </li>
-                     )
-                    })}
-                      
-                      </ul>
-                    </div>:null}
-
+                    {selectedProduct?.instructions?.[0]?.[res?.id]?.length ? (
+                      <div key={res?.id} className="w-full flex">
+                        <p className="text-black font-bold mr-2">
+                          Instruction:{" "}
+                        </p>
+                        <ul>
+                          {selectedProduct?.instructions?.[0]?.[res?.id]?.map(
+                            (instructions, index) => {
+                              return (
+                                <li className="font-bold" key={index}>
+                                  {" "}
+                                  * {instructions}
+                                </li>
+                              );
+                            }
+                          )}
+                        </ul>
+                      </div>
+                    ) : null}
                   </div>
                 </div>
               );
