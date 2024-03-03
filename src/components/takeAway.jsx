@@ -24,6 +24,7 @@ function TakeAway() {
   const [previewData, setPreviewData] = useState(null);
   const user = useSelector((state) => state.user.user);
   const [kdsOrders, setKdsOrders] = useState([]);
+  const refresher = useSelector((state) => state.user.refreshData);
   const [timeSlot, setTimeSlot] = useState("");
   const [timeOrders, setTimeOrders] = useState("");
   const [foodInformationList, setFoodInformationList] = useState([]);
@@ -42,9 +43,9 @@ function TakeAway() {
   const [timeForm] = Form.useForm();
   const navigate = useNavigate();
 
-  const fetchData = async () => {
+  const fetchData = async (load = true) => {
     try {
-      setLoading(true);
+      setLoading(load);
       const result = await axios.get(
         `${process.env.REACT_APP_URL}/gettakeaway`
       );
@@ -65,6 +66,11 @@ function TakeAway() {
   useEffect(() => {
     fetchData();
   }, []);
+  useEffect(() => {
+    if (refresher?.order === "takeaway") {
+      fetchData(false);
+    }
+  }, [refresher]);
 
   useEffect(() => {
     setKdsOrders(
