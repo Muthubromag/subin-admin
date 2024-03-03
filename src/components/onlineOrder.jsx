@@ -22,6 +22,7 @@ function OnlineOrder() {
   const [data, setData] = useState([]);
   const [previewData, setPreviewData] = useState(null);
   const user = useSelector((state) => state.user.user);
+  const refresher = useSelector((state) => state.user.refreshData);
   const [kdsOrders, setKdsOrders] = useState([]);
   const [timeSlot, setTimeSlot] = useState("");
   const [timeOrders, setTimeOrders] = useState("");
@@ -40,9 +41,9 @@ function OnlineOrder() {
   const [currentTime, setCurrentTime] = useState(new Date());
   const [timeForm] = Form.useForm();
 
-  const fetchData = async () => {
+  const fetchData = async (load = true) => {
     try {
-      setLoading(true);
+      setLoading(load);
       const result = await axios.get(
         `${process.env.REACT_APP_URL}/getonlineorder`
       );
@@ -61,6 +62,12 @@ function OnlineOrder() {
   useEffect(() => {
     fetchData();
   }, []);
+
+  useEffect(() => {
+    if (refresher?.order === "online") {
+      fetchData(false);
+    }
+  }, [refresher]);
 
   useEffect(() => {
     setKdsOrders(

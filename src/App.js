@@ -29,15 +29,17 @@ import {
   Printer,
 } from "./components";
 import RootLayout from "./layouts/rootLayout";
-import { useEffect, useState } from "react";
-import { Modal } from "antd";
+import { useEffect, useState, useCallback } from "react";
+import { Modal, notification } from "antd";
 import SignalCellularConnectedNoInternet4BarIcon from "@mui/icons-material/SignalCellularConnectedNoInternet4Bar";
-import { changeUserValues } from "./redux/adminUserSlice";
+import { changeUserValues, setRefreshData } from "./redux/adminUserSlice";
 import { get } from "lodash";
 import { useDispatch } from "react-redux";
 import axios from "axios";
 import LoadingPage from "./components/loadingPage";
 import Footer from "./Footer";
+import { socket } from "./socket";
+import Sound from "./assets/notify.mp3";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -72,8 +74,9 @@ const router = createBrowserRouter(
 function App() {
   const [isOfflineModalVisible, setOfflineModalVisible] = useState(false);
   const dispatch = useDispatch();
+  const [audio] = useState(new Audio(Sound));
   const [loading, setLoading] = useState(true);
-
+  const [connected, setConnected] = useState(false);
   const fetchData = async () => {
     const token = localStorage.getItem("token");
     try {
@@ -95,6 +98,39 @@ function App() {
   useEffect(() => {
     fetchData();
   }, [loading]);
+  const initializeSocket = useCallback(() => {
+    // console.log("Initializing socket", socket);
+
+    socket.on("connect", (data) => {
+      console.log("=== Socket connected ===", data);
+      setConnected(true);
+    });
+  }, [connected]);
+  useEffect(() => {
+    initializeSocket();
+
+    socket.on("demo", async (data) => {
+      console.log("=== Socket setWebsocketData ===");
+      console.log("=== Socket message ===", data);
+      console.log({ audio });
+      if (audio) {
+        await audio?.play();
+      }
+      notification.success({
+        message: `${data?.order?.toUpperCase()} - ${data?.status}`,
+      });
+
+      dispatch(setRefreshData(data));
+    });
+
+    socket.on("error", (data) => {
+      console.log("Socket error", data);
+    });
+    socket.on("disconnect", (data) => {
+      console.log("=== Socket disconnected ===");
+      // setConnected(false);
+    });
+  }, []);
 
   // navigator.usb.getDevices().then((devices) => {
   //   console.log(`Total devices: ${devices.length}`);
