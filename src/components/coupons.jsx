@@ -119,6 +119,7 @@ function Coupons() {
     form.setFieldsValue({
       ...val,
       validUntil: moment(val?.validUntil, "YYYY-MM-DD"),
+      discountPercentage: Number(val?.discountPercentage),
     });
     setUpdateId(val._id);
 
@@ -141,11 +142,12 @@ function Coupons() {
   const handleStatus = async (status, value) => {
     try {
       const formData = {
-        code: value.coupon,
+        code: value.code,
         discountPercentage: value.discountPercentage,
         validUntil: value.validUntil,
         status: status ? "active" : "inactive",
       };
+      console.log({ formData });
 
       await axios.put(
         `${process.env.REACT_APP_URL}/updatecoupon/${value._id}`,
@@ -414,12 +416,13 @@ function Coupons() {
               {
                 required: true,
                 message: "Please enter discount",
-                min: 1,
               },
             ]}
           >
             <Input
               type="number"
+              name="discountPercentage"
+              id="discountPercentage"
               min={1}
               max={100}
               placeholder="discount..."
