@@ -100,6 +100,12 @@ export const items = [
         </NavLink>,
         "/product"
       ),
+      getItem(
+        <NavLink to="coupons" className="text-[10px] lg:text-[14px]">
+          Coupon
+        </NavLink>,
+        "/coupon"
+      ),
     ]
   ),
   getItem(
