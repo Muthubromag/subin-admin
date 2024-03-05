@@ -40,6 +40,7 @@ import LoadingPage from "./components/loadingPage";
 import Footer from "./Footer";
 import { socket } from "./socket";
 import Sound from "./assets/notify.mp3";
+import Coupons from "./components/coupons";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -48,6 +49,8 @@ const router = createBrowserRouter(
       <Route path="banner" element={<Banner />} />
       <Route path="user" element={<User />} />
       <Route path="category" element={<Category />} />
+
+      <Route path="coupons" element={<Coupons />} />
       <Route path="subcategory" element={<SubCategory />} />
       <Route path="wallet" element={<Wallet />} />
       <Route path="tablebooking" element={<TableBooking />} />
