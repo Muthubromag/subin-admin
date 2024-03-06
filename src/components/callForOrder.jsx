@@ -468,6 +468,7 @@ function CallForOrder() {
     setOpen(!open);
     form.setFieldsValue(val);
     setUpdateId(get(val, "_id"));
+    console.log("edit val", form.getFieldValue("orderedFood"));
   };
   //--
   const columns = [
@@ -1559,13 +1560,13 @@ function CallForOrder() {
                                 {
                                   required: true,
                                   message: "Please enter quantity",
-                                  min: 1,
                                 },
                               ]}
                               className="!pt-[30px]"
                             >
                               <Input
-                                id="qty"
+                                id="foodQuantity"
+                                name="foodQuantity"
                                 placeholder="Quantity"
                                 style={{ width: "100%" }}
                                 onChange={updateTotalAmount}
