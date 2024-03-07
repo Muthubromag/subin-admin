@@ -25,9 +25,12 @@ import EditNoteIcon from "@mui/icons-material/EditNote";
 import { useSelector } from "react-redux";
 import { Card } from "antd";
 import moment from "moment";
+import { generateTimeSlots } from "../utils/util";
 const { Meta } = Card;
 
+const { Option } = Select;
 function TableBooking() {
+  const slotsOptions = generateTimeSlots({ interval: 2 });
   const [open, setOpen] = useState(false);
   const [form] = Form.useForm();
   const [imageUrl, setImageUrl] = useState(null);
@@ -75,6 +78,10 @@ function TableBooking() {
 
   const handleFinish = async (value) => {
     try {
+      console.log(value);
+      const timeSlots = value?.timeSlots?.toString();
+      console.log(timeSlots, value);
+
       setLoadingButton(true);
       const data = new FormData();
       if (updateId) {
@@ -88,6 +95,7 @@ function TableBooking() {
       }
       data.append("tableNo", get(value, "tableNo", ""));
       data.append("seatsAvailable", get(value, "seatsAvailable", ""));
+      data.append("timeSlots", timeSlots?.toString());
       const url = updateId
         ? `${process.env.REACT_APP_URL}/updatetable/${updateId}`
         : `${process.env.REACT_APP_URL}/createtable`;
@@ -118,7 +126,10 @@ function TableBooking() {
     setUpdateId(values._id);
     setImageUrl(values.image);
     setCurrentImage(values.image);
-    form.setFieldsValue(values);
+    form.setFieldsValue({
+      ...values,
+      timeSlots: values?.timeSlots.map((td) => td?.time),
+    });
     setOpen(!open);
     setImageKey(values.table_image_key);
     setFileList([
@@ -207,9 +218,9 @@ function TableBooking() {
       },
     },
     {
-      title: <h1 className="text-[10px] md:text-[14px]">Booking Id</h1>,
-      dataIndex: "bookingId",
-      key: "bookingId",
+      title: <h1 className="text-[10px] md:text-[14px]">Dining Id</h1>,
+      dataIndex: "diningID",
+      key: "diningID",
       align: "center",
       render: (name, record) => {
         return (
@@ -217,7 +228,7 @@ function TableBooking() {
             className="text-md cursor-pointer"
             onClick={() => handleOpenFoods(record._id)}
           >
-            {record._id}
+            {name}
           </p>
         );
       },
@@ -242,14 +253,22 @@ function TableBooking() {
     },
     {
       title: <h1 className="text-[10px] md:text-[14px]">Date</h1>,
-      dataIndex: "timeSlot",
-      key: "timeSlot",
+      dataIndex: "bookingDate",
+      key: "bookingDate",
+      align: "center",
+      render: (time) => {
+        return <h1 className="text-md">{moment(time).format("DD-MM-YYYY")}</h1>;
+      },
+    },
+    {
+      title: <h1 className="text-[10px] md:text-[14px]">Slot</h1>,
+      dataIndex: "diningTime",
+      key: "diningTime",
       align: "center",
       render: (time) => {
         return <h1 className="text-md">{time}</h1>;
       },
     },
-
     {
       title: <h1 className="text-[10px] md:text-[14px]">Status</h1>,
       dataIndex: "booking",
@@ -324,9 +343,9 @@ function TableBooking() {
     },
 
     {
-      title: <h1 className="text-[10px] md:text-[14px]">Booking Id</h1>,
-      dataIndex: "bookingId",
-      key: "bookingId",
+      title: <h1 className="text-[10px] md:text-[14px]">Dining Id</h1>,
+      dataIndex: "diningID",
+      key: "diningID",
       align: "center",
       render: (name, record) => {
         return (
@@ -334,30 +353,48 @@ function TableBooking() {
             className="text-md cursor-pointer"
             onClick={() => handleOpenFoods(record._id)}
           >
-            {record._id}
+            {name}
           </p>
         );
       },
     },
-
     {
       title: <h1 className="text-[10px] md:text-[14px]">Date</h1>,
-      dataIndex: "updatedAt",
-      key: "updatedAt",
+      dataIndex: "bookingDate",
+      key: "bookingDate",
       align: "center",
-      render: (updateAt) => {
-        const formattedDateTime = new Date(updateAt).toLocaleString(undefined, {
-          day: "numeric",
-          month: "short",
-          year: "numeric",
-          hour: "numeric",
-          minute: "numeric",
-          second: "numeric",
-          hour12: true,
-        });
-        return <h1 className="text-md">{formattedDateTime}</h1>;
+      render: (time) => {
+        return <h1 className="text-md">{moment(time).format("DD-MM-YYYY")}</h1>;
       },
     },
+    {
+      title: <h1 className="text-[10px] md:text-[14px]">Slot</h1>,
+      dataIndex: "diningTime",
+      key: "diningTime",
+      align: "center",
+      render: (time) => {
+        return <h1 className="text-md">{time}</h1>;
+      },
+    },
+
+    // {
+    //   title: <h1 className="text-[10px] md:text-[14px]">Date</h1>,
+    //   dataIndex: "updatedAt",
+    //   key: "updatedAt",
+    //   align: "center",
+    //   render: (updateAt) => {
+    //     const formattedDateTime = new Date(updateAt).toLocaleString(undefined, {
+    //       day: "numeric",
+    //       month: "short",
+    //       year: "numeric",
+    //       hour: "numeric",
+    //       minute: "numeric",
+    //       second: "numeric",
+    //       hour12: true,
+    //     });
+    //     return <h1 className="text-md">{formattedDateTime}</h1>;
+    //   },
+    // },
 
     {
       title: <h1 className="text-[10px] md:text-[14px]">Status</h1>,
@@ -513,7 +550,9 @@ function TableBooking() {
                   <Table
                     dataSource={tableBookingData}
                     columns={
-                      get(user, "name", "")?.split("@")?.includes("frontdesk") ||
+                      get(user, "name", "")
+                        ?.split("@")
+                        ?.includes("frontdesk") ||
                       get(user, "name", "")?.split("@")?.includes("partner")
                         ? columnsOperations
                         : columns
@@ -586,6 +625,19 @@ function TableBooking() {
                 <div style={{ marginTop: 8 }}>Upload</div>
               </div>
             </Upload>
+          </Form.Item>
+          <Form.Item
+            label="Select TimeSlots"
+            name="timeSlots"
+            rules={[{ required: true, message: "Please select your slots!" }]}
+          >
+            <Select mode="multiple" placeholder="Select slots">
+              {slotsOptions?.map((td, i) => {
+                return <Option value={td?.time}>{td?.time}</Option>;
+              })}
+
+              {/* Add more Option components for additional interests */}
+            </Select>
           </Form.Item>
           <Form.Item>
             <div className="flex gap-3 items-center justify-end">
