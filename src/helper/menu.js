@@ -13,6 +13,7 @@ import TableRestaurantIcon from "@mui/icons-material/TableRestaurant";
 import ShoppingCartCheckoutIcon from "@mui/icons-material/ShoppingCartCheckout";
 import CreditScoreIcon from "@mui/icons-material/CreditScore";
 import SettingsIcon from "@mui/icons-material/Settings";
+import Discount from "@mui/icons-material/Discount";
 
 function getItem(label, key, icon, children, type) {
   return {
@@ -100,12 +101,6 @@ export const items = [
         </NavLink>,
         "/product"
       ),
-      getItem(
-        <NavLink to="coupons" className="text-[10px] lg:text-[14px]">
-          Coupon
-        </NavLink>,
-        "/coupon"
-      ),
     ]
   ),
   getItem(
@@ -122,6 +117,13 @@ export const items = [
   //   "/wallet",
   //   <WalletIcon className="!text-[17px] !text-[#CD5C08]" />
   // ),
+  getItem(
+    <NavLink to="coupons" className="text-[10px] lg:text-[14px]">
+      Coupon
+    </NavLink>,
+    "/coupon",
+    <Discount className="!text-[17px] !text-[#CD5C08]" />
+  ),
   getItem(
     <NavLink to="feedback" className="text-[10px] lg:text-[14px]">
       Feedback

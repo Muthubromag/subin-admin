@@ -34,6 +34,7 @@ function SubCategory() {
   const [form] = Form.useForm();
   const [imageUrl, setImageUrl] = useState(null);
   const [data, setData] = useState([]);
+  const [filterData, setFilteredData] = useState([]);
   const [updateId, setUpdateId] = useState("");
   const [loading, setLoading] = useState(false);
   const [isAvailable, setIsAvailable] = useState(false);
@@ -55,8 +56,8 @@ function SubCategory() {
         `${process.env.REACT_APP_URL}/getsubcategory`
       );
       setData(get(result1, "data.data", []));
+      setFilteredData(get(result1, "data.data", []));
     } catch (e) {
-      
     } finally {
       setLoading(false);
     }
@@ -69,7 +70,31 @@ function SubCategory() {
   const handleChange = ({ fileList }) => {
     setFileList(fileList);
   };
+  const handleSearch = async (val) => {
+    console.log({ val });
+    if (val) {
+      const filter = data?.filter((td) =>
+        td?.name?.toLowerCase()?.includes(val?.toLowerCase())
+      );
 
+      setFilteredData(filter);
+    } else {
+      setFilteredData(data);
+    }
+  };
+  const handleSearchKeyPress = async (e) => {
+    const val = e.target.value;
+    console.log({ val });
+    if (val) {
+      const filter = data?.filter((td) =>
+        td?.name?.toLowerCase()?.includes(val?.toLowerCase())
+      );
+
+      setFilteredData(filter);
+    } else {
+      setFilteredData(data);
+    }
+  };
   const handleFinish = async (value) => {
     try {
       setLoadingButton(true);
@@ -114,7 +139,7 @@ function SubCategory() {
       setFileList([]);
       setIsAvailable(false);
     } catch (err) {
-      notification.error({message:"Something went wrong"})
+      notification.error({ message: "Something went wrong" });
       if (get(err, "response.data")?.split(" ").includes("limit")) {
         Modal.warning({
           title: get(err, "response.data"),
@@ -186,7 +211,6 @@ function SubCategory() {
   };
 
   const handleStatus = async (status, value) => {
-  
     try {
       const formData = {
         name: value.name,
@@ -203,7 +227,7 @@ function SubCategory() {
       fetchData();
       notification.success({ message: "Status updated successfully" });
     } catch (err) {
-      notification.error({message:"Something went wrong"})
+      notification.error({ message: "Something went wrong" });
     }
   };
 
@@ -417,13 +441,24 @@ function SubCategory() {
           key="1"
         >
           <Spin spinning={loading}>
+            <div className="my-2">
+              <Input.Search
+                placeholder="search cusines"
+                onSearch={handleSearch}
+                onKeyDown={handleSearchKeyPress}
+                style={{
+                  width: "100%",
+                }}
+                className="custom-search"
+              />
+            </div>
             <Table
               columns={
                 get(user, "name")?.split("@")?.includes("partner")
                   ? partnerColumns
                   : columns
               }
-              dataSource={data}
+              dataSource={filterData}
               size="middle"
               key="id"
               pagination={{
@@ -515,9 +550,7 @@ function SubCategory() {
             <Upload
               onChange={handleChange}
               fileList={fileList}
-              onPreview={(e) => {
-               
-              }}
+              onPreview={(e) => {}}
               maxCount={1}
               listType="picture-card"
               multiple={false}
