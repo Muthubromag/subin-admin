@@ -28,6 +28,7 @@ function Category() {
   const [open, setOpen] = useState(false);
   const [imageUrl, setImageUrl] = useState(null);
   const [data, setData] = useState([]);
+  const [filterData, setFilteredData] = useState([]);
   const { Panel } = Collapse;
   const [form] = Form.useForm();
   const [updateId, setUpdateId] = useState("");
@@ -48,6 +49,7 @@ function Category() {
         `${process.env.REACT_APP_URL}/getcategory`
       );
       setData(get(result, "data.data", []));
+      setFilteredData(get(result, "data.data", []));
     } catch (e) {
     } finally {
       setLoading(false);
@@ -202,6 +204,32 @@ function Category() {
     }
   };
 
+  const handleSearch = async (val) => {
+    console.log({ val });
+    if (val) {
+      const filter = data?.filter((td) =>
+        td?.name?.toLowerCase()?.includes(val?.toLowerCase())
+      );
+
+      setFilteredData(filter);
+    } else {
+      setFilteredData(data);
+    }
+  };
+  const handleSearchKeyPress = async (e) => {
+    const val = e.target.value;
+    console.log({ val });
+    if (val) {
+      const filter = data?.filter((td) =>
+        td?.name?.toLowerCase()?.includes(val?.toLowerCase())
+      );
+
+      setFilteredData(filter);
+    } else {
+      setFilteredData(data);
+    }
+  };
+
   const columns = [
     {
       title: <h1 className="text-[10px] md:text-[14px]">S.No</h1>,
@@ -238,6 +266,8 @@ function Category() {
       render: (name) => {
         return <h1 className="text-[10px] md:text-[14px]">{name}</h1>;
       },
+
+      filterSearch: true,
     },
     {
       title: <h1 className="text-[10px] md:text-[14px]">Status</h1>,
@@ -378,6 +408,17 @@ function Category() {
               <div className="flex flex-col gap-y-2">
                 <div className="p-2 ">
                   <Spin spinning={loading}>
+                    <div className="my-2">
+                      <Input.Search
+                        placeholder="search cusines"
+                        onSearch={handleSearch}
+                        onKeyDown={handleSearchKeyPress}
+                        style={{
+                          width: "100%",
+                        }}
+                        className="custom-search"
+                      />
+                    </div>
                     <Table
                       key="id"
                       size="middle"
@@ -393,7 +434,7 @@ function Category() {
                           ? partnerColumns
                           : columns
                       }
-                      dataSource={data}
+                      dataSource={filterData}
                     />
                   </Spin>
                 </div>

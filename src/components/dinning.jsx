@@ -18,6 +18,7 @@ import moment from "moment";
 function Dinning() {
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState([]);
+  const refresher = useSelector((state) => state.user.refreshData);
   const [previewData, setPreviewData] = useState(null);
   const [kdsOrders, setKdsOrders] = useState([]);
   const user = useSelector((state) => state.user.user);
@@ -29,9 +30,9 @@ function Dinning() {
   const [currentTime, setCurrentTime] = useState(new Date());
   const [form] = Form.useForm();
 
-  const fetchData = async () => {
+  const fetchData = async (load = true) => {
     try {
-      setLoading(true);
+      setLoading(load);
       const result = await axios.get(
         `${process.env.REACT_APP_URL}/getdinningorder`
       );
@@ -46,6 +47,12 @@ function Dinning() {
   useEffect(() => {
     fetchData();
   }, []);
+
+  useEffect(() => {
+    if (refresher?.order === "dining") {
+      fetchData(false);
+    }
+  }, [refresher]);
 
   useEffect(() => {
     setKdsOrders(
