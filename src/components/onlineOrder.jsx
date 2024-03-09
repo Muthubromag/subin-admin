@@ -185,6 +185,7 @@ function OnlineOrder() {
         `${process.env.REACT_APP_URL}/create_delivery`,
         deliveryDatas
       );
+      return;
     } else if (Status === "Order ready to pack") {
       const now = new Date();
       const currentHours = ("0" + now.getHours()).slice(-2) % 12;
@@ -201,13 +202,10 @@ function OnlineOrder() {
       );
       fetchData();
       notification.success({ message: "TimeSlot Added" });
-    }
-
-    if (Status === "Order ready to pick") {
+    } else if (Status === "Order ready to pick") {
       setOpenInventory(!openInventory);
       setInventoryUpdateId(values._id);
     }
-
     try {
       const formData = {
         status: Status,
@@ -227,7 +225,9 @@ function OnlineOrder() {
       );
       notification.success({ message: "order status updated successfully" });
       fetchData();
-    } catch (err) {}
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   const handleInventory = async (values) => {

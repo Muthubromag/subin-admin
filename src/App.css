@@ -133,3 +133,52 @@ body {
 .custom-search .anticon-search {
   color: orange;  
 }
+
+.bill_container{
+  width: 80mm;
+  border: 1px solid;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  overflow-x: hidden;
+  gap: 10px;
+}
+
+.bill-row{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap:2px;
+  width: 100%;
+}
+
+.bill-margin{
+  margin: 5px 0px;
+}
+
+.bill_table{
+  width: 100%;
+}
+.bill_body1{
+  width: 70%;
+
+  padding: 2px;
+  text-align: left;
+}
+
+.bill_body2{
+  width: 30%;
+
+  padding: 2px;
+  text-align: right;
+}
+
+.bill_center{
+  text-align: center;
+}
+.bill_head{
+  font-weight: bold;
+  margin: 5px;
+}

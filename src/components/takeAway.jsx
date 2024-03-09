@@ -89,6 +89,7 @@ function TakeAway() {
       const formattedTime = `${currentHours}:${currentMinutes}:${currentSeconds}`;
       const formData = {
         timePicked: val,
+        status: "Order ready to preparing",
         startTime: formattedTime,
         preparingStart: moment().format("YYYY-MM-DD HH:mm:ss"),
         preparingEnd: moment()
@@ -100,6 +101,16 @@ function TakeAway() {
         `${process.env.REACT_APP_URL}/updatetakeaway/${timeOrders._id}`,
         formData
       );
+      const formData2 = {
+        heading: "Order ready to preparing",
+        field: "Takeaway order",
+        status: `${timeOrders.orderId}'S  Order ready to preparing`,
+      };
+      await axios.post(
+        `${process.env.REACT_APP_URL}/createnotification`,
+        formData2
+      );
+
       notification.success({ message: "order status updated successfully" });
       fetchData();
       setTimeSlot(!timeSlot);
@@ -113,6 +124,7 @@ function TakeAway() {
     if (Status === "Order ready to preparing") {
       setTimeSlot(!timeSlot);
       setTimeOrders(Id);
+      return;
     } else if (Status === "Order ready to pack") {
       const now = new Date();
       const currentHours = ("0" + now.getHours()).slice(-2) % 12;
