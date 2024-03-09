@@ -7,13 +7,14 @@ import axios from "axios";
 import { useReactToPrint } from "react-to-print";
 
 import { ComponentToPrint } from "./print";
+import { useSelector } from "react-redux";
 
 const PrinterSelection = () => {
   const [selectedConnection, setSelectedConnection] = useState("usb"); // Default to USB
   const { name, id } = useParams();
   const [filteredData, setFilteredData] = useState([]);
   const [data, setData] = useState([]);
-
+  const user = useSelector((state) => state.user.user);
   const [selectedBill, setSelectBill] = useState("kot");
   const [restaurant, setRestaturannt] = useState("kot");
   const componentRef = useRef();
@@ -28,7 +29,28 @@ const PrinterSelection = () => {
       );
 
       setData(get(result, "data.data", []));
+    } else if (name === "online") {
+      const result = await axios.get(
+        `${process.env.REACT_APP_URL}/getonlineorder`
+      );
+
+      setData(get(result, "data.data", []));
+    } else if (name === "callorder") {
+      const result = await axios.get(
+        `${process.env.REACT_APP_URL}/getcallorder`
+      );
+
+      setData(get(result, "data.data", []));
+    } else if (name === "dining") {
+      const result = await axios.get(
+        `${process.env.REACT_APP_URL}/getdinningorder`
+      );
+
+      setData(get(result, "data.data", []));
+    } else {
+      console.log("No type found");
     }
+
     const result = await axios.get(`${process.env.REACT_APP_URL}/get_footer`);
     setRestaturannt(get(result, "data.data", []));
   };
@@ -182,31 +204,36 @@ const PrinterSelection = () => {
        
       </div> */}
 
-      <div className="flex flex-col">
-        <div>
+      <div className="flex flex-col gap-2 mb-3">
+        <div className="flex flex-row gap-3">
           <label>
             <input
               type="radio"
               value="kot"
               checked={selectedBill === "kot"}
               onChange={handleBillChange}
+              className="me-1"
             />
             KOT
           </label>
-          <label>
-            <input
-              type="radio"
-              value="bill"
-              checked={selectedBill === "bill"}
-              onChange={handleBillChange}
-            />
-            Bill
-          </label>
+          {user?.name?.split("@")?.includes("admin") ? (
+            <label>
+              <input
+                type="radio"
+                value="bill"
+                checked={selectedBill === "bill"}
+                onChange={handleBillChange}
+                className="me-1"
+              />
+              Bill
+            </label>
+          ) : null}
         </div>
         <ComponentToPrint
           ref={componentRef}
           data={filteredData}
           footer={restaurant?.[0]}
+          type={selectedBill}
         />
         <button onClick={handlePrintNew} className="bg-green-500">
           Print Bill

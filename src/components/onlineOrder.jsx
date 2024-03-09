@@ -16,10 +16,12 @@ import { get, isEmpty } from "lodash";
 import { useSelector } from "react-redux";
 import { MinusCircleOutlined, PlusOutlined } from "@ant-design/icons";
 import moment from "moment";
+import { useNavigate } from "react-router-dom";
 
 function OnlineOrder() {
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState([]);
+  const navigate = useNavigate();
   const [previewData, setPreviewData] = useState(null);
   const user = useSelector((state) => state.user.user);
   const refresher = useSelector((state) => state.user.refreshData);
@@ -388,6 +390,25 @@ function OnlineOrder() {
       },
     },
     {
+      title: <h1 className="text-[10px] md:text-[14px]">Bill</h1>,
+      align: "center",
+      dataIndex: "_id",
+      render: (name) => {
+        return (
+          <>
+            <div
+              className="lg:w-[10vw] flex flex-col"
+              onClick={() => {
+                navigate(`/printer/${name}/online`);
+              }}
+            >
+              Print Bill
+            </div>
+          </>
+        );
+      },
+    },
+    {
       title: <h1 className="text-[10px] md:text-[14px]">Payment</h1>,
       dataIndex: "payment_mode",
       key: "payment_mode",
@@ -559,6 +580,25 @@ function OnlineOrder() {
       align: "center",
       render: (name) => {
         return <h1 className="text-[10px] md:text-[14px]">{name}</h1>;
+      },
+    },
+    {
+      title: <h1 className="text-[10px] md:text-[14px]">Bill</h1>,
+      align: "center",
+      dataIndex: "_id",
+      render: (name) => {
+        return (
+          <>
+            <div
+              className="lg:w-[10vw] flex flex-col"
+              onClick={() => {
+                navigate(`/printer/${name}/online`);
+              }}
+            >
+              Print Bill
+            </div>
+          </>
+        );
       },
     },
     {

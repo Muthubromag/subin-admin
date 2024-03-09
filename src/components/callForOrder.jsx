@@ -24,6 +24,7 @@ import { MinusCircleOutlined, PlusOutlined } from "@ant-design/icons";
 import moment from "moment";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import { v4 as uuidv4 } from "uuid";
+import { useNavigate } from "react-router-dom";
 // import { initializeSocket } from "../helper/socketService";
 import "../assets/css/callorder.css";
 function CallForOrder() {
@@ -52,6 +53,7 @@ function CallForOrder() {
   const [filteredInventoryCategory, setFilteredInventoryCategory] = useState(
     []
   );
+  const navigate = useNavigate();
 
   const [currentTime, setCurrentTime] = useState(new Date());
   const [timeForm] = Form.useForm();
@@ -597,6 +599,25 @@ function CallForOrder() {
       },
     },
     {
+      title: <h1 className="text-[10px] md:text-[14px]">Bill</h1>,
+      align: "center",
+      dataIndex: "_id",
+      render: (name) => {
+        return (
+          <>
+            <div
+              className="lg:w-[10vw] flex flex-col"
+              onClick={() => {
+                navigate(`/printer/${name}/callorder`);
+              }}
+            >
+              Print Bill
+            </div>
+          </>
+        );
+      },
+    },
+    {
       title: <h1 className="text-[10px] md:text-[14px]">Delivery Status</h1>,
       dataIndex: "deliveryStatus",
       key: "deliveryStatus",
@@ -785,6 +806,25 @@ function CallForOrder() {
       align: "center",
       render: (name) => {
         return <h1 className="text-[10px] md:text-[14px]">{name}</h1>;
+      },
+    },
+    {
+      title: <h1 className="text-[10px] md:text-[14px]">Bill</h1>,
+      align: "center",
+      dataIndex: "_id",
+      render: (name) => {
+        return (
+          <>
+            <div
+              className="lg:w-[10vw] flex flex-col"
+              onClick={() => {
+                navigate(`/printer/${name}/callorder`);
+              }}
+            >
+              Print Bill
+            </div>
+          </>
+        );
       },
     },
     {
