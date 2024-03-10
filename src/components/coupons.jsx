@@ -41,6 +41,7 @@ function Coupons() {
   const [active, setActive] = useState("active");
   const [imageKey, setImageKey] = useState("");
   const [loadingButton, setLoadingButton] = useState(false);
+  const [ctype, setCType] = useState(false);
   const user = useSelector((state) => state.user.user);
 
   const fetchData = async () => {
@@ -70,6 +71,7 @@ function Coupons() {
         discountPercentage: value?.discountPercentage,
         validUntil: value?.validUntil,
         status: value?.status,
+        couponType: ctype,
       };
 
       const url = updateId
@@ -92,6 +94,7 @@ function Coupons() {
       setOpen(!open);
 
       setIsAvailable(false);
+      setCType("coupon");
     } catch (err) {
       notification.error({ message: "Something went wrong" });
       if (get(err, "response.data")?.split(" ").includes("exists")) {
@@ -122,7 +125,7 @@ function Coupons() {
       discountPercentage: Number(val?.discountPercentage),
     });
     setUpdateId(val._id);
-
+    setCType(val?.couponType);
     setIsAvailable(val?.status === "active");
   };
 
@@ -195,6 +198,15 @@ function Coupons() {
       align: "center",
       render: (name) => {
         return <h1 className="text-[10px] md:text-[14px]">{name}%</h1>;
+      },
+    },
+    {
+      title: <h1 className="text-[10px] md:text-[14px]">Type</h1>,
+      dataIndex: "couponType",
+      key: "couponType",
+      align: "center",
+      render: (name) => {
+        return <h1 className="text-[10px] md:text-[14px]">{name}</h1>;
       },
     },
     {
@@ -429,15 +441,30 @@ function Coupons() {
               size="large"
             />
           </Form.Item>
-          <Form.Item label="Coupon Availability" name="status" className="mb-0">
-            <Switch
-              checked={isAvailable}
-              onChange={(checked) => setIsAvailable(checked)}
-              style={{
-                backgroundColor: isAvailable ? "#1890ff" : "#ccc",
-              }}
-            />
-          </Form.Item>
+          <div className="flex flex-row items-center justify-around mb-2">
+            <Form.Item
+              label="Coupon Availability"
+              name="status"
+              className="mb-0"
+            >
+              <Switch
+                checked={isAvailable}
+                onChange={(checked) => setIsAvailable(checked)}
+                style={{
+                  backgroundColor: isAvailable ? "#1890ff" : "#ccc",
+                }}
+              />
+            </Form.Item>
+            <Form.Item label="isCode" name="couponType" className="mb-0">
+              <Switch
+                checked={ctype === "code"}
+                onChange={(checked) => setCType(checked ? "code" : "coupon")}
+                style={{
+                  backgroundColor: ctype === "code" ? "#1890ff" : "#ccc",
+                }}
+              />
+            </Form.Item>
+          </div>
           <Form.Item
             name="validUntil"
             label="Expiry Date"
