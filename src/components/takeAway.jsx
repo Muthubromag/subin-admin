@@ -544,6 +544,25 @@ function TakeAway() {
       },
     },
     {
+      title: <h1 className="text-[10px] md:text-[14px]">Bill</h1>,
+      align: "center",
+      dataIndex: "_id",
+      render: (name) => {
+        return (
+          <>
+            <div
+              className="lg:w-[10vw] flex flex-col"
+              onClick={() => {
+                navigate(`/printer/${name}/takeaway`);
+              }}
+            >
+              Print Bill
+            </div>
+          </>
+        );
+      },
+    },
+    {
       title: <h1 className="text-[10px] md:text-[14px]">Payment mode</h1>,
       dataIndex: "payment_mode",
       key: "payment_mode",

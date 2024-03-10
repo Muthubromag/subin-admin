@@ -134,6 +134,8 @@ body {
   color: orange;  
 }
 
+/***********************Bill**/
+
 .bill_container{
   width: 80mm;
   border: 1px solid;
@@ -158,27 +160,72 @@ body {
   margin: 5px 0px;
 }
 
+.bill_underline{
+  border-bottom: 0.5px solid #fff;
+}
+.bill_padding{
+ padding: 2px 0px;
+}
 .bill_table{
   width: 100%;
+  border: 1px solid;
+  padding: 1px !important;
 }
 .bill_body1{
   width: 70%;
 
-  padding: 2px;
-  text-align: left;
+  padding: 5px;
+ 
 }
 
 .bill_body2{
   width: 30%;
 
-  padding: 2px;
-  text-align: right;
+  padding: 5px;
+ 
+}
+
+.body_padding{
+  padding: 5px;
 }
 
 .bill_center{
   text-align: center;
 }
+.bill_right{
+  text-align: right;
+}
+.bill_left{
+  text-align: left;
+}
 .bill_head{
   font-weight: bold;
   margin: 5px;
 }
+
+.bill-50{
+  width: 50%;
+ 
+}
+.bill-20{
+  width: 20%;
+ 
+}
+.bill-30{
+  width: 30%;
+ 
+}
+.bill_container
+.item_text{
+  font-size: 13px;
+}
+
+.bill_instruction{
+  font-size: 12px;
+}
+
+.item_text_header{
+  font-size: 15px;
+}
+
+/***********************Bill**/

@@ -14,8 +14,10 @@ import axios from "axios";
 import { get } from "lodash";
 import { useSelector } from "react-redux";
 import moment from "moment";
+import { useNavigate } from "react-router-dom";
 
 function Dinning() {
+  const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState([]);
   const refresher = useSelector((state) => state.user.refreshData);
@@ -283,6 +285,25 @@ function Dinning() {
       },
     },
     {
+      title: <h1 className="text-[10px] md:text-[14px]">Bill</h1>,
+      align: "center",
+      dataIndex: "_id",
+      render: (name) => {
+        return (
+          <>
+            <div
+              className="lg:w-[20vw] flex flex-col"
+              onClick={() => {
+                navigate(`/printer/${name}/dining`);
+              }}
+            >
+              Print Bill
+            </div>
+          </>
+        );
+      },
+    },
+    {
       title: <h1 className="text-[10px] md:text-[14px]">Time</h1>,
       dataIndex: "createdAt",
       key: "createdAt",
@@ -450,6 +471,25 @@ function Dinning() {
       align: "center",
       render: (name) => {
         return <h1 className="text-[10px] md:text-[14px]">{name}</h1>;
+      },
+    },
+    {
+      title: <h1 className="text-[10px] md:text-[14px]">Bill</h1>,
+      align: "center",
+      dataIndex: "_id",
+      render: (name) => {
+        return (
+          <>
+            <div
+              className="lg:w-[20vw] flex flex-col"
+              onClick={() => {
+                navigate(`/printer/${name}/dining`);
+              }}
+            >
+              Print Bill
+            </div>
+          </>
+        );
       },
     },
     {
