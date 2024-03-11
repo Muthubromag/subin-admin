@@ -229,3 +229,9 @@ body {
 }
 
 /***********************Bill**/
+
+.policy_editor .ql-container {
+  height: 600px;
+  overflow: hidden;
+  overflow-y: auto;
+}
