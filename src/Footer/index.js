@@ -6,16 +6,19 @@ import ThemeSettings from "./themeSettings";
 import axios from "axios";
 import { get } from "lodash";
 import SocialMediaSettings from "./socialMediaSettings";
-import WhoWeAre from "./whoWeAre";
+
+import PolicyTerms from "./policy";
 
 function Footer() {
   const [data, setData] = useState([]);
+  const [policies, setPolicies] = useState([]);
   const [socialMediaData, setSocialMediaData] = useState([]);
 
   const fetchData = async () => {
     try {
       const result = await axios.get(`${process.env.REACT_APP_URL}/get_footer`);
       setData(get(result, "data.data"));
+      setPolicies(get(result, "data.policies"));
       const setSocialMediaDatas = await axios.get(
         `${process.env.REACT_APP_URL}/get_socialmedia`
       );
@@ -46,7 +49,34 @@ function Footer() {
     {
       key: "4",
       label: "Who We Are",
-      children: <WhoWeAre data={data} fetchData={fetchData} />,
+      children: (
+        <PolicyTerms data={policies} fetchData={fetchData} type={"whoweare"} />
+      ),
+    },
+    {
+      key: "5",
+      label: "Terms and Conditions",
+      children: (
+        <PolicyTerms
+          data={policies}
+          fetchData={fetchData}
+          type={"termsandcondition"}
+        />
+      ),
+    },
+    {
+      key: "6",
+      label: "Privacy Policy",
+      children: (
+        <PolicyTerms data={policies} fetchData={fetchData} type={"privacy"} />
+      ),
+    },
+    {
+      key: "7",
+      label: "Refund and Cancellation",
+      children: (
+        <PolicyTerms data={policies} fetchData={fetchData} type={"refund"} />
+      ),
     },
   ];
 
