@@ -14,7 +14,7 @@ import ShoppingCartCheckoutIcon from "@mui/icons-material/ShoppingCartCheckout";
 import CreditScoreIcon from "@mui/icons-material/CreditScore";
 import SettingsIcon from "@mui/icons-material/Settings";
 import Discount from "@mui/icons-material/Discount";
-
+import PointOfSaleIcon from "@mui/icons-material/PointOfSale";
 function getItem(label, key, icon, children, type) {
   return {
     key,
@@ -123,6 +123,13 @@ export const items = [
     </NavLink>,
     "/coupon",
     <Discount className="!text-[17px] !text-[#CD5C08]" />
+  ),
+  getItem(
+    <NavLink to="charges" className="text-[10px] lg:text-[14px]">
+      Charges
+    </NavLink>,
+    "/charges",
+    <PointOfSaleIcon className="!text-[17px] !text-[#CD5C08]" />
   ),
   getItem(
     <NavLink to="feedback" className="text-[10px] lg:text-[14px]">

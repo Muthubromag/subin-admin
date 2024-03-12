@@ -41,6 +41,7 @@ import Footer from "./Footer";
 import { socket } from "./socket";
 import Sound from "./assets/notify.mp3";
 import Coupons from "./components/coupons";
+import Charges from "./components/Charges";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -49,7 +50,7 @@ const router = createBrowserRouter(
       <Route path="banner" element={<Banner />} />
       <Route path="user" element={<User />} />
       <Route path="category" element={<Category />} />
-
+      <Route path="charges" element={<Charges />} />
       <Route path="coupons" element={<Coupons />} />
       <Route path="subcategory" element={<SubCategory />} />
       <Route path="wallet" element={<Wallet />} />
