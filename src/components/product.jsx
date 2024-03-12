@@ -53,8 +53,33 @@ function Product() {
   const [fileList, setFileList] = useState([]);
   const [loadingButton, setLoadingButton] = useState(false);
   const [dummy, setDummy] = useState(false);
+  const [filterData, setFilteredData] = useState([]);
   const user = useSelector((state) => state.user.user);
+  const handleSearchKeyPress = async (e) => {
+    const val = e.target.value;
+    console.log({ val });
+    if (val) {
+      const filter = data?.filter((td) =>
+        td?.name?.toLowerCase()?.includes(val?.toLowerCase())
+      );
 
+      setFilteredData(filter);
+    } else {
+      setFilteredData(data);
+    }
+  };
+  const handleSearch = async (val) => {
+    console.log({ val });
+    if (val) {
+      const filter = data?.filter((td) =>
+        td?.name?.toLowerCase()?.includes(val?.toLowerCase())
+      );
+
+      setFilteredData(filter);
+    } else {
+      setFilteredData(data);
+    }
+  };
   const [types, setTypes] = useState([
     { type: "", price: "" },
     { type: "", price: "" },
@@ -105,6 +130,7 @@ function Product() {
       setCategory(get(result, "data.data", []));
       setSubCategory(get(result1, "data.data", []));
       setData(get(result2, "data.data", []));
+      setFilteredData(get(result2, "data.data", []));
     } catch (e) {
     } finally {
       setLoading(false);
@@ -713,6 +739,17 @@ function Product() {
             key="1"
           >
             <Spin spinning={loading}>
+              <div className="my-2">
+                <Input.Search
+                  placeholder="search menu"
+                  onSearch={handleSearch}
+                  onKeyDown={handleSearchKeyPress}
+                  style={{
+                    width: "100%",
+                  }}
+                  className="custom-search"
+                />
+              </div>
               <Table
                 key="id"
                 size="middle"
@@ -728,7 +765,7 @@ function Product() {
                     ? partnerColumns
                     : columns
                 }
-                dataSource={data}
+                dataSource={filterData}
                 scroll={{ x: 400 }}
               />
             </Spin>

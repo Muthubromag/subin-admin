@@ -36,11 +36,11 @@ function Footer() {
       label: "Footer Settings",
       children: <FooterSettings data={data} fetchData={fetchData} />,
     },
-    // {
-    //   key: "2",
-    //   label: "Social media settings",
-    //   children: <SocialMediaSettings data={data} SocialfetchData={fetchData} />,
-    // },
+    {
+      key: "2",
+      label: "Social media settings",
+      children: <SocialMediaSettings data={data} SocialfetchData={fetchData} />,
+    },
     // {
     //   key: "3",
     //   label: "Theme Settings",
