@@ -9,9 +9,12 @@ import { items } from "../helper/menu";
 import { Drawer, Menu } from "antd";
 import { useLocation } from "react-router-dom";
 import LoadingPage from "../components/loadingPage";
+<<<<<<< HEAD
 import Cookies from "js-cookie";
 import { useNavigate } from "react-router-dom";
 import { CloseOutlined, LoginOutlined } from "@ant-design/icons";
+=======
+>>>>>>> 15bb6aa291c695bf3930d93591184fd6c6f333cc
 import menu from "../assets/menu.png";
 
 function Sidenavbar() {
@@ -120,7 +123,13 @@ function Sidenavbar() {
               setModalOpen(!modalOpen);
             }}
           >
+<<<<<<< HEAD
             <img src={menu} alt="menu" />
+=======
+
+            <img src={menu} alt="menu" />
+
+>>>>>>> 15bb6aa291c695bf3930d93591184fd6c6f333cc
           </div>
           <div className="sm:overflow-y-scroll hidden md:block">
             <Menu
