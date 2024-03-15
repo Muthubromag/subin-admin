@@ -62,7 +62,7 @@ function OnlineOrder() {
     }
   };
 
-  console.log("datat", data);
+  // console.log("datat", data);
 
   useEffect(() => {
     fetchData();
@@ -1099,11 +1099,11 @@ function OnlineOrder() {
                 minutes < 10 ? "0" + minutes : minutes
               }`;
 
-              const mobilePreviewModal = (orderedFood, instructions) => {
+              const mobilePreviewModal = (orderedFood) => {
                 setPreviewData(!previewData);
-                // setFoodInformationList(orderedFood);
-                // setSelectedProduct(instructions);
-                // console.log(instructions, "i am insstruu");
+                console.log(orderedFood[0]?.foodName, "orderedFood");
+                setFoodInformationList(orderedFood);
+                setSelectedProduct(orderedFood);
               };
               return (
                 <OrdersCard
@@ -1119,12 +1119,7 @@ function OnlineOrder() {
                     " " +
                     item?.location[0]?.landMark
                   }
-                  preview={() =>
-                    mobilePreviewModal(
-                      item?.orderedFood[0]?.foodName,
-                      item?.orderedFood[0]?.foodQuantity
-                    )
-                  }
+                  preview={() => mobilePreviewModal(item?.orderedFood)}
                 />
               );
             })}
