@@ -91,6 +91,7 @@ function Coupons() {
       data.append("discount_type", value.discount_type);
       data.append("discount", value.discount);
       data.append("status", value.status);
+      data.append("deliveryFree", value.deliveryFree);
       const url = updateId
         ? `${process.env.REACT_APP_URL}/updatecoupon/${updateId}`
         : `${process.env.REACT_APP_URL}/createcoupon`;
