@@ -58,7 +58,6 @@ function Dashboard() {
   const [pendingOrders, setPendingOrders] = useState("");
   const [cancelledOrders, setCancelledOrders] = useState("");
   const [scratchCards, setScratchCards] = useState([]);
-  
 
   const fetchData = async () => {
     try {
@@ -92,7 +91,6 @@ function Dashboard() {
       setTakeAway(get(take, "data.data", []));
       setTable(get(table, "data.data", []));
     } catch (e) {
-      
     } finally {
       setLoading(false);
     }
@@ -112,66 +110,68 @@ function Dashboard() {
     // total sales
     const totalDeliveredOnlineOrder = onlineOrder
       .filter((res) => {
-        return get(res,"status") === "Delivered";
+        return get(res, "status") === "Delivered";
       })
-      .reduce((total, order) => total + Number(get(order,"billAmount")), 0);
+      .reduce((total, order) => total + Number(get(order, "billAmount")), 0);
 
     const totalDeliveredCallForOrder = callforOrder
       .filter((res) => {
-        return get(res,"status") === "Delivered" || get(res,"status") === "Picked";
+        return (
+          get(res, "status") === "Delivered" || get(res, "status") === "Picked"
+        );
       })
-      .reduce((total, order) => total + Number(get(order,"billAmount")), 0);
+      .reduce((total, order) => total + Number(get(order, "billAmount")), 0);
 
     const totalDeliveredDinningOrder = dinning
       .filter((res) => {
-        return get(res,"status") === "Order served";
+        return get(res, "status") === "Order served";
       })
-      .reduce((total, order) => total + Number(get(order,"billAmount")), 0);
+      .reduce((total, order) => total + Number(get(order, "billAmount")), 0);
 
     const totalDeliveredTakeOrder = takeAway
       .filter((res) => {
-        return get(res,"status") === "Picked";
+        return get(res, "status") === "Picked";
       })
-      .reduce((total, order) => total + Number(get(order,"billAmount")), 0);
+      .reduce((total, order) => total + Number(get(order, "billAmount")), 0);
 
     // yesterday sales
     const yesterday = moment().subtract(1, "day").startOf("day");
     const totalDeliveredYesterdayOnlineOrder = onlineOrder
       .filter((res) => {
         return (
-          get(res,"status") === "Delivered" &&
+          get(res, "status") === "Delivered" &&
           moment(res.createdAt).isSame(yesterday, "day")
         );
       })
-      .reduce((total, order) => total + Number(get(order,"billAmount")), 0);
+      .reduce((total, order) => total + Number(get(order, "billAmount")), 0);
 
     const totalDeliveredYesterdayCallForOrder = callforOrder
       .filter((res) => {
         return (
-          get(res,"status") === "Delivered" ||
-          (get(res,"status") === "Picked" &&
+          get(res, "status") === "Delivered" ||
+          (get(res, "status") === "Picked" &&
             moment(res.createdAt).isSame(yesterday, "day"))
         );
       })
-      .reduce((total, order) => total + Number(get(order,"billAmount")), 0);
+      .reduce((total, order) => total + Number(get(order, "billAmount")), 0);
 
     const totalDeliveredYesterdayDinningOrder = dinning
       .filter((res) => {
         return (
-          get(res,"status") === "Order served" &&
+          get(res, "status") === "Order served" &&
           moment(res.createdAt).isSame(yesterday, "day")
         );
       })
-      .reduce((total, order) => total + Number(get(order,"billAmount")), 0);
+      .reduce((total, order) => total + Number(get(order, "billAmount")), 0);
 
     const totalDeliveredYesterdayTakeOrder = takeAway
       .filter((res) => {
         return (
-          get(res,"status") === "Picked" &&
+          get(res, "status") === "Picked" &&
           moment(res.createdAt).isSame(yesterday, "day")
         );
       })
-      .reduce((total, order) => total + Number(get(order,"billAmount")), 0);
+      .reduce((total, order) => total + Number(get(order, "billAmount")), 0);
 
     // Last week sales
     const currentWeekStart = moment().startOf("week");
@@ -179,7 +179,7 @@ function Dashboard() {
     const totalDeliveredLastWeekOnlineOrder = onlineOrder
       .filter((res) => {
         return (
-          get(res,"status") === "Delivered" &&
+          get(res, "status") === "Delivered" &&
           moment(res.createdAt).isBetween(
             previousWeekStart,
             currentWeekStart,
@@ -188,13 +188,13 @@ function Dashboard() {
           )
         );
       })
-      .reduce((total, order) => total + Number(get(order,"billAmount")), 0);
+      .reduce((total, order) => total + Number(get(order, "billAmount")), 0);
 
     const totalDeliveredLastWeekCallForOrder = callforOrder
       .filter((res) => {
         return (
-          get(res,"status") === "Delivered" ||
-          (get(res,"status") === "Picked" &&
+          get(res, "status") === "Delivered" ||
+          (get(res, "status") === "Picked" &&
             moment(res.createdAt).isBetween(
               previousWeekStart,
               currentWeekStart,
@@ -203,12 +203,12 @@ function Dashboard() {
             ))
         );
       })
-      .reduce((total, order) => total + Number(get(order,"billAmount")), 0);
+      .reduce((total, order) => total + Number(get(order, "billAmount")), 0);
 
     const totalDeliveredLastWeekDinningOrder = dinning
       .filter((res) => {
         return (
-          get(res,"status") === "Delivered" &&
+          get(res, "status") === "Delivered" &&
           moment(res.createdAt).isBetween(
             previousWeekStart,
             currentWeekStart,
@@ -217,12 +217,12 @@ function Dashboard() {
           )
         );
       })
-      .reduce((total, order) => total + Number(get(order,"billAmount")), 0);
+      .reduce((total, order) => total + Number(get(order, "billAmount")), 0);
 
     const totalDeliveredLastWeekTakeOrder = takeAway
       .filter((res) => {
         return (
-          get(res,"status") === "Delivered" &&
+          get(res, "status") === "Delivered" &&
           moment(res.createdAt).isBetween(
             previousWeekStart,
             currentWeekStart,
@@ -231,7 +231,7 @@ function Dashboard() {
           )
         );
       })
-      .reduce((total, order) => total + Number(get(order,"billAmount")), 0);
+      .reduce((total, order) => total + Number(get(order, "billAmount")), 0);
 
     // Last month sales
     const currentMonthStart = moment().startOf("month");
@@ -239,7 +239,7 @@ function Dashboard() {
     const totalDeliveredLastMonthOnlineOrder = onlineOrder
       .filter((res) => {
         return (
-          get(res,"status") === "Delivered" &&
+          get(res, "status") === "Delivered" &&
           moment(res.createdAt).isBetween(
             previousMonthStart,
             currentMonthStart,
@@ -248,13 +248,13 @@ function Dashboard() {
           )
         );
       })
-      .reduce((total, order) => total + Number(get(order,"billAmount")), 0);
+      .reduce((total, order) => total + Number(get(order, "billAmount")), 0);
 
     const totalDeliveredLastMonthCallForOrder = callforOrder
       .filter((res) => {
         return (
-          get(res,"status") === "Delivered" ||
-          (get(res,"status") === "Picked" &&
+          get(res, "status") === "Delivered" ||
+          (get(res, "status") === "Picked" &&
             moment(res.createdAt).isBetween(
               previousMonthStart,
               currentMonthStart,
@@ -263,12 +263,12 @@ function Dashboard() {
             ))
         );
       })
-      .reduce((total, order) => total + Number(get(order,"billAmount")), 0);
+      .reduce((total, order) => total + Number(get(order, "billAmount")), 0);
 
     const totalDeliveredLastMonthDinningOrder = dinning
       .filter((res) => {
         return (
-          get(res,"status") === "Order served" &&
+          get(res, "status") === "Order served" &&
           moment(res.createdAt).isBetween(
             previousMonthStart,
             currentMonthStart,
@@ -277,12 +277,12 @@ function Dashboard() {
           )
         );
       })
-      .reduce((total, order) => total + Number(get(order,"billAmount")), 0);
+      .reduce((total, order) => total + Number(get(order, "billAmount")), 0);
 
     const totalDeliveredLastMonthTakeOrder = takeAway
       .filter((res) => {
         return (
-          get(res,"status") === "Picked" &&
+          get(res, "status") === "Picked" &&
           moment(res.createdAt).isBetween(
             previousMonthStart,
             currentMonthStart,
@@ -291,7 +291,7 @@ function Dashboard() {
           )
         );
       })
-      .reduce((total, order) => total + Number(get(order,"billAmount")), 0);
+      .reduce((total, order) => total + Number(get(order, "billAmount")), 0);
 
     // Last year sales
 
@@ -301,7 +301,7 @@ function Dashboard() {
     const totalDeliveredLastYearOnlineOrder = onlineOrder
       .filter((res) => {
         return (
-          get(res,"status") === "Delivered" &&
+          get(res, "status") === "Delivered" &&
           moment(res.createdAt).isBetween(
             previousYearStart,
             currentYearStart,
@@ -310,13 +310,13 @@ function Dashboard() {
           )
         );
       })
-      .reduce((total, order) => total + Number(get(order,"billAmount")), 0);
+      .reduce((total, order) => total + Number(get(order, "billAmount")), 0);
 
     const totalDeliveredLastYearCallForOrder = callforOrder
       .filter((res) => {
         return (
-          get(res,"status") === "Delivered" ||
-          (get(res,"status") === "Picked" &&
+          get(res, "status") === "Delivered" ||
+          (get(res, "status") === "Picked" &&
             moment(res.createdAt).isBetween(
               previousYearStart,
               currentYearStart,
@@ -325,12 +325,12 @@ function Dashboard() {
             ))
         );
       })
-      .reduce((total, order) => total + Number(get(order,"billAmount")), 0);
+      .reduce((total, order) => total + Number(get(order, "billAmount")), 0);
 
     const totalDeliveredLastYearDinningOrder = dinning
       .filter((res) => {
         return (
-          get(res,"status") === "Order served" &&
+          get(res, "status") === "Order served" &&
           moment(res.createdAt).isBetween(
             previousYearStart,
             currentYearStart,
@@ -339,12 +339,12 @@ function Dashboard() {
           )
         );
       })
-      .reduce((total, order) => total + Number(get(order,"billAmount")), 0);
+      .reduce((total, order) => total + Number(get(order, "billAmount")), 0);
 
     const totalDeliveredLastYearTakeOrder = takeAway
       .filter((res) => {
         return (
-          get(res,"status") === "Picked" &&
+          get(res, "status") === "Picked" &&
           moment(res.createdAt).isBetween(
             previousYearStart,
             currentYearStart,
@@ -353,7 +353,7 @@ function Dashboard() {
           )
         );
       })
-      .reduce((total, order) => total + Number(get(order,"billAmount")), 0);
+      .reduce((total, order) => total + Number(get(order, "billAmount")), 0);
 
     // Total sales for last year
     const totalDeliveredLastYearSales =
@@ -395,19 +395,21 @@ function Dashboard() {
 
   useEffect(() => {
     const totalDeliveredOnlineOrder = onlineOrder.filter((res) => {
-      return get(res,"status") === "Delivered";
+      return get(res, "status") === "Delivered";
     });
 
     const totalDeliveredCallForOrder = callforOrder.filter((res) => {
-      return get(res,"status") === "Delivered" || get(res,"status") === "Picked";
+      return (
+        get(res, "status") === "Delivered" || get(res, "status") === "Picked"
+      );
     });
 
     const totalDeliveredDinningOrder = dinning.filter((res) => {
-      return get(res,"status") === "Order served";
+      return get(res, "status") === "Order served";
     });
 
     const totalDeliveredTakeOrder = takeAway.filter((res) => {
-      return get(res,"status") === "Picked";
+      return get(res, "status") === "Picked";
     });
 
     const totalDelivered =
@@ -419,19 +421,19 @@ function Dashboard() {
 
     // Total cancelled
     const totalCancelledOnlineOrder = onlineOrder.filter(
-      (res) => get(res,"status") === "Cancelled"
+      (res) => get(res, "status") === "Cancelled"
     );
 
     const totalCancelledCallForOrder = callforOrder.filter(
-      (res) => get(res,"status") === "Cancelled"
+      (res) => get(res, "status") === "Cancelled"
     );
 
     const totalCancelledDinningOrder = dinning.filter(
-      (res) => get(res,"status") === "Cancelled"
+      (res) => get(res, "status") === "Cancelled"
     );
 
     const totalCancelledTakeOrder = takeAway.filter(
-      (res) => get(res,"status") === "Cancelled"
+      (res) => get(res, "status") === "Cancelled"
     );
 
     const totalCancelled =
@@ -444,23 +446,30 @@ function Dashboard() {
     //Pending Orders
 
     const totalPendingOnlineOrder = onlineOrder.filter((res) => {
-      return get(res,"status") !== "Cancelled" && get(res,"status") !== "Delivered";
+      return (
+        get(res, "status") !== "Cancelled" && get(res, "status") !== "Delivered"
+      );
     });
 
     const totalPendingCallOrder = callforOrder.filter((res) => {
       return (
-        get(res,"status") !== "Cancelled" &&
-        get(res,"status") !== "Delivered" &&
-        get(res,"status") !== "Picked"
+        get(res, "status") !== "Cancelled" &&
+        get(res, "status") !== "Delivered" &&
+        get(res, "status") !== "Picked"
       );
     });
 
     const totalPendingDinningOrder = dinning.filter((res) => {
-      return get(res,"status") !== "Cancelled" && get(res,"status") !== "Order served";
+      return (
+        get(res, "status") !== "Cancelled" &&
+        get(res, "status") !== "Order served"
+      );
     });
 
     const totalPendingTakeAwayOrder = takeAway.filter((res) => {
-      return get(res,"status") !== "Cancelled" && get(res,"status") !== "Picked";
+      return (
+        get(res, "status") !== "Cancelled" && get(res, "status") !== "Picked"
+      );
     });
 
     const totalPending =
@@ -474,12 +483,12 @@ function Dashboard() {
   useEffect(() => {
     setTotalWeb(
       users.filter((res) => {
-        return get(res,"status") === "web";
+        return get(res, "status") === "web";
       })
     );
     setTotalApp(
       users.filter((res) => {
-        return get(res,"status") === "app";
+        return get(res, "status") === "app";
       })
     );
   }, [users]);
@@ -602,668 +611,671 @@ function Dashboard() {
     },
   ];
 
-
-
   return (
     <div className="md:pl-[20vw] min-h-[92vh] overflow-y-scroll flex items-center justify-center md:items-start md:justify-start mt-28 md:mt-24">
       {!localStorage.getItem("token") ? (
         <LoadingPage />
       ) : (
-      <Spin spinning={loading}>
+        <Spin spinning={loading}>
           <div
-          className={`flex flex-wrap  items-center justify-center md:items-start md:justify-start  gap-4 md:w-[80vw] `}
-        >
-          <div
-            className={`py-4 px-4 ${
-              get(user, "name", "")?.split("@")?.includes("menu")
-                ? "w-[75vw] flex flex-row gap-16 justify-between px-20"
-                : " h-[308px]"
-            } bg-gradient-to-r from-[--primary-color] via-orange-500 to-white/50 rounded-md ${
-              get(user, "name", "")?.split("@")?.includes("kds") ||
-              get(user, "name", "")?.split("@")?.includes("frontdesk") ||
-              get(user, "name", "")?.split("@")?.includes("partner") ||
-              get(user, "name", "")?.split("@")?.includes("scratch")||
-              get(user, "name", "")?.split("@")?.includes("banner")||
-              get(user, "name", "")?.split("@")?.includes("rider")
-                ? "hidden"
-                : "block"
-            }`}
+            className={`flex flex-wrap  items-center justify-center md:items-start md:justify-start  gap-4 md:w-[80vw] `}
           >
-            <h1
-              className={`text-white font-bold text-center ${
+            <div
+              className={` w-96 m-auto lg:m-0 py-4 px-4 ${
                 get(user, "name", "")?.split("@")?.includes("menu")
+                  ? "w-[75vw] flex flex-row gap-16 justify-between px-20"
+                  : " h-[308px]"
+              } bg-gradient-to-r from-[--primary-color] via-orange-500 to-white/50 rounded-md ${
+                get(user, "name", "")?.split("@")?.includes("kds") ||
+                get(user, "name", "")?.split("@")?.includes("frontdesk") ||
+                get(user, "name", "")?.split("@")?.includes("partner") ||
+                get(user, "name", "")?.split("@")?.includes("scratch") ||
+                get(user, "name", "")?.split("@")?.includes("banner") ||
+                get(user, "name", "")?.split("@")?.includes("rider")
                   ? "hidden"
                   : "block"
               }`}
             >
-              Total Menu's
-            </h1>
-            {totalMenu.map((res, i) => {
-              const percentage = (res.value / 100) * 100;
-              return (
-                <div
-                  key={i}
-                  className={`flex items-center justify-center gap-5 ${
-                    get(user, "name", "")?.split("@")?.includes("menu") &&
-                    res.heading !== "Dishes"
-                      ? "border-r pr-8"
-                      : !get(user, "name", "")?.split("@")?.includes("menu")
-                      ? "border-b"
-                      : ""
-                  }`}
-                >
-                  <div
-                    className={`flex ${
-                      get(user, "name", "")?.split("@")?.includes("menu")
-                        ? "w-[100px]"
-                        : "w-[150px]"
-                    } flex-col items-center justify-center pt-2 `}
-                  >
-                    <span className="!text-white">{res.icon}</span>
-                    <Statistic
-                      title={
-                        <h1 className="text-white font-semibold text-[14px]">
-                          {res.heading}
-                        </h1>
-                      }
-                      value={get(res, "value")}
-                      valueStyle={{
-                        color: "white",
-                        textAlign: "center",
-                        fontSize: "15px",
-                      }}
-                      formatter={formatter}
-                    />
-                  </div>
-                  <div style={{ width: "70px" }}>
-                    <CircularProgressbar
-                      value={percentage}
-                      text={`${percentage.toFixed(1)}%`}
-                      styles={buildStyles({
-                        textSize: "16px",
-                        pathColor: "rgba(75,192,192,1)",
-                        textColor: "white",
-                        trailColor: "rgba(255,255,255,0.2)",
-                      })}
-                    />
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-
-          <div
-            className={`py-4 px-4 h-[308px] bg-gradient-to-r from-blue-500 via-sky-500 to-white/50 rounded-md ${
-              get(user, "name", "")?.split("@")?.includes("kds") ||
-              get(user, "name", "")?.split("@")?.includes("frontdesk") ||
-              get(user, "name", "")?.split("@")?.includes("partner") ||
-              get(user, "name", "")?.split("@")?.includes("scratch") ||
-              get(user, "name", "")?.split("@")?.includes("menu")||
-              get(user, "name", "")?.split("@")?.includes("banner")||
-              get(user, "name", "")?.split("@")?.includes("rider")
-                ? "hidden"
-                : "block"
-            }`}
-          >
-            <h1 className="text-white font-bold text-center">Total Users's</h1>
-            {totalUsers.map((res, i) => {
-              const percentage = (res.value / 100) * 100;
-              return (
-                <div
-                  key={i}
-                  className="flex items-center justify-center border-b"
-                >
-                  <div className="flex w-[150px] flex-col items-center justify-center pt-8 ">
-                    <span className="!text-white">{res.icon}</span>
-                    <Statistic
-                      title={
-                        <h1 className="text-white font-semibold text-[14px]">
-                          {res.heading}
-                        </h1>
-                      }
-                      value={get(res, "value")}
-                      valueStyle={{
-                        color: "white",
-                        textAlign: "center",
-                        fontSize: "15px",
-                      }}
-                      formatter={formatter}
-                    />
-                  </div>
-                  <div style={{ width: "70px" }}>
-                    <CircularProgressbar
-                      value={percentage}
-                      text={`${percentage.toFixed(1)}%`}
-                      styles={buildStyles({
-                        textSize: "16px",
-                        pathColor: "rgba(75,192,192,1)",
-                        textColor: "white",
-                        trailColor: "rgba(255,255,255,0.2)",
-                      })}
-                    />
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-
-          <div
-            className={`${
-              get(user, "name", "")?.split("@")?.includes("kds") ||
-              get(user, "name", "")?.split("@")?.includes("frontdesk") ||
-              get(user, "name", "")?.split("@")?.includes("scratch") ||
-              get(user, "name", "")?.split("@")?.includes("menu")||
-              get(user, "name", "")?.split("@")?.includes("banner")||
-              get(user, "name", "")?.split("@")?.includes("rider")
-                ? "hidden"
-                : "block"
-            } py-4 px-4 h-[308px] bg-gradient-to-r from-green-700 via-green-400 to-white/50 rounded-md`}
-          >
-            <h1 className="text-white font-bold text-center">Total Order's</h1>
-            <div className="flex items-center justify-center ">
-              <div className="flex w-[220px] flex-col items-center justify-center pt-2 ">
-                <div className="flex gap-5 border-b pb-2">
-                  <Statistic
-                    title={
-                      <h1 className="text-white font-semibold text-[15px]">
-                        Delivered orders
-                      </h1>
-                    }
-                    value={deliveredOrders}
-                    valueStyle={{
-                      color: "white",
-                      textAlign: "center",
-                    }}
-                    formatter={formatter}
-                  />
-                  <div style={{ width: "70px" }}>
-                    <CircularProgressbar
-                      value={deliveredOrders}
-                      text={`${Number(deliveredOrders).toFixed(1)}%`}
-                      styles={buildStyles({
-                        textSize: "16px",
-                        pathColor: "rgba(75,192,192,1)",
-                        textColor: "white",
-                        trailColor: "rgba(255,255,255,0.2)",
-                      })}
-                    />
-                  </div>
-                </div>
-                <div className="flex gap-5 border-b pt-2 pb-2">
-                  <Statistic
-                    title={
-                      <h1 className="text-white font-semibold text-[15px]">
-                        Pending orders
-                      </h1>
-                    }
-                    value={pendingOrders}
-                    valueStyle={{
-                      color: "white",
-                      textAlign: "center",
-                    }}
-                    formatter={formatter}
-                  />
-                  <div style={{ width: "70px" }}>
-                    <CircularProgressbar
-                      value={pendingOrders}
-                      text={`${Number(pendingOrders).toFixed(1)}%`}
-                      styles={buildStyles({
-                        textSize: "16px",
-                        pathColor: "rgba(75,192,192,1)",
-                        textColor: "white",
-                        trailColor: "rgba(255,255,255,0.2)",
-                      })}
-                    />
-                  </div>
-                </div>
-                <div className="flex gap-5 border-b pt-2 pb-2">
-                  <Statistic
-                    title={
-                      <h1 className="text-white font-semibold text-[15px]">
-                        Cancelled orders
-                      </h1>
-                    }
-                    value={cancelledOrders}
-                    valueStyle={{
-                      color: "white",
-                      textAlign: "center",
-                    }}
-                    formatter={formatter}
-                  />
-                  <div style={{ width: "70px" }}>
-                    <CircularProgressbar
-                      value={cancelledOrders}
-                      text={`${Number(cancelledOrders).toFixed(1)}%`}
-                      styles={buildStyles({
-                        textSize: "16px",
-                        pathColor: "rgba(75,192,192,1)",
-                        textColor: "white",
-                        trailColor: "rgba(255,255,255,0.2)",
-                      })}
-                    />
-                  </div>
-                </div>
+              <h1
+                className={`text-white font-bold text-center ${
+                  get(user, "name", "")?.split("@")?.includes("menu")
+                    ? "hidden"
+                    : "block"
+                }`}
+              >
+                Total Menu's
+              </h1>
+              <div className="">
+                {totalMenu.map((res, i) => {
+                  const percentage = (res.value / 100) * 100;
+                  return (
+                    <div
+                      key={i}
+                      className={`flex items-center justify-center gap-5 ${
+                        get(user, "name", "")?.split("@")?.includes("menu") &&
+                        res.heading !== "Dishes"
+                          ? "border-r pr-8"
+                          : !get(user, "name", "")?.split("@")?.includes("menu")
+                          ? "border-b"
+                          : ""
+                      }`}
+                    >
+                      <div
+                        className={`flex ${
+                          get(user, "name", "")?.split("@")?.includes("menu")
+                            ? "w-[100px]"
+                            : "w-[150px]"
+                        } flex-col items-center justify-center pt-2 `}
+                      >
+                        <span className="!text-white">{res.icon}</span>
+                        <Statistic
+                          title={
+                            <h1 className="text-white font-semibold text-[14px]">
+                              {res.heading}
+                            </h1>
+                          }
+                          value={get(res, "value")}
+                          valueStyle={{
+                            color: "white",
+                            textAlign: "center",
+                            fontSize: "15px",
+                          }}
+                          formatter={formatter}
+                        />
+                      </div>
+                      <div style={{ width: "70px" }}>
+                        <CircularProgressbar
+                          value={percentage}
+                          text={`${percentage.toFixed(1)}%`}
+                          styles={buildStyles({
+                            textSize: "16px",
+                            pathColor: "rgba(75,192,192,1)",
+                            textColor: "white",
+                            trailColor: "rgba(255,255,255,0.2)",
+                          })}
+                        />
+                      </div>
+                    </div>
+                  );
+                })}
               </div>
             </div>
-          </div>
 
-          <div
-            className={`py-4 px-4 h-[308px] bg-gradient-to-r from-red-800 via-red-500 to-white/50 rounded-md ${
-              get(user, "name", "")?.split("@")?.includes("kds") ||
-              get(user, "name", "")?.split("@")?.includes("frontdesk") ||
-              get(user, "name", "")?.split("@")?.includes("partner") ||
-              get(user, "name", "")?.split("@")?.includes("scratch") ||
-              get(user, "name", "")?.split("@")?.includes("menu")||
-              get(user, "name", "")?.split("@")?.includes("banner")||
-              get(user, "name", "")?.split("@")?.includes("rider")
-                ? "hidden"
-                : "block"
-            }  `}
-          >
-            <h1 className="text-white font-bold text-center">
-              Total Wallet Deposits
-            </h1>
-            <div className="flex items-center justify-center">
-              <div className="flex w-[300px] flex-col items-center justify-center pt-1">
-                <div className="flex flex-col">
-                  <Statistic
-                    title={
-                      <h1 className="text-white text-center font-semibold text-[12px]">
-                        Total Amount
-                      </h1>
-                    }
-                    value={98219}
-                    valueStyle={{
-                      color: "white",
-                      textAlign: "center",
-                      fontSize: "18px",
-                    }}
-                    formatter={formatter}
-                  />
-                  <div className="text-white flex justify-between px-1 text-[10px] pt-1 border-b pb-2">
-                    <p> Last deposit on 20-13-2023</p>
-                    <p className="text-blue-800 font-bold cursor-pointer">
-                      View Deposits
-                      <NavigateNextIcon className="!text-[14px]" />
-                    </p>
-                  </div>
-                  <div>
-                    <h1 className="text-white font-bold text-center pt-3 text-[15px]">
-                      Last Five Deposits
-                    </h1>
-                    <WalletDepositsChart />
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div
-            className={`py-4 px-4 h-[500px] bg-gradient-to-r from-yellow-700 via-yellow-500 to-white/50 rounded-md ${
-              get(user, "name", "")?.split("@")?.includes("kds") ||
-              get(user, "name", "")?.split("@")?.includes("frontdesk") ||
-              get(user, "name", "")?.split("@")?.includes("scratch") ||
-              get(user, "name", "")?.split("@")?.includes("menu")||
-              get(user, "name", "")?.split("@")?.includes("banner")||
-              get(user, "name", "")?.split("@")?.includes("rider")
-                ? "hidden"
-                : "block"
-            } `}
-          >
-            <h1 className="text-white font-bold text-center">Order's</h1>
-            {totalForKds.map((res, i) => {
-              const percentage = (res.value / 100) * 100;
-              return (
-                <div
-                  key={i}
-                  className="flex items-center justify-center gap-5 border-b"
-                >
-                  <div className="flex w-[270px] flex-col items-center justify-center pt-2 ">
-                    <span className="!text-white">{res.icon}</span>
-                    <Statistic
-                      title={
-                        <h1 className="text-white font-semibold text-[14px]">
-                          {res.heading}
-                        </h1>
-                      }
-                      value={get(res, "value")}
-                      valueStyle={{
-                        color: "white",
-                        textAlign: "center",
-                        fontSize: "15px",
-                      }}
-                      formatter={formatter}
-                    />
-                  </div>
-                  <div style={{ width: "70px" }}>
-                    <CircularProgressbar
-                      value={percentage}
-                      text={`${percentage.toFixed(1)}%`}
-                      styles={buildStyles({
-                        textSize: "16px",
-                        pathColor: "rgba(75,192,192,1)",
-                        textColor: "white",
-                        trailColor: "rgba(255,255,255,0.2)",
-                      })}
-                    />
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-
-          <div
-            className={`py-4 px-4 w-[90vw] md:w-[75vw] flex flex-wrap bg-gradient-to-r from-yellow-500 via-yellow-300 to-white/50 rounded-md ${
-              get(user, "name", "")?.split("@")?.includes("kds") ||
-              get(user, "name", "")?.split("@")?.includes("frontdesk")
-             
-                ? "block"
-                : "hidden"
-            } `}
-          >
-            {totalForKds.map((res, i) => {
-              const percentage = (res.value / 100) * 100;
-              return (
-                <div
-                  key={i}
-                  className="flex w-[95vw] md:w-[50%] lg:w-[33.33%] border-r gap-5"
-                >
-                  <div className="flex w-full md:w-[160px] flex-col items-center justify-center pt-2">
-                    <span className="text-white">{res.icon}</span>
-                    <Statistic
-                      title={
-                        <h1 className="text-white font-semibold text-[14px]">
-                          {res.heading}
-                        </h1>
-                      }
-                      value={get(res, "value")}
-                      valueStyle={{
-                        color: "white",
-                        textAlign: "center",
-                        fontSize: "15px",
-                      }}
-                      formatter={formatter}
-                    />
-                  </div>
-                  <div style={{ width: "70px" }}>
-                    <CircularProgressbar
-                      value={percentage}
-                      text={`${percentage.toFixed(1)}%`}
-                      styles={buildStyles({
-                        textSize: "16px",
-                        pathColor: "rgba(75,192,192,1)",
-                        textColor: "white",
-                        trailColor: "rgba(255,255,255,0.2)",
-                      })}
-                    />
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-
-          <div
-            className={`py-4 px-4 h-[500px] bg-gradient-to-r from-emerald-800 via-emerald-500 to-white/50 rounded-md ${
-              get(user, "name", "")?.split("@")?.includes("kds") ||
-              get(user, "name", "")?.split("@")?.includes("frontdesk") ||
-              get(user, "name", "")?.split("@")?.includes("scratch") ||
-              get(user, "name", "")?.split("@")?.includes("menu")||
-              get(user, "name", "")?.split("@")?.includes("banner")||
-              get(user, "name", "")?.split("@")?.includes("rider")
-                ? "hidden"
-                : "block"
-            }`}
-          >
-            <h1 className="text-white font-bold text-center">Sales</h1>
-            <div className="flex items-center justify-center ">
-              <div className="flex w-[330px] flex-col gap-5 items-center justify-center pt-2 ">
-                <div className="flex  border-b pb-2">
-                  <Statistic
-                    title={
-                      <h1 className="text-white font-semibold text-[18px]">
-                        Total sales
-                      </h1>
-                    }
-                    value={totalSales}
-                    valueStyle={{
-                      color: "white",
-                      textAlign: "center",
-                      fontSize: "18px",
-                    }}
-                    formatter={formatter}
-                  />
-                </div>
-                <div className="flex gap-5 border-b pb-2">
-                  <Statistic
-                    title={
-                      <h1 className="text-white font-semibold text-[18px]">
-                        Yesterday sales
-                      </h1>
-                    }
-                    value={yesterdaySales}
-                    valueStyle={{
-                      color: "white",
-                      textAlign: "center",
-                      fontSize: "18px",
-                    }}
-                    formatter={formatter}
-                  />
-                </div>
-                <div className="flex gap-5 border-b pb-2">
-                  <Statistic
-                    title={
-                      <h1 className="text-white font-semibold text-[18px]">
-                        Last week sales
-                      </h1>
-                    }
-                    value={lastWeekSales}
-                    valueStyle={{
-                      color: "white",
-                      textAlign: "center",
-                      fontSize: "18px",
-                    }}
-                    formatter={formatter}
-                  />
-                </div>
-                <div className="flex gap-5 border-b pb-2">
-                  <Statistic
-                    title={
-                      <h1 className="text-white font-semibold text-[18px]">
-                        Last month sales
-                      </h1>
-                    }
-                    value={lastMonthSales}
-                    valueStyle={{
-                      color: "white",
-                      textAlign: "center",
-                      fontSize: "18px",
-                    }}
-                    formatter={formatter}
-                  />
-                </div>
-                <div className="flex gap-5 border-b pb-2">
-                  <Statistic
-                    title={
-                      <h1 className="text-white font-semibold text-[18px]">
-                        Last year sales
-                      </h1>
-                    }
-                    value={lastYearSales}
-                    valueStyle={{
-                      color: "white",
-                      textAlign: "center",
-                      fontSize: "18px",
-                    }}
-                    formatter={formatter}
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div
-            className={`py-4 px-4 ${
-              get(user, "name", "")?.split("@")?.includes("scratch")
-                ? "w-[75vw]"
-                : "h-[500px]"
-            }  bg-gradient-to-r from-fuchsia-800 via-fuchsia-500 to-white/50 rounded-md ${
-              get(user, "name", "")?.split("@")?.includes("kds") ||
-              get(user, "name", "")?.split("@")?.includes("frontdesk") ||
-              get(user, "name", "")?.split("@")?.includes("partner") ||
-              get(user, "name", "")?.split("@")?.includes("menu")||
-              get(user, "name", "")?.split("@")?.includes("banner")||
-              get(user, "name", "")?.split("@")?.includes("rider")
-                ? "hidden"
-                : "block"
-            }`}
-          >
-            <h1
-              className={`${
-                get(user, "name", "")?.split("@")?.includes("scratch")
+            <div
+              className={` w-96 m-auto lg:m-0 lg:w-[220px] py-4 px-4 h-[308px] bg-gradient-to-r from-blue-500 via-sky-500 to-white/50 rounded-md ${
+                get(user, "name", "")?.split("@")?.includes("kds") ||
+                get(user, "name", "")?.split("@")?.includes("frontdesk") ||
+                get(user, "name", "")?.split("@")?.includes("partner") ||
+                get(user, "name", "")?.split("@")?.includes("scratch") ||
+                get(user, "name", "")?.split("@")?.includes("menu") ||
+                get(user, "name", "")?.split("@")?.includes("banner") ||
+                get(user, "name", "")?.split("@")?.includes("rider")
                   ? "hidden"
                   : "block"
-              } text-white font-bold text-center`}
+              }`}
             >
-              Scratch Cards
-            </h1>
-            <div className="flex items-center justify-center ">
-              <div
-                className={`flex ${
-                  get(user, "name", "")?.split("@")?.includes("scratch")
-                    ? "flex-row gap-10 flex-wrap"
-                    : "w-[330px] flex-col gap-4 items-center justify-center"
-                }  pt-2 `}
-              >
-                <div className="flex  border-b pb-2">
-                  <Statistic
-                    title={
-                      <h1 className="text-white font-semibold text-[18px]">
-                        Total scratch cards
-                      </h1>
-                    }
-                    value={scratchCards.length}
-                    valueStyle={{
-                      color: "white",
-                      textAlign: "center",
-                    }}
-                    formatter={formatter}
-                  />
-                </div>
-                <div className="flex gap-5 border-b pb-2">
-                  <Statistic
-                    title={
-                      <h1 className="text-white font-semibold text-[18px]">
-                        Winner scratch cards
-                      </h1>
-                    }
-                    value={
-                      scratchCards.filter((res) => {
-                        return get(res,"status") === true;
-                      }).length
-                    }
-                    valueStyle={{
-                      color: "white",
-                      textAlign: "center",
-                    }}
-                    formatter={formatter}
-                  />
-                </div>
-                <div className="flex gap-5 border-b pb-2">
-                  <Statistic
-                    title={
-                      <h1 className="text-white font-semibold text-[18px]">
-                        Not winner scratch cards
-                      </h1>
-                    }
-                    value={
-                      scratchCards.filter((res) => {
-                        return get(res,"status") === false;
-                      }).length
-                    }
-                    valueStyle={{
-                      color: "white",
-                      textAlign: "center",
-                    }}
-                    formatter={formatter}
-                  />
-                </div>
-                <div className="flex gap-5 border-b pb-2">
-                  <Statistic
-                    title={
-                      <h1 className="text-white font-semibold text-[18px]">
-                        Not expired cards
-                      </h1>
-                    }
-                    value={
-                      scratchCards.filter((res) => {
-                        return res.expired === false;
-                      }).length
-                    }
-                    valueStyle={{
-                      color: "white",
-                      textAlign: "center",
-                    }}
-                    formatter={formatter}
-                  />
-                </div>
-                <div className="flex gap-5 border-b pb-2">
-                  <Statistic
-                    title={
-                      <h1 className="text-white font-semibold text-[18px]">
-                        Expired cards
-                      </h1>
-                    }
-                    value={
-                      scratchCards.filter((res) => {
-                        return res.expired === true;
-                      }).length
-                    }
-                    valueStyle={{
-                      color: "white",
-                      textAlign: "center",
-                    }}
-                    formatter={formatter}
-                  />
+              <h1 className="text-white font-bold text-center">
+                Total Users's
+              </h1>
+              {totalUsers.map((res, i) => {
+                const percentage = (res.value / 100) * 100;
+                return (
+                  <div
+                    key={i}
+                    className="flex items-center justify-center border-b"
+                  >
+                    <div className="flex w-[150px] flex-col items-center justify-center pt-8 ">
+                      <span className="!text-white">{res.icon}</span>
+                      <Statistic
+                        title={
+                          <h1 className="text-white font-semibold text-[14px]">
+                            {res.heading}
+                          </h1>
+                        }
+                        value={get(res, "value")}
+                        valueStyle={{
+                          color: "white",
+                          textAlign: "center",
+                          fontSize: "15px",
+                        }}
+                        formatter={formatter}
+                      />
+                    </div>
+                    <div style={{ width: "70px" }}>
+                      <CircularProgressbar
+                        value={percentage}
+                        text={`${percentage.toFixed(1)}%`}
+                        styles={buildStyles({
+                          textSize: "16px",
+                          pathColor: "rgba(75,192,192,1)",
+                          textColor: "white",
+                          trailColor: "rgba(255,255,255,0.2)",
+                        })}
+                      />
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+
+            <div
+              className={`w-96 m-auto lg:m-0 lg:w-[330px]${
+                get(user, "name", "")?.split("@")?.includes("kds") ||
+                get(user, "name", "")?.split("@")?.includes("frontdesk") ||
+                get(user, "name", "")?.split("@")?.includes("scratch") ||
+                get(user, "name", "")?.split("@")?.includes("menu") ||
+                get(user, "name", "")?.split("@")?.includes("banner") ||
+                get(user, "name", "")?.split("@")?.includes("rider")
+                  ? "hidden"
+                  : "block"
+              } py-4 px-4 h-[308px] bg-gradient-to-r from-green-700 via-green-400 to-white/50 rounded-md`}
+            >
+              <h1 className="text-white font-bold text-center">
+                Total Order's
+              </h1>
+              <div className="flex items-center justify-center ">
+                <div className="flex w-[330px] lg:w-[220px] flex-col items-center justify-center pt-2 ">
+                  <div className="flex gap-5 border-b pb-2">
+                    <Statistic
+                      title={
+                        <h1 className="text-white font-semibold text-[15px]">
+                          Delivered orders
+                        </h1>
+                      }
+                      value={deliveredOrders}
+                      valueStyle={{
+                        color: "white",
+                        textAlign: "center",
+                      }}
+                      formatter={formatter}
+                    />
+                    <div style={{ width: "70px" }}>
+                      <CircularProgressbar
+                        value={deliveredOrders}
+                        text={`${Number(deliveredOrders).toFixed(1)}%`}
+                        styles={buildStyles({
+                          textSize: "16px",
+                          pathColor: "rgba(75,192,192,1)",
+                          textColor: "white",
+                          trailColor: "rgba(255,255,255,0.2)",
+                        })}
+                      />
+                    </div>
+                  </div>
+                  <div className="flex gap-5 border-b pt-2 pb-2">
+                    <Statistic
+                      title={
+                        <h1 className="text-white font-semibold text-[15px]">
+                          Pending orders
+                        </h1>
+                      }
+                      value={pendingOrders}
+                      valueStyle={{
+                        color: "white",
+                        textAlign: "center",
+                      }}
+                      formatter={formatter}
+                    />
+                    <div style={{ width: "70px" }}>
+                      <CircularProgressbar
+                        value={pendingOrders}
+                        text={`${Number(pendingOrders).toFixed(1)}%`}
+                        styles={buildStyles({
+                          textSize: "16px",
+                          pathColor: "rgba(75,192,192,1)",
+                          textColor: "white",
+                          trailColor: "rgba(255,255,255,0.2)",
+                        })}
+                      />
+                    </div>
+                  </div>
+                  <div className="flex gap-5 border-b pt-2 pb-2">
+                    <Statistic
+                      title={
+                        <h1 className="text-white font-semibold text-[15px]">
+                          Cancelled orders
+                        </h1>
+                      }
+                      value={cancelledOrders}
+                      valueStyle={{
+                        color: "white",
+                        textAlign: "center",
+                      }}
+                      formatter={formatter}
+                    />
+                    <div style={{ width: "70px" }}>
+                      <CircularProgressbar
+                        value={cancelledOrders}
+                        text={`${Number(cancelledOrders).toFixed(1)}%`}
+                        styles={buildStyles({
+                          textSize: "16px",
+                          pathColor: "rgba(75,192,192,1)",
+                          textColor: "white",
+                          trailColor: "rgba(255,255,255,0.2)",
+                        })}
+                      />
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
 
-          <div
-            className={`${
-              get(user, "name", "")?.split("@")?.includes("kds") ||
-              get(user, "name", "")?.split("@")?.includes("frontdesk") ||
-              get(user, "name", "")?.split("@")?.includes("scratch") ||
-              get(user, "name", "")?.split("@")?.includes("menu")||
-              get(user, "name", "")?.split("@")?.includes("banner")||
-              get(user, "name", "")?.split("@")?.includes("rider")
-                ? "hidden"
-                : "block"
-            }`}
-          >
-            <TableOrders />
-          </div>
-
-          <div
-            className={`flex flex-wrap items-center justify-center md:items-start md:justify-between md:px-28 gap-8 ${
-              get(user, "name", "")?.split("@")?.includes("kds") ||
-              get(user, "name", "")?.split("@")?.includes("frontdesk") ||
-              get(user, "name", "")?.split("@")?.includes("scratch") ||
-              get(user, "name", "")?.split("@")?.includes("menu")||
-              get(user, "name", "")?.split("@")?.includes("banner")||
-              get(user, "name", "")?.split("@")?.includes("rider")
-                ? "hidden"
-                : "block"
-            }`}
-          >
-            <div>
-              <OrdersChat ordersData={onlineOrder} />
+            <div
+              className={`w-96 m-auto lg:m-0 lg:w-[330px] py-4 px-4 h-[308px] bg-gradient-to-r from-red-800 via-red-500 to-white/50 rounded-md ${
+                get(user, "name", "")?.split("@")?.includes("kds") ||
+                get(user, "name", "")?.split("@")?.includes("frontdesk") ||
+                get(user, "name", "")?.split("@")?.includes("partner") ||
+                get(user, "name", "")?.split("@")?.includes("scratch") ||
+                get(user, "name", "")?.split("@")?.includes("menu") ||
+                get(user, "name", "")?.split("@")?.includes("banner") ||
+                get(user, "name", "")?.split("@")?.includes("rider")
+                  ? "hidden"
+                  : "block"
+              }  `}
+            >
+              <h1 className="text-white font-bold text-center">
+                Total Wallet Deposits
+              </h1>
+              <div className="flex items-center justify-center">
+                <div className="flex w-[300px] flex-col items-center justify-center pt-1">
+                  <div className="flex flex-col">
+                    <Statistic
+                      title={
+                        <h1 className="text-white text-center font-semibold text-[12px]">
+                          Total Amount
+                        </h1>
+                      }
+                      value={98219}
+                      valueStyle={{
+                        color: "white",
+                        textAlign: "center",
+                        fontSize: "18px",
+                      }}
+                      formatter={formatter}
+                    />
+                    <div className="text-white flex justify-between px-1 text-[10px] pt-1 border-b pb-2">
+                      <p> Last deposit on 20-13-2023</p>
+                      <p className="text-blue-800 font-bold cursor-pointer">
+                        View Deposits
+                        <NavigateNextIcon className="!text-[14px]" />
+                      </p>
+                    </div>
+                    <div>
+                      <h1 className="text-white font-bold text-center pt-3 text-[15px]">
+                        Last Five Deposits
+                      </h1>
+                      <WalletDepositsChart />
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
 
-            <div>
-              <DinningOrderChart ordersData={onlineOrder} />
+            <div
+              className={`w-96 m-auto lg:m-0 lg:w-[270px] py-4 px-4 h-[500px] bg-gradient-to-r from-yellow-700 via-yellow-500 to-white/50 rounded-md ${
+                get(user, "name", "")?.split("@")?.includes("kds") ||
+                get(user, "name", "")?.split("@")?.includes("frontdesk") ||
+                get(user, "name", "")?.split("@")?.includes("scratch") ||
+                get(user, "name", "")?.split("@")?.includes("menu") ||
+                get(user, "name", "")?.split("@")?.includes("banner") ||
+                get(user, "name", "")?.split("@")?.includes("rider")
+                  ? "hidden"
+                  : "block"
+              } `}
+            >
+              <h1 className="text-white font-bold text-center">Order's</h1>
+              {totalForKds.map((res, i) => {
+                const percentage = (res.value / 100) * 100;
+                return (
+                  <div
+                    key={i}
+                    className="flex items-center justify-center gap-5 border-b"
+                  >
+                    <div className="flex w-[270px] flex-col items-center justify-center pt-2 ">
+                      <span className="!text-white">{res.icon}</span>
+                      <Statistic
+                        title={
+                          <h1 className="text-white font-semibold text-[14px]">
+                            {res.heading}
+                          </h1>
+                        }
+                        value={get(res, "value")}
+                        valueStyle={{
+                          color: "white",
+                          textAlign: "center",
+                          fontSize: "15px",
+                        }}
+                        formatter={formatter}
+                      />
+                    </div>
+                    <div style={{ width: "70px" }}>
+                      <CircularProgressbar
+                        value={percentage}
+                        text={`${percentage.toFixed(1)}%`}
+                        styles={buildStyles({
+                          textSize: "16px",
+                          pathColor: "rgba(75,192,192,1)",
+                          textColor: "white",
+                          trailColor: "rgba(255,255,255,0.2)",
+                        })}
+                      />
+                    </div>
+                  </div>
+                );
+              })}
             </div>
-            {/* <div
+
+            <div
+              className={`py-4 px-4 w-[90vw] md:w-[75vw] flex flex-wrap bg-gradient-to-r from-yellow-500 via-yellow-300 to-white/50 rounded-md ${
+                get(user, "name", "")?.split("@")?.includes("kds") ||
+                get(user, "name", "")?.split("@")?.includes("frontdesk")
+                  ? "block"
+                  : "hidden"
+              } `}
+            >
+              {totalForKds.map((res, i) => {
+                const percentage = (res.value / 100) * 100;
+                return (
+                  <div
+                    key={i}
+                    className="flex w-[95vw] md:w-[50%] lg:w-[33.33%] border-r gap-5"
+                  >
+                    <div className="flex w-full md:w-[160px] flex-col items-center justify-center pt-2">
+                      <span className="text-white">{res.icon}</span>
+                      <Statistic
+                        title={
+                          <h1 className="text-white font-semibold text-[14px]">
+                            {res.heading}
+                          </h1>
+                        }
+                        value={get(res, "value")}
+                        valueStyle={{
+                          color: "white",
+                          textAlign: "center",
+                          fontSize: "15px",
+                        }}
+                        formatter={formatter}
+                      />
+                    </div>
+                    <div style={{ width: "70px" }}>
+                      <CircularProgressbar
+                        value={percentage}
+                        text={`${percentage.toFixed(1)}%`}
+                        styles={buildStyles({
+                          textSize: "16px",
+                          pathColor: "rgba(75,192,192,1)",
+                          textColor: "white",
+                          trailColor: "rgba(255,255,255,0.2)",
+                        })}
+                      />
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+
+            <div
+              className={`w-96 m-auto lg:m-0 lg:w-[330px] py-4 px-4 h-[500px] bg-gradient-to-r from-emerald-800 via-emerald-500 to-white/50 rounded-md ${
+                get(user, "name", "")?.split("@")?.includes("kds") ||
+                get(user, "name", "")?.split("@")?.includes("frontdesk") ||
+                get(user, "name", "")?.split("@")?.includes("scratch") ||
+                get(user, "name", "")?.split("@")?.includes("menu") ||
+                get(user, "name", "")?.split("@")?.includes("banner") ||
+                get(user, "name", "")?.split("@")?.includes("rider")
+                  ? "hidden"
+                  : "block"
+              }`}
+            >
+              <h1 className="text-white font-bold text-center">Sales</h1>
+              <div className="flex items-center justify-center ">
+                <div className="flex w-[330px] flex-col gap-5 items-center justify-center pt-2 ">
+                  <div className="flex  border-b pb-2">
+                    <Statistic
+                      title={
+                        <h1 className="text-white font-semibold text-[18px]">
+                          Total sales
+                        </h1>
+                      }
+                      value={totalSales}
+                      valueStyle={{
+                        color: "white",
+                        textAlign: "center",
+                        fontSize: "18px",
+                      }}
+                      formatter={formatter}
+                    />
+                  </div>
+                  <div className="flex gap-5 border-b pb-2">
+                    <Statistic
+                      title={
+                        <h1 className="text-white font-semibold text-[18px]">
+                          Yesterday sales
+                        </h1>
+                      }
+                      value={yesterdaySales}
+                      valueStyle={{
+                        color: "white",
+                        textAlign: "center",
+                        fontSize: "18px",
+                      }}
+                      formatter={formatter}
+                    />
+                  </div>
+                  <div className="flex gap-5 border-b pb-2">
+                    <Statistic
+                      title={
+                        <h1 className="text-white font-semibold text-[18px]">
+                          Last week sales
+                        </h1>
+                      }
+                      value={lastWeekSales}
+                      valueStyle={{
+                        color: "white",
+                        textAlign: "center",
+                        fontSize: "18px",
+                      }}
+                      formatter={formatter}
+                    />
+                  </div>
+                  <div className="flex gap-5 border-b pb-2">
+                    <Statistic
+                      title={
+                        <h1 className="text-white font-semibold text-[18px]">
+                          Last month sales
+                        </h1>
+                      }
+                      value={lastMonthSales}
+                      valueStyle={{
+                        color: "white",
+                        textAlign: "center",
+                        fontSize: "18px",
+                      }}
+                      formatter={formatter}
+                    />
+                  </div>
+                  <div className="flex gap-5 border-b pb-2">
+                    <Statistic
+                      title={
+                        <h1 className="text-white font-semibold text-[18px]">
+                          Last year sales
+                        </h1>
+                      }
+                      value={lastYearSales}
+                      valueStyle={{
+                        color: "white",
+                        textAlign: "center",
+                        fontSize: "18px",
+                      }}
+                      formatter={formatter}
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div
+              className={`w-96 m-auto lg:m-0  py-4 px-4 ${
+                get(user, "name", "")?.split("@")?.includes("scratch")
+                  ? "lg:w-[75vw]"
+                  : "h-[500px]"
+              }  bg-gradient-to-r from-fuchsia-800 via-fuchsia-500 to-white/50 rounded-md ${
+                get(user, "name", "")?.split("@")?.includes("kds") ||
+                get(user, "name", "")?.split("@")?.includes("frontdesk") ||
+                get(user, "name", "")?.split("@")?.includes("partner") ||
+                get(user, "name", "")?.split("@")?.includes("menu") ||
+                get(user, "name", "")?.split("@")?.includes("banner") ||
+                get(user, "name", "")?.split("@")?.includes("rider")
+                  ? "hidden"
+                  : "block"
+              }`}
+            >
+              <h1
+                className={`${
+                  get(user, "name", "")?.split("@")?.includes("scratch")
+                    ? "hidden"
+                    : "block"
+                } text-white font-bold text-center`}
+              >
+                Scratch Cards
+              </h1>
+              <div className="flex items-center justify-center ">
+                <div
+                  className={`flex ${
+                    get(user, "name", "")?.split("@")?.includes("scratch")
+                      ? "flex-row gap-10 flex-wrap"
+                      : "w-[330px] flex-col gap-4 items-center justify-center"
+                  }  pt-2 `}
+                >
+                  <div className="flex  border-b pb-2">
+                    <Statistic
+                      title={
+                        <h1 className="text-white font-semibold text-[18px]">
+                          Total scratch cards
+                        </h1>
+                      }
+                      value={scratchCards.length}
+                      valueStyle={{
+                        color: "white",
+                        textAlign: "center",
+                      }}
+                      formatter={formatter}
+                    />
+                  </div>
+                  <div className="flex gap-5 border-b pb-2">
+                    <Statistic
+                      title={
+                        <h1 className="text-white font-semibold text-[18px]">
+                          Winner scratch cards
+                        </h1>
+                      }
+                      value={
+                        scratchCards.filter((res) => {
+                          return get(res, "status") === true;
+                        }).length
+                      }
+                      valueStyle={{
+                        color: "white",
+                        textAlign: "center",
+                      }}
+                      formatter={formatter}
+                    />
+                  </div>
+                  <div className="flex gap-5 border-b pb-2">
+                    <Statistic
+                      title={
+                        <h1 className="text-white font-semibold text-[18px]">
+                          Not winner scratch cards
+                        </h1>
+                      }
+                      value={
+                        scratchCards.filter((res) => {
+                          return get(res, "status") === false;
+                        }).length
+                      }
+                      valueStyle={{
+                        color: "white",
+                        textAlign: "center",
+                      }}
+                      formatter={formatter}
+                    />
+                  </div>
+                  <div className="flex gap-5 border-b pb-2">
+                    <Statistic
+                      title={
+                        <h1 className="text-white font-semibold text-[18px]">
+                          Not expired cards
+                        </h1>
+                      }
+                      value={
+                        scratchCards.filter((res) => {
+                          return res.expired === false;
+                        }).length
+                      }
+                      valueStyle={{
+                        color: "white",
+                        textAlign: "center",
+                      }}
+                      formatter={formatter}
+                    />
+                  </div>
+                  <div className="flex gap-5 border-b pb-2">
+                    <Statistic
+                      title={
+                        <h1 className="text-white font-semibold text-[18px]">
+                          Expired cards
+                        </h1>
+                      }
+                      value={
+                        scratchCards.filter((res) => {
+                          return res.expired === true;
+                        }).length
+                      }
+                      valueStyle={{
+                        color: "white",
+                        textAlign: "center",
+                      }}
+                      formatter={formatter}
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div
+              className={`w-96 m-auto lg:m-0 lg:w-[270px]${
+                get(user, "name", "")?.split("@")?.includes("kds") ||
+                get(user, "name", "")?.split("@")?.includes("frontdesk") ||
+                get(user, "name", "")?.split("@")?.includes("scratch") ||
+                get(user, "name", "")?.split("@")?.includes("menu") ||
+                get(user, "name", "")?.split("@")?.includes("banner") ||
+                get(user, "name", "")?.split("@")?.includes("rider")
+                  ? "hidden"
+                  : "block"
+              }`}
+            >
+              <TableOrders />
+            </div>
+
+            <div
+              className={`hidden lg:inline  flex flex-wrap items-center justify-center md:items-start md:justify-between md:px-28 gap-8 ${
+                get(user, "name", "")?.split("@")?.includes("kds") ||
+                get(user, "name", "")?.split("@")?.includes("frontdesk") ||
+                get(user, "name", "")?.split("@")?.includes("scratch") ||
+                get(user, "name", "")?.split("@")?.includes("menu") ||
+                get(user, "name", "")?.split("@")?.includes("banner") ||
+                get(user, "name", "")?.split("@")?.includes("rider")
+                  ? "hidden"
+                  : "block"
+              }`}
+            >
+              <div>
+                <OrdersChat ordersData={onlineOrder} />
+              </div>
+
+              <div>
+                <DinningOrderChart ordersData={onlineOrder} />
+              </div>
+              {/* <div
               className={`md:w-[35vw] xl:w-[17vw] ${
                 get(user, "name", "")?.split("@")?.includes("partner")
                   ? "hidden"
@@ -1272,26 +1284,26 @@ function Dashboard() {
             >
               <UserChart ordersData={onlineOrder} />
             </div> */}
-            <div className="md:w-[35vw]">
-              <h1 className="text-center text-[--primary-color] font-bold">
-                Last 5 users
-              </h1>
-              <Table
-                dataSource={users.slice(-5)}
-                pagination={false}
-                columns={columns}
-                scroll={{ x: 300 }}
-              />
-            </div>
-            <div className="md:w-[35vw] xl:w-[20vw]">
-              <TakeAwayChart ordersData={onlineOrder} />
-            </div>
-            <div className="md:w-[35vw] xl:w-[20vw]">
-              <CallOrdersChat ordersData={onlineOrder} />
+              <div className="md:w-[35vw]">
+                <h1 className="text-center text-[--primary-color] font-bold">
+                  Last 5 users
+                </h1>
+                <Table
+                  dataSource={users.slice(-5)}
+                  pagination={false}
+                  columns={columns}
+                  scroll={{ x: 300 }}
+                />
+              </div>
+              <div className="md:w-[35vw] xl:w-[20vw]">
+                <TakeAwayChart ordersData={onlineOrder} />
+              </div>
+              <div className="md:w-[35vw] xl:w-[20vw]">
+                <CallOrdersChat ordersData={onlineOrder} />
+              </div>
             </div>
           </div>
-        </div>
-      </Spin>
+        </Spin>
       )}
     </div>
   );
