@@ -120,7 +120,6 @@ function Sidenavbar() {
               setModalOpen(!modalOpen);
             }}
           >
-            {/* <MenuIcon className="!text-white" /> */}
             <img src={menu} alt="menu" />
           </div>
           <div className="sm:overflow-y-scroll hidden md:block">
