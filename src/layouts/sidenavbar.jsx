@@ -8,7 +8,6 @@ import { get } from "lodash";
 import { items } from "../helper/menu";
 import { Drawer, Menu } from "antd";
 import { useLocation } from "react-router-dom";
-import MenuIcon from "@mui/icons-material/Menu";
 import LoadingPage from "../components/loadingPage";
 
 function Sidenavbar() {
