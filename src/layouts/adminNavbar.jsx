@@ -93,7 +93,7 @@ function AdminNavbar() {
                 onChange={(checked) => handleStatus(checked)}
               />
             </div>
-            <div className="hidden lg:inline">
+            <div>
               <Button
                 className=" lg:!w-[7vw] h-[3.5vh] sm:h-[4vh] flex items-center justify-center text-[#CD5C08] xsm:text-[10px] lg:text-[14px] text-center !border-slate-400  lg:!h-[4.5vh] hover:scale-105 hover:bg-black duration-1000 hover:!text-white font-semibold"
                 htmlType="submit"
