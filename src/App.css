@@ -120,6 +120,12 @@ body {
   color: white !important;
 }
 
+.mobile-selector .ant-select-selector {
+  background-color: #87AFFF !important;
+  color: white !important;
+}
+
+
 .ant-pagination .ant-pagination-item-active {
   background-color: black !important;
 }
