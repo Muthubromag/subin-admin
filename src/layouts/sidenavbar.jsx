@@ -10,8 +10,13 @@ import { Drawer, Menu } from "antd";
 import { useLocation } from "react-router-dom";
 import MenuIcon from "@mui/icons-material/Menu";
 import LoadingPage from "../components/loadingPage";
+import Cookies from "js-cookie";
+import { useNavigate } from "react-router-dom";
+import { CloseOutlined, LoginOutlined } from "@ant-design/icons";
+import menu from "../assets/menu.png";
 
 function Sidenavbar() {
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const [open, setOpen] = useState("");
   const user = useSelector((state) => state.user.user);
@@ -82,10 +87,11 @@ function Sidenavbar() {
       return (
         item.key === "/" ||
         item.key === "sub2" ||
+        item.key === "history" ||
         item.key === "sub10" ||
         item.key === "/feedback" ||
         item.key === "/inventory" ||
-        item.key === "/wallet" ||
+        // item.key === "/wallet" ||
         item.key === "/notifications" ||
         item.key === "sub3" ||
         item.key === "sub1" ||
@@ -96,21 +102,29 @@ function Sidenavbar() {
     return true;
   });
 
+  const handeLogout = () => {
+    Cookies.remove("token");
+    localStorage.removeItem("token");
+    sessionStorage.removeItem("selectedKey");
+    navigate("/login");
+  };
+
   return (
     <div>
       {!localStorage.getItem("token") ? (
         <LoadingPage />
       ) : (
-        <div className="h-[92vh] bg-[--secondary-color] mt-[8vh] fixed md:mt-[8vh] lg:mt-[8vh]  md:flex flex-col justify-between lg:border-r">
+        <div className=" h-[92vh] bg-[--secondary-color] mt-[8vh] fixed md:mt-[8vh] lg:mt-[8vh]  md:flex flex-col justify-between lg:border-r">
           <div
-            className="h-[4vh] md:hidden border-b w-[100vw] flex items-center shadow-[2px]"
+            className="h-[4vh] md:hidden  w-[100vw] flex items-center shadow-[2px]"
             onClick={() => {
               setModalOpen(!modalOpen);
             }}
           >
-            <MenuIcon className="!text-white" />
+            {/* <MenuIcon className="!text-white" /> */}
+            <img src={menu} alt="menu" />
           </div>
-          <div className="w-[18vw]  h-[92vh] sm:overflow-y-scroll hidden md:block">
+          <div className="sm:overflow-y-scroll hidden md:block">
             <Menu
               defaultSelectedKeys={get(location, "pathname", "/")}
               mode="inline"
@@ -125,7 +139,9 @@ function Sidenavbar() {
                   : get(user, "name")?.split("@")?.includes("menu") ||
                     get(user, "name")?.split("@")?.includes("banner")
                   ? MenuFilter
-                  : get(user, "name")?.split("@")?.includes("admin")?items:MenuFilter
+                  : get(user, "name")?.split("@")?.includes("admin")
+                  ? items
+                  : MenuFilter
               }
               defaultOpenKeys={open}
               onOpenChange={(keys) => setOpen(keys)}
@@ -145,7 +161,26 @@ function Sidenavbar() {
             title={false}
             className="!w-[60vw]"
           >
-            <div className="fixed flex !items-start pt-2 w-[50vw]">
+            <div
+              className="fixed flex !items-start lg:pt-2 flex-col rounded-r-3xl h-screen
+               bg-gray-800 rounded-md bg-clip-padding backdrop-filter backdrop-blur-2xl bg-opacity-70 border border-gray-100"
+            >
+              <div
+                className="text-white text-end flex justify-end w-full p-4 "
+                onClick={() => {
+                  setModalOpen(!modalOpen);
+                }}
+              >
+                <CloseOutlined
+                  // spin={true}#CD5C08
+                  style={{
+                    fontSize: "22px",
+                    color: "#fff",
+                    fontWeight: "bold",
+                  }}
+                />
+              </div>
+
               <Menu
                 defaultSelectedKeys={get(location, "pathname", "/")}
                 mode="inline"
@@ -165,6 +200,24 @@ function Sidenavbar() {
                 defaultOpenKeys={open}
                 onOpenChange={(keys) => setOpen(keys)}
               />
+              <div
+                className="text-[#CD5C08]  flex justify-center w-full p-4 mt-8 hover:text-white  "
+                onClick={() => {
+                  handeLogout();
+                }}
+              >
+                Logout &nbsp;{" "}
+                <LoginOutlined
+                  style={{
+                    fontSize: "24px",
+                    color: "#CD5C08",
+                    fontWeight: "bold",
+                    hover: {
+                      color: "#fff",
+                    },
+                  }}
+                />
+              </div>
             </div>
           </Drawer>
         </div>
