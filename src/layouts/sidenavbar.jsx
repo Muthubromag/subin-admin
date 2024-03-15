@@ -9,6 +9,7 @@ import { items } from "../helper/menu";
 import { Drawer, Menu } from "antd";
 import { useLocation } from "react-router-dom";
 import LoadingPage from "../components/loadingPage";
+import menu from "../assets/menu.png";
 
 function Sidenavbar() {
   const dispatch = useDispatch();
@@ -109,7 +110,6 @@ function Sidenavbar() {
           >
 
             <img src={menu} alt="menu" />
-            //<MenuIcon className="!text-white" />
 
           </div>
           <div className="w-[18vw]  h-[92vh] sm:overflow-y-scroll hidden md:block">
