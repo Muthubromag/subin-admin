@@ -158,7 +158,7 @@ function Sidenavbar() {
             closable={false}
             closeIcon={false}
             title={false}
-            className=" menudrawer !bg-inherit"
+            className=" menudrawer !bg-inherit !w-0"
           >
             <div
               className="fixed flex !items-start  flex-col rounded-r-3xl h-screen

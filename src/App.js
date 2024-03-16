@@ -66,6 +66,10 @@ const router = createBrowserRouter(
       <Route path="takeaway" element={<TakeAway />} />
       <Route path="dinning" element={<Dinning />} />
       <Route path="callfororder" element={<CallForOrder />} />
+      <Route path="orderhistory/onlineorder" element={<OnlineOrder />} />
+      <Route path="orderhistory/takeaway" element={<TakeAway />} />
+      <Route path="orderhistory/dinning" element={<Dinning />} />
+      <Route path="orderhistory/callfororder" element={<CallForOrder />} />
       <Route index path="login" element={<Login />} />
       <Route path="scratchcard" element={<ScratchCard />} />
       <Route path="footer" element={<Footer />} />
