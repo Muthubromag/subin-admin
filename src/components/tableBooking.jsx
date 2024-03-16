@@ -30,6 +30,7 @@ const { Meta } = Card;
 
 const { Option } = Select;
 function TableBooking() {
+  const refresher = useSelector((state) => state.user.refreshData);
   const slotsOptions = generateTimeSlots({ interval: 2 });
   const [open, setOpen] = useState(false);
   const [form] = Form.useForm();
@@ -75,6 +76,12 @@ function TableBooking() {
   useEffect(() => {
     fetchData();
   }, []);
+
+  useEffect(() => {
+    if (refresher?.order === "Dining") {
+      fetchData(false);
+    }
+  }, [refresher]);
 
   const handleFinish = async (value) => {
     try {

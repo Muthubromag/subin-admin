@@ -94,18 +94,23 @@ body {
   width: 0px !important;
 }
 
-:where(.css-dev-only-do-not-override-2i2tap).ant-drawer .ant-drawer-body {
-  padding: 0 !important;
-
+.menudrawer>:where(.css-2i2tap).ant-menu-light {
+  background: none !important;
 }
 
-:where(.css-dev-only-do-not-override-2i2tap).ant-drawer .ant-drawer-content,
+.menudrawer>:where(.css-dev-only-do-not-override-2i2tap).ant-drawer .ant-drawer-body,
 :where(.css-dev-only-do-not-override-2i2tap).ant-menu-light {
   background: none !important;
 }
 
+
+
+:where(.css-dev-only-do-not-override-2i2tap).ant-drawer .ant-drawer-wrapper-body .ant-drawer-body {
+  padding: 0px !important;
+}
+
 .ant-pagination .ant-pagination-item a {
-  color: white !important;
+  color: rgb(211, 201, 201) !important;
 }
 
 .ant-pagination-next .ant-pagination-item-link,
