@@ -15,6 +15,7 @@ import CreditScoreIcon from "@mui/icons-material/CreditScore";
 import SettingsIcon from "@mui/icons-material/Settings";
 import Discount from "@mui/icons-material/Discount";
 import PointOfSaleIcon from "@mui/icons-material/PointOfSale";
+
 function getItem(label, key, icon, children, type) {
   return {
     key,
@@ -47,6 +48,7 @@ export const items = [
     "/adminuser",
     <AccountCircleIcon className="!text-[17px] !text-[#CD5C08]" />
   ),
+
   getItem(
     <div className="text-[10px] lg:text-[14px]">Order Management</div>,
     "sub2",
@@ -78,6 +80,55 @@ export const items = [
       ),
     ]
   ),
+
+  //order history
+
+  getItem(
+    <div className="text-[10px] lg:text-[14px]">Order History</div>,
+    "history",
+    <ShoppingCartCheckoutIcon className="!text-[17px] !text-[#CD5C08]" />,
+    [
+      getItem(
+        <NavLink
+          to="orderhistory/onlineorder"
+          className="text-[10px] lg:text-[14px]"
+        >
+          Online Order
+        </NavLink>,
+        "onlineorder"
+      ),
+      getItem(
+        <NavLink
+          to="orderhistory/callfororder"
+          className="text-[10px] lg:text-[14px]"
+        >
+          Call for order
+        </NavLink>,
+        "callfororder"
+      ),
+      getItem(
+        <NavLink
+          to="orderhistory/dinning"
+          className="text-[10px] lg:text-[14px]"
+        >
+          Dinning
+        </NavLink>,
+        "dinning"
+      ),
+      getItem(
+        <NavLink
+          to="orderhistory/takeaway"
+          className="text-[10px] lg:text-[14px]"
+        >
+          Take away
+        </NavLink>,
+        "takeaway"
+      ),
+    ]
+  ),
+
+  // order history
+
   getItem(
     <div className="text-[10px] lg:text-[14px]">Menu Management</div>,
     "sub1",
