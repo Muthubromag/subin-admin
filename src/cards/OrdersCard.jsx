@@ -6,6 +6,8 @@ const OrdersCard = ({
   date,
   time,
   orderId,
+  bookingID,
+  tableNo,
   deliveryStatus,
   billAmount,
   location,
@@ -23,10 +25,22 @@ const OrdersCard = ({
           <div className="text-[#828282] font-medium">
             Order Id : <span className="font-bold text-black">{orderId}</span>{" "}
           </div>
+          {bookingID && (
+            <div className="text-[#828282] font-medium">
+              Booking Id :{" "}
+              <span className="font-bold text-black">{bookingID}</span>{" "}
+            </div>
+          )}
+          {tableNo && (
+            <div className="text-[#828282] font-medium">
+              Table No : <span className="font-bold text-black">{tableNo}</span>{" "}
+            </div>
+          )}
           <div className="text-[#828282] font-medium">
             Bill Amount :{" "}
             <span className="font-bold text-black">{billAmount}</span>{" "}
           </div>
+
           {deliveryStatus && (
             <div className="text-[#828282] font-medium">
               Delivery Status :{" "}

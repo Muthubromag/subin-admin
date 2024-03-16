@@ -113,7 +113,7 @@ function Sidenavbar() {
       {!localStorage.getItem("token") ? (
         <LoadingPage />
       ) : (
-        <div className=" h-[92vh] bg-[--secondary-color] mt-[8vh] fixed md:mt-[8vh] lg:mt-[8vh]  md:flex flex-col justify-between lg:border-r">
+        <div className="menunavdrawer h-[92vh] bg-[--secondary-color] mt-[8vh] fixed md:mt-[8vh] lg:mt-[8vh]  md:flex flex-col justify-between lg:border-r">
           <div
             className="h-[4vh] md:hidden  w-[100vw] flex items-center shadow-[2px]"
             onClick={() => {
@@ -157,10 +157,10 @@ function Sidenavbar() {
             closable={false}
             closeIcon={false}
             title={false}
-            className="!w-[60vw]"
+            className=" menudrawer !bg-inherit"
           >
             <div
-              className="fixed flex !items-start lg:pt-2 flex-col rounded-r-3xl h-screen
+              className="fixed flex !items-start  flex-col rounded-r-3xl h-screen
                bg-gray-800 rounded-md bg-clip-padding backdrop-filter backdrop-blur-2xl bg-opacity-70 border border-gray-100"
             >
               <div
