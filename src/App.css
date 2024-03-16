@@ -94,11 +94,11 @@ body {
   width: 0px !important;
 }
 
-.menudrawer>:where(.css-2i2tap).ant-menu-light {
+/* .menudrawer>:where(.css-2i2tap).ant-menu-light {
   background: none !important;
-}
+} */
 
-.menudrawer>:where(.css-dev-only-do-not-override-2i2tap).ant-drawer .ant-drawer-body,
+.menunavdrawer>:where(.css-dev-only-do-not-override-2i2tap).ant-drawer .ant-drawer-body,
 :where(.css-dev-only-do-not-override-2i2tap).ant-menu-light {
   background: none !important;
 }
