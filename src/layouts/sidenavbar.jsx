@@ -9,7 +9,6 @@ import { items } from "../helper/menu";
 import { Drawer, Menu } from "antd";
 import { useLocation } from "react-router-dom";
 import LoadingPage from "../components/loadingPage";
-
 import Cookies from "js-cookie";
 import { useNavigate } from "react-router-dom";
 import { CloseOutlined, LoginOutlined } from "@ant-design/icons";
