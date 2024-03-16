@@ -126,6 +126,7 @@ function Sidenavbar() {
             <Menu
               defaultSelectedKeys={get(location, "pathname", "/")}
               mode="inline"
+              theme="dark"
               items={
                 get(user, "name")?.split("@")?.includes("scratch") ||
                 get(user, "name")?.split("@")?.includes("rider")
