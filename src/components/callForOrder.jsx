@@ -27,6 +27,7 @@ import { v4 as uuidv4 } from "uuid";
 import { useNavigate } from "react-router-dom";
 // import { initializeSocket } from "../helper/socketService";
 import "../assets/css/callorder.css";
+import OrdersCard from "../cards/OrdersCard";
 function CallForOrder() {
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState([]);
@@ -1339,47 +1340,107 @@ function CallForOrder() {
               <div className="flex flex-col gap-y-2">
                 <div className="lg:p-2 ">
                   <Spin spinning={loading}>
-                    <Table
-                      key="id"
-                      size="middle"
-                      pagination={{
-                        pageSize: 5,
-                        current: currentPage,
-                        onChange: (page) => {
-                          setCurrentPage(page);
-                        },
-                      }}
-                      columns={
-                        get(user, "name", "")?.split("@")?.includes("kds")
-                          ? kdsColumns
-                          : get(user, "name", "")
-                              ?.split("@")
-                              ?.includes("frontdesk") ||
+                    <div className="hidden lg:inline">
+                      <Table
+                        key="id"
+                        size="middle"
+                        pagination={{
+                          pageSize: 5,
+                          current: currentPage,
+                          onChange: (page) => {
+                            setCurrentPage(page);
+                          },
+                        }}
+                        columns={
+                          get(user, "name", "")?.split("@")?.includes("kds")
+                            ? kdsColumns
+                            : get(user, "name", "")
+                                ?.split("@")
+                                ?.includes("frontdesk") ||
+                              get(user, "name", "")
+                                ?.split("@")
+                                ?.includes("partner")
+                            ? columnsOperation
+                            : columns
+                        }
+                        dataSource={
+                          get(user, "name", "")?.split("@")?.includes("kds")
+                            ? kdsOrders
+                            : data
+                        }
+                        className="overflow-x-scoll"
+                        scroll={{
+                          x:
                             get(user, "name", "")
                               ?.split("@")
-                              ?.includes("partner")
-                          ? columnsOperation
-                          : columns
-                      }
-                      dataSource={
-                        get(user, "name", "")?.split("@")?.includes("kds")
-                          ? kdsOrders
-                          : data
-                      }
-                      className="overflow-x-scoll"
-                      scroll={{
-                        x:
-                          get(user, "name", "")
-                            ?.split("@")
-                            ?.includes("partner") ||
-                          get(user, "name", "")?.split("@")?.includes("kds") ||
-                          get(user, "name", "")
-                            ?.split("@")
-                            ?.includes("frontdesk")
-                            ? 800
-                            : 1700,
-                      }}
-                    />
+                              ?.includes("partner") ||
+                            get(user, "name", "")
+                              ?.split("@")
+                              ?.includes("kds") ||
+                            get(user, "name", "")
+                              ?.split("@")
+                              ?.includes("frontdesk")
+                              ? 800
+                              : 1700,
+                        }}
+                      />
+                    </div>
+                    <div className="inline lg:hidden">
+                      {data.map((item, index) => {
+                        const dateTimeString = item.createdAt;
+
+                        // Split the date and time using the 'T' delimiter
+                        const [datePart] = dateTimeString.split("T");
+                        const date = datePart;
+
+                        const indianStandardTime = new Date(item.createdAt);
+
+                        indianStandardTime.setUTCHours(
+                          indianStandardTime.getUTCHours() + 5
+                        ); // IST is UTC+5:30
+                        indianStandardTime.setUTCMinutes(
+                          indianStandardTime.getUTCMinutes() + 30
+                        );
+
+                        // Extract hours, minutes, and seconds
+                        let hours = indianStandardTime.getHours();
+                        const minutes = indianStandardTime.getMinutes();
+
+                        // Convert hours to 12-hour format
+                        let period = "AM";
+                        if (hours >= 12) {
+                          period = "PM";
+                        }
+                        hours = hours % 12 || 12;
+
+                        hours = hours < 10 ? "0" + hours : hours;
+                        const formattedTime = `${hours}:${
+                          minutes < 10 ? "0" + minutes : minutes
+                        }`;
+
+                        const mobilePreviewModal = (orderedFood) => {
+                          setPreviewData(!previewData);
+                          console.log(orderedFood[0]?.foodName, "orderedFood");
+                          setFoodInformationList(orderedFood);
+                          setSelectedProduct(orderedFood);
+                        };
+                        return (
+                          <OrdersCard
+                            key={index}
+                            id={index + 1}
+                            date={date}
+                            time={`${formattedTime}`}
+                            orderId={item.orderId}
+                            deliveryStatus={item.status}
+                            billAmount={item.billAmount}
+                            location={item?.location}
+                            preview={() =>
+                              mobilePreviewModal(item?.orderedFood)
+                            }
+                          />
+                        );
+                      })}
+                    </div>
                   </Spin>
                 </div>
               </div>
@@ -1397,6 +1458,7 @@ function CallForOrder() {
           form.resetFields();
         }}
         footer={false}
+        className="p-4"
       >
         <Form
           layout="vertical"
