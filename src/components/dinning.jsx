@@ -15,6 +15,7 @@ import { get } from "lodash";
 import { useSelector } from "react-redux";
 import moment from "moment";
 import { useNavigate } from "react-router-dom";
+import OrdersCard from "../cards/OrdersCard";
 
 function Dinning() {
   const navigate = useNavigate();
@@ -860,38 +861,89 @@ function Dinning() {
     <div className="pt-28 md:pl-[20vw]">
       <div className="w-[98vw]  md:w-[78vw]">
         <Spin spinning={loading}>
-          <Table
-            columns={
-              get(user, "name", "")?.split("@")?.includes("kds")
-                ? kdsColumns
-                : get(user, "name", "")?.split("@")?.includes("frontdesk") ||
-                  get(user, "name", "")?.split("@")?.includes("partner")
-                ? columnsOperations
-                : columns
-            }
-            dataSource={
-              get(user, "name", "")?.split("@")?.includes("kds")
-                ? kdsOrders
-                : data
-            }
-            scroll={{
-              x:
-                get(user, "name", "")?.split("@")?.includes("partner") ||
-                get(user, "name", "")?.split("@")?.includes("kds") ||
-                get(user, "name", "")?.split("@")?.includes("frontdesk")
-                  ? 1500
-                  : 2000,
-            }}
-            ref={tableRef}
-            pagination={{
-              pageSize: 5,
-              current: currentPage,
-              onChange: (page) => {
-                setCurrentPage(page);
-              },
-            }}
-            className="overflow-x-scroll"
-          />
+          <div className="hidden lg:inline">
+            <Table
+              columns={
+                get(user, "name", "")?.split("@")?.includes("kds")
+                  ? kdsColumns
+                  : get(user, "name", "")?.split("@")?.includes("frontdesk") ||
+                    get(user, "name", "")?.split("@")?.includes("partner")
+                  ? columnsOperations
+                  : columns
+              }
+              dataSource={
+                get(user, "name", "")?.split("@")?.includes("kds")
+                  ? kdsOrders
+                  : data
+              }
+              scroll={{
+                x:
+                  get(user, "name", "")?.split("@")?.includes("partner") ||
+                  get(user, "name", "")?.split("@")?.includes("kds") ||
+                  get(user, "name", "")?.split("@")?.includes("frontdesk")
+                    ? 1500
+                    : 2000,
+              }}
+              ref={tableRef}
+              pagination={{
+                pageSize: 5,
+                current: currentPage,
+                onChange: (page) => {
+                  setCurrentPage(page);
+                },
+              }}
+              className="overflow-x-scroll"
+            />
+          </div>
+          <div className="inline lg:hidden">
+            {data.map((item, index) => {
+              const dateTimeString = item.createdAt;
+
+              // Split the date and time using the 'T' delimiter
+              const [datePart] = dateTimeString.split("T");
+              const date = datePart;
+
+              const indianStandardTime = new Date(item.createdAt);
+
+              indianStandardTime.setUTCHours(
+                indianStandardTime.getUTCHours() + 5
+              ); // IST is UTC+5:30
+              indianStandardTime.setUTCMinutes(
+                indianStandardTime.getUTCMinutes() + 30
+              );
+
+              // Extract hours, minutes, and seconds
+              let hours = indianStandardTime.getHours();
+              const minutes = indianStandardTime.getMinutes();
+
+              // Convert hours to 12-hour format
+              let period = "AM";
+              if (hours >= 12) {
+                period = "PM";
+              }
+              hours = hours % 12 || 12;
+
+              hours = hours < 10 ? "0" + hours : hours;
+              const formattedTime = `${hours}:${
+                minutes < 10 ? "0" + minutes : minutes
+              }`;
+
+              return (
+                <OrdersCard
+                  key={index}
+                  id={index + 1}
+                  date={date}
+                  time={`${formattedTime}`}
+                  orderId={item.orderId}
+                  bookingID={item.bookingId}
+                  tableNo={item.tableNo}
+                  deliveryStatus={item.status}
+                  billAmount={item.billAmount}
+                  preview={() => openPreviewModal(item?.orderedFood)}
+                />
+              );
+            })}
+          </div>
         </Spin>
       </div>
       <Modal
