@@ -142,6 +142,7 @@ function Sidenavbar() {
                   ? items
                   : MenuFilter
               }
+              className="h-screen"
               defaultOpenKeys={open}
               onOpenChange={(keys) => setOpen(keys)}
             />
@@ -162,7 +163,7 @@ function Sidenavbar() {
           >
             <div
               className="fixed flex !items-start  flex-col rounded-r-3xl h-screen
-               bg-gray-800 rounded-md bg-clip-padding backdrop-filter backdrop-blur-2xl bg-opacity-70 border border-gray-100"
+               bg-[#001529] rounded-md bg-clip-padding backdrop-filter backdrop-blur-2xl bg-opacity-70 border border-gray-100"
             >
               <div
                 className="text-white text-end flex justify-end w-full p-4 "
@@ -183,6 +184,7 @@ function Sidenavbar() {
               <Menu
                 defaultSelectedKeys={get(location, "pathname", "/")}
                 mode="inline"
+                theme="dark"
                 items={
                   get(user, "name")?.split("@")?.includes("scratch") ||
                   get(user, "name")?.split("@")?.includes("rider")
@@ -198,6 +200,7 @@ function Sidenavbar() {
                 }
                 defaultOpenKeys={open}
                 onOpenChange={(keys) => setOpen(keys)}
+                // className="h-screen"
               />
               <div
                 className="text-[#CD5C08]  flex justify-center w-full p-4 mt-8 hover:text-white  "

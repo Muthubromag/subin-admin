@@ -100,7 +100,7 @@ body {
 
 
 :where(.css-dev-only-do-not-override-2i2tap).ant-menu-light {
-  /* background: #2d2d48 !important; */
+  background: #2d2d48 !important;
   height: 100vh !important;
 
 }
