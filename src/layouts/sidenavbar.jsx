@@ -113,7 +113,7 @@ function Sidenavbar() {
       {!localStorage.getItem("token") ? (
         <LoadingPage />
       ) : (
-        <div className="menunavdrawer h-[92vh] bg-[--secondary-color] mt-[8vh] fixed md:mt-[8vh] lg:mt-[8vh]  md:flex flex-col justify-between lg:border-r">
+        <div className="menunavdrawer h-[100vh] !bg-[--secondary-color] mt-[8vh] fixed md:mt-[8vh]   md:flex flex-col justify-between lg:border-r">
           <div
             className="h-[4vh] md:hidden  w-[100vw] flex items-center shadow-[2px]"
             onClick={() => {
@@ -126,6 +126,7 @@ function Sidenavbar() {
             <Menu
               defaultSelectedKeys={get(location, "pathname", "/")}
               mode="inline"
+              theme="dark"
               items={
                 get(user, "name")?.split("@")?.includes("scratch") ||
                 get(user, "name")?.split("@")?.includes("rider")
@@ -141,6 +142,7 @@ function Sidenavbar() {
                   ? items
                   : MenuFilter
               }
+              className="h-screen"
               defaultOpenKeys={open}
               onOpenChange={(keys) => setOpen(keys)}
             />
@@ -161,7 +163,7 @@ function Sidenavbar() {
           >
             <div
               className="fixed flex !items-start  flex-col rounded-r-3xl h-screen
-               bg-gray-800 rounded-md bg-clip-padding backdrop-filter backdrop-blur-2xl bg-opacity-70 border border-gray-100"
+               bg-[#001529] rounded-md bg-clip-padding backdrop-filter backdrop-blur-2xl bg-opacity-70 border border-gray-100"
             >
               <div
                 className="text-white text-end flex justify-end w-full p-4 "
@@ -182,6 +184,7 @@ function Sidenavbar() {
               <Menu
                 defaultSelectedKeys={get(location, "pathname", "/")}
                 mode="inline"
+                theme="dark"
                 items={
                   get(user, "name")?.split("@")?.includes("scratch") ||
                   get(user, "name")?.split("@")?.includes("rider")
@@ -197,6 +200,7 @@ function Sidenavbar() {
                 }
                 defaultOpenKeys={open}
                 onOpenChange={(keys) => setOpen(keys)}
+                // className="h-screen"
               />
               <div
                 className="text-[#CD5C08]  flex justify-center w-full p-4 mt-8 hover:text-white  "
