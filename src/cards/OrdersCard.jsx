@@ -1,4 +1,4 @@
-import { Select, Switch } from "antd";
+import { Image, Select, Switch } from "antd";
 import React from "react";
 
 export const OrdersCard = ({
@@ -109,10 +109,10 @@ export const MenuManageCards = ({
         <div className="p-4 flex  flex-col space-y-3">
           <div className="flex items-center space-x-2 justify-between">
             <div className="img-crd w-32">
-              <img
-                src={foodimg}
+              <Image
                 alt="food_img"
-                className=" w-32 rounded-md h-28 "
+                className=" w-32 rounded-md h-28 border-2 border-[#CD5C08]  "
+                src={foodimg}
               />
             </div>
             <div className="flex flex-col">
