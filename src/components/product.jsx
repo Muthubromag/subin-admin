@@ -30,6 +30,7 @@ import { get, isEmpty } from "lodash";
 import axios from "axios";
 import EditNoteOutlinedIcon from "@mui/icons-material/EditNoteOutlined";
 import { useSelector } from "react-redux";
+import { MenuManageCards } from "../cards/OrdersCard";
 
 function Product() {
   const { Panel } = Collapse;
@@ -704,7 +705,7 @@ function Product() {
 
   return (
     <div className="mt-28 md:pl-[20vw]">
-      <div className="w-[95vw] md:w-[80vw]">
+      <div className="w-[95vw] md:w-[80vw] hidden lg:inline">
         <Collapse
           defaultActiveKey={["1"]}
           expandIcon={({ isActive }) => (
@@ -771,241 +772,281 @@ function Product() {
             </Spin>
           </Panel>
         </Collapse>
+      </div>
 
-        <Drawer
-          open={open}
-          destroyOnClose
-          title={updateId ? "Edit Menu" : "Add Menu"}
-          onClose={() => {
-            setOpen(!open);
-            form.resetFields();
-            setImageUrl(null);
-            setIsAvailable(false);
-            setFileList([]);
-            setUpdateId("");
-          }}
-        >
-          <Form onFinish={handleFinish} layout="vertical" form={form}>
-            <Form.Item
-              label="Cuisine Name"
-              name="categoryId"
-              rules={[
-                {
-                  required: true,
-                  message: "Please Choose a category name",
-                },
-              ]}
+      <div className="inline lg:hidden">
+        <Spin spinning={loading}>
+          <div className="my-2">
+            <Input.Search
+              placeholder="search cusines"
+              // onSearch={handleSearchmobile}
+              onKeyDown={handleSearchKeyPress}
+              style={{
+                width: "100%",
+              }}
+              className="custom-search"
+            />
+          </div>
+
+          <div>
+            {filterData.map((item, index) => {
+              return (
+                <div className=" ">
+                  <MenuManageCards
+                    id={index + 1}
+                    name={
+                      item.name.length > 10
+                        ? item.name.slice(0, 10) + "..."
+                        : item.name
+                    }
+                    foodimg={item.image}
+                    price={item.price}
+                    offer={item.offer}
+                    discountPrice={item.discountPrice}
+                    status={item.status}
+                    switchChange={(checked) => handleStatus(checked, item)}
+                  />
+                </div>
+              );
+            })}
+          </div>
+        </Spin>
+      </div>
+
+      <Drawer
+        open={open}
+        destroyOnClose
+        title={updateId ? "Edit Menu" : "Add Menu"}
+        onClose={() => {
+          setOpen(!open);
+          form.resetFields();
+          setImageUrl(null);
+          setIsAvailable(false);
+          setFileList([]);
+          setUpdateId("");
+        }}
+      >
+        <Form onFinish={handleFinish} layout="vertical" form={form}>
+          <Form.Item
+            label="Cuisine Name"
+            name="categoryId"
+            rules={[
+              {
+                required: true,
+                message: "Please Choose a category name",
+              },
+            ]}
+          >
+            <Select
+              placeholder="Select Category"
+              size="large"
+              onChange={(e, option) => {
+                console.log("first", { e, option });
+                setSelectedCategory({
+                  id: e,
+                  type: option?.objectValue?.type,
+                });
+                handleSubcategoryFilter(e);
+              }}
             >
-              <Select
-                placeholder="Select Category"
-                size="large"
-                onChange={(e, option) => {
-                  console.log("first", { e, option });
-                  setSelectedCategory({
-                    id: e,
-                    type: option?.objectValue?.type,
-                  });
-                  handleSubcategoryFilter(e);
-                }}
-              >
-                {category.map((res, i) => {
-                  return (
-                    <Option value={res._id} key={i} objectValue={res}>
-                      {res?.name}
+              {category.map((res, i) => {
+                return (
+                  <Option value={res._id} key={i} objectValue={res}>
+                    {res?.name}
+                  </Option>
+                );
+              })}
+            </Select>
+          </Form.Item>
+
+          <Form.Item
+            label="Subcuisine Name"
+            name="subCategoryId"
+            rules={[
+              {
+                required: true,
+                message: "Please choose a category name",
+              },
+            ]}
+          >
+            <Select
+              placeholder="Select SubCategory"
+              size="large"
+              onChange={(e) => {
+                setselectedSubCategory(e);
+              }}
+            >
+              {isEmpty(filteredSubcategory) && !dummy
+                ? subCategory.map((res, i) => (
+                    <Option value={res._id} key={i}>
+                      {res.name}
                     </Option>
-                  );
-                })}
-              </Select>
-            </Form.Item>
+                  ))
+                : filteredSubcategory.map((res, i) => (
+                    <Option value={res._id} key={i}>
+                      {res.name}
+                    </Option>
+                  ))}
+            </Select>
+          </Form.Item>
 
-            <Form.Item
-              label="Subcuisine Name"
-              name="subCategoryId"
-              rules={[
-                {
-                  required: true,
-                  message: "Please choose a category name",
-                },
-              ]}
-            >
-              <Select
-                placeholder="Select SubCategory"
-                size="large"
-                onChange={(e) => {
-                  setselectedSubCategory(e);
+          <Form.Item
+            name="name"
+            label="Menu Name"
+            rules={[
+              {
+                required: true,
+                message: "Please enter subCategory",
+              },
+            ]}
+          >
+            <Input type="text" placeholder="Product name..." size="large" />
+          </Form.Item>
+
+          {/* <Button onClick={()=>setIsFoodTypesExist(!isFoodTypesExist)}>Toggle</Button> */}
+          {selectedCategory?.type === "food" ? (
+            <div className="flex justify-center items-center gap-4">
+              <Switch
+                default
+                checked={isVeg}
+                checkedChildren="Veg"
+                unCheckedChildren="Non-Veg"
+                className={`mb-10 w-32`}
+                onChange={() => {
+                  setIsVeg(!isVeg);
                 }}
+                style={{ backgroundColor: isVeg ? "#008000" : "#FF0000" }}
+              />
+
+              <Switch
+                checked={isFoodTypesExist}
+                checkedChildren="Multiple Type"
+                unCheckedChildren="Single Type"
+                className={`mb-10 w-32 `}
+                onChange={() => {
+                  setIsFoodTypesExist(!isFoodTypesExist);
+                }}
+                style={{
+                  backgroundColor: isFoodTypesExist ? "#CD5C08" : "#000000",
+                }}
+              />
+            </div>
+          ) : null}
+
+          {!isFoodTypesExist && (
+            <>
+              <Form.Item
+                name="price"
+                label="Price"
+                rules={[
+                  {
+                    required: true,
+                    message: "Please enter price",
+                  },
+                ]}
               >
-                {isEmpty(filteredSubcategory) && !dummy
-                  ? subCategory.map((res, i) => (
-                      <Option value={res._id} key={i}>
-                        {res.name}
-                      </Option>
-                    ))
-                  : filteredSubcategory.map((res, i) => (
-                      <Option value={res._id} key={i}>
-                        {res.name}
-                      </Option>
-                    ))}
-              </Select>
-            </Form.Item>
+                <Input type="number" placeholder="Price..." size="large" />
+              </Form.Item>
+              <Form.Item
+                name="offer"
+                label="Offer"
+                initialValue={0}
+                rules={[
+                  {
+                    required: false,
+                    message: "Please enter offer",
+                  },
+                ]}
+              >
+                <Input type="number" placeholder="offer..." size="large" />
+              </Form.Item>
+            </>
+          )}
 
-            <Form.Item
-              name="name"
-              label="Menu Name"
-              rules={[
-                {
-                  required: true,
-                  message: "Please enter subCategory",
-                },
-              ]}
-            >
-              <Input type="text" placeholder="Product name..." size="large" />
-            </Form.Item>
+          {/*  */}
 
-            {/* <Button onClick={()=>setIsFoodTypesExist(!isFoodTypesExist)}>Toggle</Button> */}
-            {selectedCategory?.type === "food" ? (
-              <div className="flex justify-center items-center gap-4">
-                <Switch
-                  default
-                  checked={isVeg}
-                  checkedChildren="Veg"
-                  unCheckedChildren="Non-Veg"
-                  className={`mb-10 w-32`}
-                  onChange={() => {
-                    setIsVeg(!isVeg);
-                  }}
-                  style={{ backgroundColor: isVeg ? "#008000" : "#FF0000" }}
-                />
-
-                <Switch
-                  checked={isFoodTypesExist}
-                  checkedChildren="Multiple Type"
-                  unCheckedChildren="Single Type"
-                  className={`mb-10 w-32 `}
-                  onChange={() => {
-                    setIsFoodTypesExist(!isFoodTypesExist);
-                  }}
-                  style={{
-                    backgroundColor: isFoodTypesExist ? "#CD5C08" : "#000000",
-                  }}
-                />
-              </div>
-            ) : null}
-
-            {!isFoodTypesExist && (
-              <>
-                <Form.Item
-                  name="price"
-                  label="Price"
-                  rules={[
-                    {
-                      required: true,
-                      message: "Please enter price",
-                    },
-                  ]}
-                >
-                  <Input type="number" placeholder="Price..." size="large" />
-                </Form.Item>
-                <Form.Item
-                  name="offer"
-                  label="Offer"
-                  initialValue={0}
-                  rules={[
-                    {
-                      required: false,
-                      message: "Please enter offer",
-                    },
-                  ]}
-                >
-                  <Input type="number" placeholder="offer..." size="large" />
-                </Form.Item>
-              </>
-            )}
-
-            {/*  */}
-
-            {isFoodTypesExist && (
-              <>
-                <Form.List name="types" initialValue={[""]}>
-                  {(fields, { add, remove }) => (
-                    <>
-                      {fields.map(({ key, name, ...restField }, index) => (
-                        <div key={index}>
-                          {/* style={{ display: 'flex', marginBottom: 8 }} */}
-                          <Space
-                            key={key}
-                            align="baseline"
-                            className="form-commodity-row"
-                          >
-                            <Form.Item
-                              {...restField}
-                              label=""
-                              name={[name, "Type"]}
-                              rules={[
-                                {
-                                  required: true,
-                                  message: "Enter Valid Type",
-                                  pattern: /^[A-Za-z\s]+$/,
-                                },
-                              ]}
-                            >
-                              <Input placeholder="Type" />
-                            </Form.Item>
-
-                            <Form.Item
-                              {...restField}
-                              type="number"
-                              name={[name, "TypePrice"]}
-                              rules={[
-                                {
-                                  required: true,
-                                  message: "Enter Valid Price",
-                                  pattern: new RegExp(/^[0-9]+$/),
-                                },
-                              ]}
-                            >
-                              <Input placeholder="Price" />
-                            </Form.Item>
-
-                            <Form.Item
-                              {...restField}
-                              name={[name, "TypeOfferPercentage"]}
-                              initialValue={0}
-                              rules={[
-                                {
-                                  required: true,
-                                  message: "Enter valid Offer Percentage",
-                                  pattern: new RegExp(
-                                    /^[0-9]$|^[1-9][0-9]?$|^99$/
-                                  ),
-                                },
-                              ]}
-                            >
-                              <Input placeholder="Offer" />
-                            </Form.Item>
-
-                            <MinusCircleOutlined
-                              className="minus-circle"
-                              onClick={() => remove(name)}
-                            />
-                          </Space>
-                        </div>
-                      ))}
-                      <Form.Item className="mt-3 text-center">
-                        <Button
-                          shape="round"
-                          type="dashed"
-                          onClick={() => add()}
-                          icon={<PlusOutlined />}
+          {isFoodTypesExist && (
+            <>
+              <Form.List name="types" initialValue={[""]}>
+                {(fields, { add, remove }) => (
+                  <>
+                    {fields.map(({ key, name, ...restField }, index) => (
+                      <div key={index}>
+                        {/* style={{ display: 'flex', marginBottom: 8 }} */}
+                        <Space
+                          key={key}
+                          align="baseline"
+                          className="form-commodity-row"
                         >
-                          Add More Type
-                        </Button>
-                      </Form.Item>
-                    </>
-                  )}
-                </Form.List>
+                          <Form.Item
+                            {...restField}
+                            label=""
+                            name={[name, "Type"]}
+                            rules={[
+                              {
+                                required: true,
+                                message: "Enter Valid Type",
+                                pattern: /^[A-Za-z\s]+$/,
+                              },
+                            ]}
+                          >
+                            <Input placeholder="Type" />
+                          </Form.Item>
 
-                {/* {
+                          <Form.Item
+                            {...restField}
+                            type="number"
+                            name={[name, "TypePrice"]}
+                            rules={[
+                              {
+                                required: true,
+                                message: "Enter Valid Price",
+                                pattern: new RegExp(/^[0-9]+$/),
+                              },
+                            ]}
+                          >
+                            <Input placeholder="Price" />
+                          </Form.Item>
+
+                          <Form.Item
+                            {...restField}
+                            name={[name, "TypeOfferPercentage"]}
+                            initialValue={0}
+                            rules={[
+                              {
+                                required: true,
+                                message: "Enter valid Offer Percentage",
+                                pattern: new RegExp(
+                                  /^[0-9]$|^[1-9][0-9]?$|^99$/
+                                ),
+                              },
+                            ]}
+                          >
+                            <Input placeholder="Offer" />
+                          </Form.Item>
+
+                          <MinusCircleOutlined
+                            className="minus-circle"
+                            onClick={() => remove(name)}
+                          />
+                        </Space>
+                      </div>
+                    ))}
+                    <Form.Item className="mt-3 text-center">
+                      <Button
+                        shape="round"
+                        type="dashed"
+                        onClick={() => add()}
+                        icon={<PlusOutlined />}
+                      >
+                        Add More Type
+                      </Button>
+                    </Form.Item>
+                  </>
+                )}
+              </Form.List>
+
+              {/* {
                   types.map((type, index) => (
               <div key={index} className="flex items-center gap-2 ">
                 <Form.Item
@@ -1053,72 +1094,71 @@ function Product() {
             >
               Add Type
                 </button> */}
-              </>
-            )}
+            </>
+          )}
 
-            {/*  */}
-            <Form.Item
-              label="Menu Availability"
-              name="status"
-              className="mb-0 mt-2"
+          {/*  */}
+          <Form.Item
+            label="Menu Availability"
+            name="status"
+            className="mb-0 mt-2"
+          >
+            <Switch
+              checked={isAvailable}
+              onChange={(checked) => setIsAvailable(checked)}
+            />
+          </Form.Item>
+
+          <Form.Item
+            name="img"
+            rules={[
+              {
+                required: updateId === "" ? true : false,
+                message: "Select menu image",
+              },
+            ]}
+          >
+            <Upload
+              onChange={handleChange}
+              fileList={fileList}
+              onPreview={(e) => {}}
+              maxCount={10} // Set your preferred maximum count here
+              listType="picture-card"
+              multiple={true} // Allow multiple file selection
             >
-              <Switch
-                checked={isAvailable}
-                onChange={(checked) => setIsAvailable(checked)}
-              />
-            </Form.Item>
-
-            <Form.Item
-              name="img"
-              rules={[
-                {
-                  required: updateId === "" ? true : false,
-                  message: "Select menu image",
-                },
-              ]}
-            >
-              <Upload
-                onChange={handleChange}
-                fileList={fileList}
-                onPreview={(e) => {}}
-                maxCount={10} // Set your preferred maximum count here
-                listType="picture-card"
-                multiple={true} // Allow multiple file selection
-              >
-                <div>
-                  <PlusOutlined />
-                  <div style={{ marginTop: 8 }}>Upload</div>
-                </div>
-              </Upload>
-            </Form.Item>
-
-            <Form.Item>
-              <div className="flex gap-3 items-center justify-end">
-                <Button
-                  className="bg-red-500 text-white"
-                  onClick={() => {
-                    setOpen(!open);
-                    form.resetFields();
-                    setImageUrl("");
-                    setUpdateId("");
-                    setIsAvailable(false);
-                    setFileList([]);
-                  }}
-                >
-                  Cancel
-                </Button>
-                <Button
-                  htmlType="submit"
-                  loading={loadingButton}
-                  className="bg-green-500 text-white"
-                >
-                  {updateId !== "" ? "Update" : "Save"}
-                </Button>
+              <div>
+                <PlusOutlined />
+                <div style={{ marginTop: 8 }}>Upload</div>
               </div>
-            </Form.Item>
-          </Form>
-        </Drawer>
-      </div>
+            </Upload>
+          </Form.Item>
+
+          <Form.Item>
+            <div className="flex gap-3 items-center justify-end">
+              <Button
+                className="bg-red-500 text-white"
+                onClick={() => {
+                  setOpen(!open);
+                  form.resetFields();
+                  setImageUrl("");
+                  setUpdateId("");
+                  setIsAvailable(false);
+                  setFileList([]);
+                }}
+              >
+                Cancel
+              </Button>
+              <Button
+                htmlType="submit"
+                loading={loadingButton}
+                className="bg-green-500 text-white"
+              >
+                {updateId !== "" ? "Update" : "Save"}
+              </Button>
+            </div>
+          </Form.Item>
+        </Form>
+      </Drawer>
     </div>
   );
 }

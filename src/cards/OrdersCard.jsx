@@ -1,7 +1,7 @@
-import { Select } from "antd";
+import { Select, Switch } from "antd";
 import React from "react";
 
-const OrdersCard = ({
+export const OrdersCard = ({
   id,
   date,
   time,
@@ -89,4 +89,71 @@ const OrdersCard = ({
   );
 };
 
-export default OrdersCard;
+export const MenuManageCards = ({
+  id,
+  name,
+  price,
+  offer,
+  foodimg,
+  status,
+  switchChange,
+  discountPrice,
+}) => {
+  return (
+    <div className="flex mt-8 flex-col ">
+      <div className="bg-white w-96 m-auto rounded-lg">
+        <div className="flex bg-blue-400 rounded-t-lg justify-between  p-4 ">
+          <div>S.No: {id}</div>
+          <div>{name}</div>
+        </div>
+        <div className="p-4 flex  flex-col space-y-3">
+          <div className="flex items-center space-x-2 justify-between">
+            <div className="img-crd w-32">
+              <img
+                src={foodimg}
+                alt="food_img"
+                className=" w-32 rounded-md h-28 "
+              />
+            </div>
+            <div className="flex flex-col">
+              <div
+                className={`${
+                  offer ? "font-bold text-black" : " text-[#828282] font-medium"
+                }`}
+              >
+                {name}
+              </div>
+              {price && (
+                <div className="text-[#828282] text-sm">
+                  Price :{" "}
+                  <span className="font-normal text-black"> ₹ {price}</span>{" "}
+                </div>
+              )}
+              {offer && (
+                <div className="text-[#828282] text-sm">
+                  offer :{" "}
+                  <span className="font-normal text-black">{offer}%</span>{" "}
+                </div>
+              )}
+              {discountPrice && (
+                <div className="text-[#828282]  text-sm">
+                  discountPrice :{" "}
+                  <span className="font-normal text-black">
+                    {" "}
+                    ₹ {discountPrice}
+                  </span>{" "}
+                </div>
+              )}
+            </div>
+
+            <Switch
+              className="text-md"
+              checked={status}
+              onChange={switchChange}
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
