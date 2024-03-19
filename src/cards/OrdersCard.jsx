@@ -157,3 +157,68 @@ export const MenuManageCards = ({
     </div>
   );
 };
+
+export const FeedBackCard = ({
+  id,
+  date,
+  time,
+  name,
+  mobile,
+  rating,
+  message,
+}) => {
+  return (
+    <div className="flex mt-8 flex-col ">
+      <div className="bg-white w-96 m-auto rounded-lg">
+        <div className="flex bg-blue-400 rounded-t-lg justify-between  p-4 ">
+          <div>S.No: {id}</div>
+          <div>{date}</div>
+          <div> {time}</div>
+        </div>
+        <div className="p-4 flex  flex-col space-y-3">
+          <div className="text-[#828282] font-medium">
+            Name : <span className="font-bold text-black">{name}</span>{" "}
+          </div>
+
+          <div className="text-[#828282] font-medium">
+            Mobile Number :{" "}
+            <span className="font-bold text-black">{mobile}</span>{" "}
+          </div>
+
+          <div className="text-[#828282] font-medium">
+            Ratings : <span className="font-bold text-black">{rating}</span>{" "}
+          </div>
+
+          <div className="  p-2 bg-[#E1EAFB] rounded-md">
+            <div className="text-[#305087] font-medium ">Message</div>
+            <p className="text-[10px] text-[#404040]">{message}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export const NotificationCard = ({
+  confirmed,
+  time,
+  orderId,
+  orderStatus,
+  date,
+  res,
+  className,
+}) => {
+  return (
+    <div className="bg-white flex space-y-2 flex-col p-2 rounded-md w-[350px]">
+      <div className="flex justify-between">
+        <h1 className={className}>{confirmed}</h1>
+        <p>{time}</p>
+      </div>
+      <div className="text-[#828282] font-medium">
+        Order Id : <span className="font-bold text-black">{orderId}</span>{" "}
+      </div>
+      <div className="text-[#828282] font-medium">{orderStatus}</div>
+      <div className="flex justify-end">{date}</div>
+    </div>
+  );
+};

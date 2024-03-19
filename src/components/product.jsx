@@ -791,22 +791,20 @@ function Product() {
           <div>
             {filterData.map((item, index) => {
               return (
-                <div className=" ">
-                  <MenuManageCards
-                    id={index + 1}
-                    name={
-                      item.name.length > 10
-                        ? item.name.slice(0, 10) + "..."
-                        : item.name
-                    }
-                    foodimg={item.image}
-                    price={item.price}
-                    offer={item.offer}
-                    discountPrice={item.discountPrice}
-                    status={item.status}
-                    switchChange={(checked) => handleStatus(checked, item)}
-                  />
-                </div>
+                <MenuManageCards
+                  id={index + 1}
+                  name={
+                    item.name.length > 10
+                      ? item.name.slice(0, 10) + "..."
+                      : item.name
+                  }
+                  foodimg={item.image}
+                  price={item.price}
+                  offer={item.offer}
+                  discountPrice={item.discountPrice}
+                  status={item.status}
+                  switchChange={(checked) => handleStatus(checked, item)}
+                />
               );
             })}
           </div>
