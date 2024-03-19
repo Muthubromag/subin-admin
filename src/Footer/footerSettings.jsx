@@ -30,6 +30,8 @@ function FooterSettings({ data, fetchData }) {
       email: get(data, "[0].email"),
       address: get(data, "[0].address"),
       location: get(data, "[0].location"),
+      latitude: get(data, "[0].latitude"),
+      longitude: get(data, "[0].longitude"),
     });
   }, [data, form]);
 
@@ -43,6 +45,8 @@ function FooterSettings({ data, fetchData }) {
       data.append("email", get(value, "email"));
       data.append("number", get(value, "number"));
       data.append("name", get(value, "name"));
+      data.append("latitude", get(value, "latitude"));
+      data.append("longitude", get(value, "longitude"));
       if (Object.keys(value?.location)?.length) {
         Object.keys(value?.location).forEach((key) =>
           data.append(key, value?.location?.[key])
@@ -125,6 +129,18 @@ function FooterSettings({ data, fetchData }) {
             name={"map_link"}
             id={"map_link"}
           />
+        </Form.Item>
+        <Form.Item
+          name="latitude"
+          label={<h1 className="!text-white pl-2">Enter latitude</h1>}
+        >
+          <Input type="text" placeholder="Enter latitude here" size="large" />
+        </Form.Item>
+        <Form.Item
+          name="longitude"
+          label={<h1 className="!text-white pl-2">Enter longitude</h1>}
+        >
+          <Input type="text" placeholder="Enter longitude here" size="large" />
         </Form.Item>
         <Form.Item
           name={["location", "embedUrl"]}

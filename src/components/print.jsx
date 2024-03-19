@@ -117,7 +117,7 @@ export const ComponentToPrint = React.forwardRef((props, ref) => {
                     {od?.foodQuantity}
                   </td>
                   <td className="item_text body_padding bill_center">
-                    {od?.foodPrice}
+                    {Number(od?.foodQuantity) * Number(od?.foodPrice)}
                   </td>
                 </tr>
               </>
@@ -126,7 +126,7 @@ export const ComponentToPrint = React.forwardRef((props, ref) => {
 
           <tr className="bill_table">
             <td colSpan={2} className="item_text body_padding">
-              GST
+              Taxes
             </td>
 
             <td className="item_text body_padding bill_center">{data?.gst}</td>
@@ -134,7 +134,7 @@ export const ComponentToPrint = React.forwardRef((props, ref) => {
           {!data?.tableNo ? (
             <tr className="bill_table">
               <td colSpan={2} className="item_text body_padding">
-                Transaction Chrgs.
+                Platform Fee
               </td>
 
               <td className="item_text body_padding bill_center">
