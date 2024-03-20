@@ -17,7 +17,7 @@ import { useSelector } from "react-redux";
 import { MinusCircleOutlined, PlusOutlined } from "@ant-design/icons";
 import moment from "moment";
 import { useNavigate } from "react-router-dom";
-import OrdersCard from "../cards/OrdersCard";
+import { OrdersCard } from "../cards/OrdersCard";
 
 function OnlineOrder() {
   const [loading, setLoading] = useState(false);
