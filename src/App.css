@@ -94,16 +94,7 @@ body {
   width: 0px !important;
 }
 
-/* .menudrawer>:where(.css-2i2tap).ant-menu-light {
-  background: none !important;
-} */
 
-
-:where(.css-dev-only-do-not-override-2i2tap).ant-menu-light {
-  background: #2d2d48 !important;
-  height: 100vh !important;
-
-}
 
 :where(.css-dev-only-do-not-override-2i2tap).ant-menu-dark .ant-menu-item-selected {
   color: var(--primary-color) !important;
@@ -112,6 +103,7 @@ body {
 :where(.css-dev-only-do-not-override-2i2tap).ant-drawer .ant-drawer-wrapper-body .ant-drawer-body {
   padding: 0px !important;
 }
+
 
 .ant-pagination .ant-pagination-item a {
   color: rgb(211, 201, 201) !important;

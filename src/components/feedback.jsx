@@ -13,6 +13,7 @@ import EditNoteOutlinedIcon from "@mui/icons-material/EditNoteOutlined";
 import axios from "axios";
 import { get } from "lodash";
 import { useSelector } from "react-redux";
+import { FeedBackCard } from "../cards/OrdersCard";
 
 function Feedback() {
   const [loading, setLoading] = useState(false);
@@ -258,24 +259,71 @@ function Feedback() {
   return (
     <div className="mt-28 md:pl-[20vw]">
       <Spin spinning={loading}>
-        <div className="w-[98vw] md:w-[75vw] lg:w-[78vw]">
-          <Table
-            columns={
-              get(user, "name", "")?.split("@")?.includes("menu")
-                ? Partnercolumns
-                : columns
+        <div className="hidden lg-inline">
+          <div className="w-[98vw] md:w-[75vw] lg:w-[78vw]">
+            <Table
+              columns={
+                get(user, "name", "")?.split("@")?.includes("menu")
+                  ? Partnercolumns
+                  : columns
+              }
+              dataSource={data}
+              pagination={{
+                pageSize: 5,
+                current: currentPage,
+                onChange: (page) => {
+                  setCurrentPage(page);
+                },
+              }}
+              scroll={{ x: 1500 }}
+              className="overflow-x-scroll"
+            />
+          </div>
+        </div>
+        <div className="inline lg-hidden">
+          {data.map((item, index) => {
+            const dateTimeString = item.createdAt;
+
+            // Split the date and time using the 'T' delimiter
+            const [datePart] = dateTimeString.split("T");
+            const date = datePart;
+
+            const indianStandardTime = new Date(item.createdAt);
+
+            indianStandardTime.setUTCHours(
+              indianStandardTime.getUTCHours() + 5
+            ); // IST is UTC+5:30
+            indianStandardTime.setUTCMinutes(
+              indianStandardTime.getUTCMinutes() + 30
+            );
+
+            // Extract hours, minutes, and seconds
+            let hours = indianStandardTime.getHours();
+            const minutes = indianStandardTime.getMinutes();
+
+            // Convert hours to 12-hour format
+            let period = "AM";
+            if (hours >= 12) {
+              period = "PM";
             }
-            dataSource={data}
-            pagination={{
-              pageSize: 5,
-              current: currentPage,
-              onChange: (page) => {
-                setCurrentPage(page);
-              },
-            }}
-            scroll={{ x: 1500 }}
-            className="overflow-x-scroll"
-          />
+            hours = hours % 12 || 12;
+
+            hours = hours < 10 ? "0" + hours : hours;
+            const formattedTime = `${hours}:${
+              minutes < 10 ? "0" + minutes : minutes
+            }`;
+            return (
+              <FeedBackCard
+                id={index + 1}
+                name={item.userName}
+                date={date}
+                time={`${formattedTime}`}
+                mobile={item.mobileNumber}
+                rating={item.ratings}
+                message={item.message}
+              />
+            );
+          })}
         </div>
       </Spin>
 
