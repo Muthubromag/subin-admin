@@ -479,7 +479,7 @@ function SubCategory() {
 
       <div className="inline lg:hidden">
         <Spin spinning={loading}>
-          <div className="my-2">
+          <div className="my-2 p-4">
             <Input.Search
               placeholder="search cusines"
               // onSearch={handleSearchmobile}
@@ -495,7 +495,7 @@ function SubCategory() {
             {filterData.map((item, index) => {
               // console.log("item", item);
               return (
-                <div className=" ">
+                <div className=" m-auto ">
                   <MenuManageCards
                     id={index + 1}
                     name={
