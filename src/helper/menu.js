@@ -194,7 +194,21 @@ export const items = [
       View bookings
     </NavLink>,
     "/tablebooking",
-    <TableRestaurantIcon className="!text-[17px] !text-[#CD5C08]" />
+    <TableRestaurantIcon className="!text-[17px] !text-[#CD5C08]" />,
+    [
+      getItem(
+        <NavLink to="tableslot" className="text-[10px] lg:text-[14px]">
+          View Table Slot
+        </NavLink>,
+        "/tableslot"
+      ),
+      getItem(
+        <NavLink to="bookingorder" className="text-[10px] lg:text-[14px]">
+          Booking Order
+        </NavLink>,
+        "/bookingorder"
+      ),
+    ]
   ),
   // getItem(
   //   <NavLink to="notifications" className="text-[10px] lg:text-[14px]">

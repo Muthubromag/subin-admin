@@ -25,11 +25,11 @@ import EditNoteIcon from "@mui/icons-material/EditNote";
 import { useSelector } from "react-redux";
 import { Card } from "antd";
 import moment from "moment";
-import { generateTimeSlots } from "../utils/util";
+import { generateTimeSlots } from "../../utils/util";
 const { Meta } = Card;
 
 const { Option } = Select;
-function TableBooking() {
+function BookingOrder() {
   const refresher = useSelector((state) => state.user.refreshData);
   const slotsOptions = generateTimeSlots({ interval: 2 });
   const [open, setOpen] = useState(false);
@@ -38,7 +38,7 @@ function TableBooking() {
   const [updateId, setUpdateId] = useState("");
   const [currentImage, setCurrentImage] = useState("");
   const [loading, setLoading] = useState(false);
-  const [tabledata, setTableData] = useState([]);
+  // const [tabledata, setTableData] = useState([]);
   const [tableBookingData, setTableBookingData] = useState([]);
   const { Panel } = Collapse;
   const user = useSelector((state) => state.user.user);
@@ -57,7 +57,7 @@ function TableBooking() {
   const fetchData = async () => {
     try {
       setLoading(true);
-      const result = await axios.get(`${process.env.REACT_APP_URL}/gettable`);
+      // const result = await axios.get(`${process.env.REACT_APP_URL}/gettable`);
       const result1 = await axios.get(
         `${process.env.REACT_APP_URL}/getbooking`
       );
@@ -65,7 +65,7 @@ function TableBooking() {
         `${process.env.REACT_APP_URL}/getdinningorder`
       );
       setDinning(get(result3, "data.data"));
-      setTableData(get(result, "data.data", []));
+      // setTableData(get(result, "data.data", []));
       setTableBookingData(get(result1, "data.data", []));
     } catch (e) {
     } finally {
@@ -480,7 +480,7 @@ function TableBooking() {
           >
             <Spin spinning={loading}>
               <div className="!h-[68vh]">
-                <div className="flex gap-10  items-center justify-center flex-wrap md:justify-start  !overflow-x-scroll">
+                {/* <div className="flex gap-10  items-center justify-center flex-wrap md:justify-start  !overflow-x-scroll">
                   {tabledata &&
                     tabledata.map((res, i) => {
                       return (
@@ -552,7 +552,7 @@ function TableBooking() {
                         </Card>
                       );
                     })}
-                </div>
+                </div> */}
                 <div className="pt-8 w-[90vw] md:w-[75vw]">
                   <Table
                     dataSource={tableBookingData}
@@ -724,4 +724,4 @@ function TableBooking() {
   );
 }
 
-export default TableBooking;
+export default BookingOrder;

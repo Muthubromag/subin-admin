@@ -46,6 +46,8 @@ import HistoryOnlineOrder from "./components/orderHistory/onlineOrder";
 import HistoryCallOrder from "./components/orderHistory/callforOrder";
 import HistoryDinningOrder from "./components/orderHistory/dinningOrder";
 import HistorTakeAwayOrder from "./components/orderHistory/takeawauOrder";
+import BookingOrder from "./components/viewBooking/bookingOrder";
+import TableSlot from "./components/viewBooking/tableSlot";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -58,7 +60,9 @@ const router = createBrowserRouter(
       <Route path="coupons" element={<Coupons />} />
       <Route path="subcategory" element={<SubCategory />} />
       <Route path="wallet" element={<Wallet />} />
-      <Route path="tablebooking" element={<TableBooking />} />
+      {/* <Route path="tablebooking" element={<TableBooking />} /> */}
+      <Route path="tableslot" element={<TableSlot />} />
+      <Route path="bookingorder" element={<BookingOrder />} />
       <Route path="feedback" element={<Feedback />} />
       <Route path="inventory" element={<Inventory />} />
       <Route path="video" element={<Video />} />
