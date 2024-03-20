@@ -131,7 +131,19 @@ export const ComponentToPrint = React.forwardRef((props, ref) => {
 
             <td className="item_text body_padding bill_center">{data?.gst}</td>
           </tr>
-          {!data?.tableNo ? (
+          {data?.couponAmount ? (
+            <tr className="bill_table">
+              <td colSpan={2} className="item_text body_padding">
+                Coupon discount
+              </td>
+
+              <td className="item_text body_padding bill_center">
+                - {data?.couponAmount}
+              </td>
+            </tr>
+          ) : null}
+          {!data?.tableNo &&
+          (data?.transaction_charge || data?.transactionCharge) ? (
             <tr className="bill_table">
               <td colSpan={2} className="item_text body_padding">
                 Platform Fee
@@ -142,12 +154,13 @@ export const ComponentToPrint = React.forwardRef((props, ref) => {
               </td>
             </tr>
           ) : null}
-          {(data?.orderType === "call" &&
+          {((data?.orderType === "call" &&
             data?.deliveryStatus === "Delivery") ||
-          data?.orderType === "online" ? (
+            data?.orderType === "online") &&
+          data?.deliveryCharge ? (
             <tr className="bill_table">
               <td colSpan={2} className="item_text body_padding">
-                Delivery Chrgs.
+                Delivery Charges
               </td>
 
               <td className="item_text body_padding bill_center">
@@ -155,10 +168,10 @@ export const ComponentToPrint = React.forwardRef((props, ref) => {
               </td>
             </tr>
           ) : null}
-          {!data?.tableNo ? (
+          {!data?.tableNo && (data?.packing_charge || data?.packingCharge) ? (
             <tr className="bill_table">
               <td colSpan={2} className="item_text body_padding">
-                Packing Chrgs.
+                Packing Charges
               </td>
 
               <td className="item_text body_padding bill_center">
