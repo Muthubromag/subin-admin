@@ -150,7 +150,7 @@ function TableSlot() {
 
   return (
     <div className="pt-28 md:pl-[20vw] w-[96vw] md:w-[85vw] ">
-      <div className="w-[90vw] md:w-[80vw] h-[80vh]">
+      <div className="w-[90vw] md:w-[80vw] h-[80vh] hidden lg:inline">
         <Collapse
           defaultActiveKey={["1"]}
           expandIcon={({ isActive }) => (
@@ -259,6 +259,80 @@ function TableSlot() {
           </Panel>
         </Collapse>
       </div>
+      <div className="inline lg:hidden">
+        <Spin spinning={loading}>
+          <div className="!h-[68vh]">
+            <div className="flex gap-10  items-center justify-center flex-wrap md:justify-start  !overflow-x-scroll">
+              {tabledata &&
+                tabledata.map((res, i) => {
+                  return (
+                    <Card
+                      style={{
+                        width: 260,
+                        backgroundColor: "white",
+                        color: "black",
+                        textAlign: "center",
+                      }}
+                      key={i}
+                      cover={
+                        <div className="h-[170px]">
+                          <img
+                            alt="example"
+                            src={res.image}
+                            className="h-[100%] w-[100%] p-3"
+                          />
+                        </div>
+                      }
+                      actions={[
+                        <EditNoteIcon
+                          key="edit"
+                          className={`!text-green-500 cursor-pointer ${
+                            get(user, "name", "")
+                              .split("@")
+                              .includes("frontdesk") ||
+                            get(user, "name", "").split("@").includes("partner")
+                              ? "pointer-events-none"
+                              : "pointer-events-auto"
+                          }`}
+                          onClick={() => {
+                            handleEdit(res);
+                          }}
+                        />,
+                        <DeleteIcon
+                          key="delete"
+                          onClick={() => {
+                            handleDelete(res);
+                          }}
+                          className={`!text-red-500 cursor-pointer ${
+                            get(user, "name", "")
+                              .split("@")
+                              .includes("frontdesk") ||
+                            get(user, "name", "").split("@").includes("partner")
+                              ? "pointer-events-none"
+                              : "pointer-events-auto"
+                          }`}
+                        />,
+                        <Button
+                          className={`!text-white ${
+                            res.status === true ? "bg-red-500" : "bg-green-500"
+                          } border-none text-[12px] !w-[70px] !h-[30px]`}
+                        >
+                          {res.status === true ? "Booked" : "Available"}
+                        </Button>,
+                      ]}
+                    >
+                      <Meta
+                        title={`Table:${res.tableNo}`}
+                        description={`${res.seatsAvailable} Seaters`}
+                      />
+                    </Card>
+                  );
+                })}
+            </div>
+          </div>
+        </Spin>
+      </div>
+
       <Modal
         open={open}
         destroyOnClose

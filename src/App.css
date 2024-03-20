@@ -40,10 +40,10 @@ body {
   border-color: var(--primary-color) !important;
 }
 
-.ant-card .ant-card-meta-title,
+/* .ant-card .ant-card-meta-title,
 .ant-card .ant-card-meta-description {
   color: white !important;
-}
+} */
 
 .ant-card .ant-card-actions {
   background: var(--secondary-color) !important;
