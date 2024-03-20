@@ -704,7 +704,7 @@ function Product() {
   };
 
   return (
-    <div className="mt-28 md:pl-[20vw]">
+    <div className="mt-28 md:pl-[20vw] pl-0 lg:w-full">
       <div className="w-[95vw] md:w-[80vw] hidden lg:inline">
         <Collapse
           defaultActiveKey={["1"]}
@@ -774,8 +774,8 @@ function Product() {
         </Collapse>
       </div>
 
-      <div className="inline lg:hidden">
-        <Spin spinning={loading}>
+      <div className="inline lg:hidden !p-4">
+        <Spin spinning={loading} className="!p-4">
           <div className="my-2">
             <Input.Search
               placeholder="search cusines"
@@ -976,22 +976,20 @@ function Product() {
                           align="baseline"
                           className="form-commodity-row"
                         >
-                          
-                            <Form.Item
-                              {...restField}
-                              label=""
-                              name={[name, "Type"]}
-                              rules={[
-                                {
-                                  required: true,
-                                  message: "Enter Valid Type",
-                                  pattern: /^[A-Za-z0-9 \s]+$/,
-                                },
-                              ]}
-                            >
-                              <Input placeholder="Type" />
-                            </Form.Item>
-
+                          <Form.Item
+                            {...restField}
+                            label=""
+                            name={[name, "Type"]}
+                            rules={[
+                              {
+                                required: true,
+                                message: "Enter Valid Type",
+                                pattern: /^[A-Za-z0-9 \s]+$/,
+                              },
+                            ]}
+                          >
+                            <Input placeholder="Type" />
+                          </Form.Item>
 
                           <Form.Item
                             {...restField}

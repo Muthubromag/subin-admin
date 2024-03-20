@@ -190,11 +190,28 @@ export const items = [
     <FeedbackIcon className="!text-[17px] !text-[#CD5C08]" />
   ),
   getItem(
-    <NavLink to="tablebooking" className="text-[10px] lg:text-[14px]">
-      View bookings
-    </NavLink>,
-    "/tablebooking",
-    <TableRestaurantIcon className="!text-[17px] !text-[#CD5C08]" />
+    // <NavLink to="tablebooking" className="text-[10px] lg:text-[14px]">
+    //   View bookings
+    // </NavLink>,
+    <div className="text-[10px] lg:text-[14px]"> View bookings</div>,
+    "sub5",
+
+    <TableRestaurantIcon className="!text-[17px] !text-[#CD5C08]" />,
+
+    [
+      getItem(
+        <NavLink to="tableslot" className="text-[10px] lg:text-[14px]">
+          View Table Slot
+        </NavLink>,
+        "/tableslot"
+      ),
+      getItem(
+        <NavLink to="bookingorder" className="text-[10px] lg:text-[14px]">
+          Booking Order
+        </NavLink>,
+        "/bookingorder"
+      ),
+    ]
   ),
   // getItem(
   //   <NavLink to="notifications" className="text-[10px] lg:text-[14px]">

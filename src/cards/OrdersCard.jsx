@@ -15,8 +15,8 @@ export const OrdersCard = ({
 }) => {
   return (
     <div className="flex mt-8 flex-col ">
-      <div className="bg-white w-96 m-auto rounded-lg">
-        <div className="flex bg-blue-400 rounded-t-lg justify-between  p-4 ">
+      <div className="bg-white w-80 m-auto rounded-lg">
+        <div className="flex bg-[#ED7802] rounded-t-lg justify-between  p-4 ">
           <div>S.No: {id}</div>
           <div>{date}</div>
           <div> {time}</div>
@@ -54,8 +54,8 @@ export const OrdersCard = ({
             </div>
           )}
           <div className="flex justify-between ">
-            <div className="bg-[#E1EAFB] rounded-md flex w-44 items-center pl-2 space-x-1">
-              <div className="text-[#828282] text-[12px]">Status</div>
+            <div className="bg-[#575757] rounded-md flex w-44 items-center pl-2 space-x-1">
+              <div className="text-[#fff] text-[12px]">Status</div>
               <div className="w-full mobile-selector">
                 <Select
                   // value={isMovedToKDS ? "Order received" : status}
@@ -63,7 +63,7 @@ export const OrdersCard = ({
                   //   handleStatusChange(record, newStatus)
                   // }
 
-                  className="w-[100%] !text-sm text-white !border-0"
+                  className="w-[100%] !text-sm text-black !border-0"
                   clearBg="red"
                   defaultValue="Order Placed"
                   id="status"
@@ -76,7 +76,7 @@ export const OrdersCard = ({
             </div>
             <div className="">
               <button
-                className=" bg-blue-900 text-white rounded-lg p-2 "
+                className=" bg-[#222222] text-white rounded-lg p-2  !text-[10px]"
                 onClick={preview}
               >
                 View Order
@@ -100,9 +100,9 @@ export const MenuManageCards = ({
   discountPrice,
 }) => {
   return (
-    <div className="flex mt-8 flex-col ">
-      <div className="bg-white w-96 m-auto rounded-lg">
-        <div className="flex bg-blue-400 rounded-t-lg justify-between  p-4 ">
+    <div className="flex mt-8 flex-col p-2 w-96 ">
+      <div className="bg-white w-full m-auto rounded-lg">
+        <div className="flex bg-[#ED7802] rounded-t-lg justify-between  p-4 ">
           <div>S.No: {id}</div>
           <div>{name}</div>
         </div>
@@ -168,9 +168,9 @@ export const FeedBackCard = ({
   message,
 }) => {
   return (
-    <div className="flex mt-8 flex-col ">
-      <div className="bg-white w-96 m-auto rounded-lg">
-        <div className="flex bg-blue-400 rounded-t-lg justify-between  p-4 ">
+    <div className="flex mt-8 flex-col  p-4">
+      <div className="bg-white w-full m-auto rounded-lg ">
+        <div className="flex bg-[#ED7802] rounded-t-lg justify-between  p-4 ">
           <div>S.No: {id}</div>
           <div>{date}</div>
           <div> {time}</div>
@@ -209,7 +209,7 @@ export const NotificationCard = ({
   className,
 }) => {
   return (
-    <div className="bg-white flex space-y-2 flex-col p-2 rounded-md w-[350px]">
+    <div className="bg-white flex space-y-2 flex-col p-2 rounded-md w-96 m-auto">
       <div className="flex justify-between">
         <h1 className={className}>{confirmed}</h1>
         <p>{time}</p>
@@ -219,6 +219,60 @@ export const NotificationCard = ({
       </div>
       <div className="text-[#828282] font-medium">{orderStatus}</div>
       <div className="flex justify-end">{date}</div>
+    </div>
+  );
+};
+
+export const InventerCard = ({
+  id,
+  name,
+  date,
+  foodimg,
+  category,
+  provided,
+  consumed,
+  available,
+}) => {
+  return (
+    <div className="flex mt-8 flex-col p-2 w-96 ">
+      <div className="bg-white w-full m-auto rounded-lg">
+        <div className="flex bg-[#ED7802] rounded-t-lg justify-between  p-4 ">
+          <div>S.No: {id}</div>
+
+          {/* <div>{date}</div> */}
+        </div>
+        <div className="p-4 flex  flex-col space-y-3">
+          <div className="flex items-center space-x-2 justify-between">
+            <div className="flex flex-col">
+              <div className="text-[#828282] font-medium text-md">
+                Name : <span className="font-bold text-black ">{name}</span>{" "}
+              </div>
+              <div className="text-[#828282] font-medium text-md">
+                Category :{" "}
+                <span className="font-bold text-black ">{category}</span>{" "}
+              </div>
+            </div>
+            <div className="img-crd w-32 flex justify-end ">
+              <Image
+                alt="food_img"
+                className=" w-32 rounded-md h-28 border-2 border-[#CD5C08]  "
+                src={foodimg}
+              />
+            </div>
+          </div>
+          <div className="flex border-dashed border-2 justify-between p-4">
+            <div className="text-[#5895FF] font-bold  ">
+              Provided : <span className="">{provided}</span>{" "}
+            </div>
+            <div className="text-[#FF4F4F] font-bold  ">
+              Consumed : <span className="">{consumed}</span>{" "}
+            </div>
+            <div className="text-[#3FB408] font-bold  ">
+              Available : <span className="">{available}</span>{" "}
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };

@@ -94,7 +94,7 @@ function Sidenavbar() {
         item.key === "/notifications" ||
         item.key === "sub3" ||
         item.key === "sub1" ||
-        item.key === "/tablebooking"
+        item.key === "sub5"
       );
     }
 
