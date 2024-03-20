@@ -20,16 +20,15 @@ import {
 } from "@ant-design/icons";
 import axios from "axios";
 import { get } from "lodash";
-import DeleteIcon from "@mui/icons-material/Delete";
-import EditNoteIcon from "@mui/icons-material/EditNote";
+
 import { useSelector } from "react-redux";
-import { Card } from "antd";
+
 import moment from "moment";
-import { generateTimeSlots } from "../utils/util";
-const { Meta } = Card;
+import { generateTimeSlots } from "../../utils/util";
+import BookingOrderCard from "../../cards/bookingOrderCard";
 
 const { Option } = Select;
-function TableBooking() {
+function BookingOrder() {
   const refresher = useSelector((state) => state.user.refreshData);
   const slotsOptions = generateTimeSlots({ interval: 2 });
   const [open, setOpen] = useState(false);
@@ -38,7 +37,7 @@ function TableBooking() {
   const [updateId, setUpdateId] = useState("");
   const [currentImage, setCurrentImage] = useState("");
   const [loading, setLoading] = useState(false);
-  const [tabledata, setTableData] = useState([]);
+  // const [tabledata, setTableData] = useState([]);
   const [tableBookingData, setTableBookingData] = useState([]);
   const { Panel } = Collapse;
   const user = useSelector((state) => state.user.user);
@@ -57,7 +56,7 @@ function TableBooking() {
   const fetchData = async () => {
     try {
       setLoading(true);
-      const result = await axios.get(`${process.env.REACT_APP_URL}/gettable`);
+
       const result1 = await axios.get(
         `${process.env.REACT_APP_URL}/getbooking`
       );
@@ -65,7 +64,7 @@ function TableBooking() {
         `${process.env.REACT_APP_URL}/getdinningorder`
       );
       setDinning(get(result3, "data.data"));
-      setTableData(get(result, "data.data", []));
+
       setTableBookingData(get(result1, "data.data", []));
     } catch (e) {
     } finally {
@@ -126,37 +125,6 @@ function TableBooking() {
       notification.error({ message: "Something went wrong" });
     } finally {
       setLoadingButton(false);
-    }
-  };
-
-  const handleEdit = (values) => {
-    setUpdateId(values._id);
-    setImageUrl(values.image);
-    setCurrentImage(values.image);
-    form.setFieldsValue({
-      ...values,
-      timeSlots: values?.timeSlots.map((td) => td?.time),
-    });
-    setOpen(!open);
-    setImageKey(values.table_image_key);
-    setFileList([
-      { uid: "-1", name: "existing_image", status: "done", url: values.image },
-    ]);
-  };
-
-  const handleDelete = async (val) => {
-    try {
-      let data = {
-        image: get(val, "image"),
-      };
-      await axios.delete(
-        `${process.env.REACT_APP_URL}/deletetable/${val._id}`,
-        { data }
-      );
-      notification.success({ message: "Table deleted successfully" });
-      fetchData();
-    } catch (err) {
-      notification.error({ message: "Something went wrong" });
     }
   };
 
@@ -448,137 +416,112 @@ function TableBooking() {
   );
 
   return (
-    <div className="pt-28 md:pl-[20vw] w-[96vw] md:w-[85vw] ">
-      <div className="w-[90vw] md:w-[80vw] h-[80vh]">
-        <Collapse
-          defaultActiveKey={["1"]}
-          expandIcon={({ isActive }) => (
-            <CaretRightOutlined
-              rotate={isActive ? 90 : 0}
-              className="!text-[#CD5C08]"
-            />
-          )}
-          collapsible="icon"
-          className="w-[90vw] md:!w-[78vw] !h-[80vh]"
-        >
-          <Panel
-            header={
-              <h1 className="text-md text-[#CD5C08] font-semibold">Table</h1>
-            }
-            extra={
-              <div
-                className="cursor-pointer"
-                onClick={() => {
-                  setOpen(!open);
-                }}
-              >
-                <FileAddOutlined className="!text-[#CD5C08] !text-xl" />
-              </div>
-            }
-            key="1"
-            className="h-[80vh] overflow-y-scroll"
+    <div className="pt-28 md:pl-[20vw] ">
+      <div className="w-[96vw].md:w-[85vw]">
+        <div className="w-[90vw] md:w-[80vw] h-[80vh] hidden lg:inline">
+          <Collapse
+            defaultActiveKey={["1"]}
+            expandIcon={({ isActive }) => (
+              <CaretRightOutlined
+                rotate={isActive ? 90 : 0}
+                className="!text-[#CD5C08]"
+              />
+            )}
+            collapsible="icon"
+            className="w-[90vw] md:!w-[78vw] !h-[80vh]"
           >
-            <Spin spinning={loading}>
-              <div className="!h-[68vh]">
-                <div className="flex gap-10  items-center justify-center flex-wrap md:justify-start  !overflow-x-scroll">
-                  {tabledata &&
-                    tabledata.map((res, i) => {
-                      return (
-                        <Card
-                          style={{
-                            width: 260,
-                            backgroundColor: "black",
-                            color: "white",
-                            textAlign: "center",
-                          }}
-                          key={i}
-                          cover={
-                            <div className="h-[170px]">
-                              <img
-                                alt="example"
-                                src={res.image}
-                                className="h-[100%] w-[100%] p-3"
-                              />
-                            </div>
-                          }
-                          actions={[
-                            <EditNoteIcon
-                              key="edit"
-                              className={`!text-green-500 cursor-pointer ${
-                                get(user, "name", "")
-                                  .split("@")
-                                  .includes("frontdesk") ||
-                                get(user, "name", "")
-                                  .split("@")
-                                  .includes("partner")
-                                  ? "pointer-events-none"
-                                  : "pointer-events-auto"
-                              }`}
-                              onClick={() => {
-                                handleEdit(res);
-                              }}
-                            />,
-                            <DeleteIcon
-                              key="delete"
-                              onClick={() => {
-                                handleDelete(res);
-                              }}
-                              className={`!text-red-500 cursor-pointer ${
-                                get(user, "name", "")
-                                  .split("@")
-                                  .includes("frontdesk") ||
-                                get(user, "name", "")
-                                  .split("@")
-                                  .includes("partner")
-                                  ? "pointer-events-none"
-                                  : "pointer-events-auto"
-                              }`}
-                            />,
-                            <Button
-                              className={`!text-white ${
-                                res.status === true
-                                  ? "bg-red-500"
-                                  : "bg-green-500"
-                              } border-none text-[12px] !w-[70px] !h-[30px]`}
-                            >
-                              {res.status === true ? "Booked" : "Available"}
-                            </Button>,
-                          ]}
-                        >
-                          <Meta
-                            title={`Table:${res.tableNo}`}
-                            description={`${res.seatsAvailable} Seaters`}
-                          />
-                        </Card>
-                      );
-                    })}
+            <Panel
+              header={
+                <h1 className="text-md text-[#CD5C08] font-semibold">Table</h1>
+              }
+              extra={
+                <div
+                  className="cursor-pointer"
+                  onClick={() => {
+                    setOpen(!open);
+                  }}
+                >
+                  <FileAddOutlined className="!text-[#CD5C08] !text-xl" />
                 </div>
-                <div className="pt-8 w-[90vw] md:w-[75vw]">
-                  <Table
-                    dataSource={tableBookingData}
-                    columns={
-                      get(user, "name", "")
-                        ?.split("@")
-                        ?.includes("frontdesk") ||
-                      get(user, "name", "")?.split("@")?.includes("partner")
-                        ? columnsOperations
-                        : columns
-                    }
-                    pagination={{
-                      pageSize: 5,
-                      current: currentPage,
-                      onChange: (page) => {
-                        setCurrentPage(page);
-                      },
-                    }}
-                    scroll={{ x: 800 }}
-                    className="overflow-x-scroll"
-                  />
+              }
+              key="1"
+              className="h-[80vh] overflow-y-scroll"
+            >
+              <Spin spinning={loading}>
+                <div className="!h-[68vh]">
+                  <div className="pt-8 w-[90vw] md:w-[75vw]">
+                    <Table
+                      dataSource={tableBookingData}
+                      columns={
+                        get(user, "name", "")
+                          ?.split("@")
+                          ?.includes("frontdesk") ||
+                        get(user, "name", "")?.split("@")?.includes("partner")
+                          ? columnsOperations
+                          : columns
+                      }
+                      pagination={{
+                        pageSize: 5,
+                        current: currentPage,
+                        onChange: (page) => {
+                          setCurrentPage(page);
+                        },
+                      }}
+                      scroll={{ x: 800 }}
+                      className="overflow-x-scroll"
+                    />
+                  </div>
                 </div>
-              </div>
-            </Spin>
-          </Panel>
-        </Collapse>
+              </Spin>
+            </Panel>
+          </Collapse>
+        </div>
+        <div className="inline lg:hidden">
+          <Spin spinning={loading}>
+            {tableBookingData.map((item, index) => {
+              const dateTimeString = item.createdAt;
+
+              // Split the date and time using the 'T' delimiter
+              const [datePart] = dateTimeString.split("T");
+              const date = datePart;
+
+              const indianStandardTime = new Date(item.createdAt);
+
+              indianStandardTime.setUTCHours(
+                indianStandardTime.getUTCHours() + 5
+              ); // IST is UTC+5:30
+              indianStandardTime.setUTCMinutes(
+                indianStandardTime.getUTCMinutes() + 30
+              );
+
+              // Extract hours, minutes, and seconds
+              let hours = indianStandardTime.getHours();
+              const minutes = indianStandardTime.getMinutes();
+
+              // Convert hours to 12-hour format
+              let period = "AM";
+              if (hours >= 12) {
+                period = "PM";
+              }
+              hours = hours % 12 || 12;
+
+              hours = hours < 10 ? "0" + hours : hours;
+              const formattedTime = `${hours}:${
+                minutes < 10 ? "0" + minutes : minutes
+              }`;
+
+              return (
+                <BookingOrderCard
+                  id={index + 1}
+                  date={date}
+                  tableNo={item.tableNo}
+                  diningId={item.diningID}
+                  slot={item.diningTime}
+                />
+              );
+            })}
+          </Spin>
+        </div>
       </div>
       <Modal
         open={open}
@@ -724,4 +667,4 @@ function TableBooking() {
   );
 }
 
-export default TableBooking;
+export default BookingOrder;

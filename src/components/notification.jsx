@@ -93,7 +93,7 @@ function Notification() {
       </div>
       <div className="inline lg:hidden">
         <Spin spinning={loading}>
-          <div className="inline lg-hidden p-4 ">
+          <div className=" mt-24 ">
             {data.map((item, index) => {
               // console.log("item", item);
               const dateTimeString = item.createdAt;
@@ -127,7 +127,7 @@ function Notification() {
                 minutes < 10 ? "0" + minutes : minutes
               }`;
               return (
-                <div className="shadow-2xl p-4 ">
+                <div className="shadow-2xl p-3 ">
                   <NotificationCard
                     confirmed={item.heading}
                     date={date}
