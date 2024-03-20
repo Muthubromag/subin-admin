@@ -1,30 +1,31 @@
 import React, { useEffect, useState } from "react";
 import { DatePicker, Spin } from "antd";
 import axios from "axios";
-import { get, isEmpty } from "lodash";
+import { get } from "lodash";
 import HistoryCards from "../../cards/HistoryCards";
 
-function HistoryOnlineOrder() {
+function HistoryDinningOrder() {
   const { RangePicker } = DatePicker;
-  const [onlineOrder, setOnlineOrder] = useState([]);
+  const [dinning, setDinning] = useState([]);
   const [loading, setLoading] = useState(false);
 
   const fetchData = async () => {
     try {
       setLoading(true);
 
-      const onlineord = await axios.get(
-        `${process.env.REACT_APP_URL}/getonlineorder`
+      // const call = await axios.get(`${process.env.REACT_APP_URL}/getcallorder`);
+      const dinningord = await axios.get(
+        `${process.env.REACT_APP_URL}/getdinningorder`
       );
 
-      setOnlineOrder(get(onlineord, "data.data", []));
+      setDinning(get(dinningord, "data.data", []));
     } catch (e) {
     } finally {
       setLoading(false);
     }
   };
 
-  console.log("onlineOrder", onlineOrder);
+  console.log("onlineOrder", dinning);
 
   useEffect(() => {
     fetchData();
@@ -45,7 +46,7 @@ function HistoryOnlineOrder() {
               size="large"
             />
             <div className="!bg-white p-4 rounded-lg ">
-              {onlineOrder.map((item) => {
+              {dinning.map((item) => {
                 const dateTimeString = item.createdAt;
 
                 // Split the date and time using the 'T' delimiter
@@ -88,4 +89,4 @@ function HistoryOnlineOrder() {
   );
 }
 
-export default HistoryOnlineOrder;
+export default HistoryDinningOrder;

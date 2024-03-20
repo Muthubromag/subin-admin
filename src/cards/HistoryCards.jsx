@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 
-function HistoryCards() {
+function HistoryCards({ date, order }) {
   const [isVisible, setIsVisible] = useState(false);
   useEffect(() => {
     // Set isVisible to true after component mounts
@@ -8,16 +8,30 @@ function HistoryCards() {
   }, []);
 
   return (
-    <div className="p-4 bg-white rounded-lg">
-      {HistoryOrder.map((item) => {
+    <div className="">
+      <div className="border-[#ED7802] border-2 flex flex-col p-2 mt-2 rounded-lg">
+        <div className="mb-2">{date}</div>
+        <div className="!bg-[#EDEDED]  rounded-full">
+          <div
+            className={`bg-[#ED7802] rounded-full p-2 text-white transition-transform duration-500 transform ${
+              isVisible ? "translate-x-0" : "-translate-x-full"
+            }`}
+            style={{ width: `${order}%` }}
+          >
+            {order}
+          </div>
+        </div>
+      </div>
+
+      {/* {HistoryOrder.map((item) => {
         const order = item.order;
         return (
           <div
             div
             className="border-[#ED7802] border-2 flex flex-col p-2 mt-2 rounded-lg"
           >
-            <div className="">{item.date}</div>
-            <div className="bg-[#EDEDED]  rounded-full transition-all duration-500 ease-out md:ease-in">
+            <div className="mb-2">{item.date}</div>
+            <div className="!bg-[#EDEDED]  rounded-full">
               <div
                 className={`bg-[#ED7802] rounded-full p-2 text-white transition-transform duration-500 transform ${
                   isVisible ? "translate-x-0" : "-translate-x-full"
@@ -29,7 +43,7 @@ function HistoryCards() {
             </div>
           </div>
         );
-      })}
+      })} */}
     </div>
   );
 }

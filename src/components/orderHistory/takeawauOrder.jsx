@@ -4,27 +4,26 @@ import axios from "axios";
 import { get, isEmpty } from "lodash";
 import HistoryCards from "../../cards/HistoryCards";
 
-function HistoryOnlineOrder() {
+function HistorTakeAwayOrder() {
   const { RangePicker } = DatePicker;
-  const [onlineOrder, setOnlineOrder] = useState([]);
+  const [takeAway, setTakeAway] = useState([]);
   const [loading, setLoading] = useState(false);
 
   const fetchData = async () => {
     try {
       setLoading(true);
 
-      const onlineord = await axios.get(
-        `${process.env.REACT_APP_URL}/getonlineorder`
-      );
+      const take = await axios.get(`${process.env.REACT_APP_URL}/gettakeaway`);
 
-      setOnlineOrder(get(onlineord, "data.data", []));
+      //   setOnlineOrder(get(onlineord, "data.data", []));
+      setTakeAway(get(take, "data.data", []));
     } catch (e) {
     } finally {
       setLoading(false);
     }
   };
 
-  console.log("onlineOrder", onlineOrder);
+  console.log("takeAway", takeAway);
 
   useEffect(() => {
     fetchData();
@@ -45,7 +44,7 @@ function HistoryOnlineOrder() {
               size="large"
             />
             <div className="!bg-white p-4 rounded-lg ">
-              {onlineOrder.map((item) => {
+              {takeAway.map((item) => {
                 const dateTimeString = item.createdAt;
 
                 // Split the date and time using the 'T' delimiter
@@ -88,4 +87,4 @@ function HistoryOnlineOrder() {
   );
 }
 
-export default HistoryOnlineOrder;
+export default HistorTakeAwayOrder;

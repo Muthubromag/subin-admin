@@ -43,6 +43,9 @@ import Sound from "./assets/notify.mp3";
 import Coupons from "./components/coupons";
 import Charges from "./components/Charges";
 import HistoryOnlineOrder from "./components/orderHistory/onlineOrder";
+import HistoryCallOrder from "./components/orderHistory/callforOrder";
+import HistoryDinningOrder from "./components/orderHistory/dinningOrder";
+import HistorTakeAwayOrder from "./components/orderHistory/takeawauOrder";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -68,9 +71,9 @@ const router = createBrowserRouter(
       <Route path="dinning" element={<Dinning />} />
       <Route path="callfororder" element={<CallForOrder />} />
       <Route path="orderhistory/onlineorder" element={<HistoryOnlineOrder />} />
-      <Route path="orderhistory/takeaway" element={<TakeAway />} />
-      <Route path="orderhistory/dinning" element={<Dinning />} />
-      <Route path="orderhistory/callfororder" element={<CallForOrder />} />
+      <Route path="orderhistory/takeaway" element={<HistorTakeAwayOrder />} />
+      <Route path="orderhistory/dinning" element={<HistoryDinningOrder />} />
+      <Route path="orderhistory/callfororder" element={<HistoryCallOrder />} />
       <Route index path="login" element={<Login />} />
       <Route path="scratchcard" element={<ScratchCard />} />
       <Route path="footer" element={<Footer />} />
