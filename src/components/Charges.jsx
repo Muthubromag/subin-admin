@@ -99,41 +99,6 @@ function Charges() {
             </div>
             <div className="flex flex-row gap-2 items-center mt-2">
               <Form.Item
-                name={["delivery", "value"]}
-                label={<h1 className="!text-white pl-2">Delivery</h1>}
-                rules={[{ type: "number" }]}
-                className="w-[50%]"
-                initialValue={0}
-              >
-                <InputNumber
-                  type="number"
-                  name="delivery"
-                  placeholder="delivery"
-                  size="large"
-                  min={0}
-                  className="w-full"
-                  defaultValue={0}
-                />
-              </Form.Item>
-
-              <Form.Item
-                label={<h1 className="ps-3 text-white">Delivery Mode</h1>}
-                name={["delivery", "mode"]}
-                className="w-[50%] "
-                initialValue={"percentage"}
-              >
-                <Radio.Group name="mode" defaultValue={"percentage"}>
-                  <Radio value="percentage" className="text-white ps-2">
-                    Percentage
-                  </Radio>
-                  <Radio value="fixed" className="text-white ps-1">
-                    Fixed
-                  </Radio>
-                </Radio.Group>
-              </Form.Item>
-            </div>
-            <div className="flex flex-row gap-2 items-center mt-2">
-              <Form.Item
                 name={["packing", "value"]}
                 label={<h1 className="!text-white pl-2">Packing</h1>}
                 rules={[{ type: "number" }]}
@@ -235,6 +200,98 @@ function Charges() {
                     Fixed
                   </Radio>
                 </Radio.Group>
+              </Form.Item>
+            </div>
+            <div className="text-white">Delivery Charges</div>
+            <div className="flex flex-row gap-2 items-center mt-2">
+              <Form.Item
+                name={["delivery", "min_km"]}
+                label={<h1 className="!text-white pl-2">Minimum Km</h1>}
+                rules={[{ type: "number" }]}
+                className="w-[30%]"
+                initialValue={0}
+              >
+                <InputNumber
+                  type="number"
+                  name="min_km"
+                  placeholder="min"
+                  size="large"
+                  min={0}
+                  className="w-full"
+                  defaultValue={0}
+                />
+              </Form.Item>
+              <Form.Item
+                name={["delivery", "min_price"]}
+                label={<h1 className="!text-white pl-2">Minimum Price</h1>}
+                rules={[{ type: "number" }]}
+                className="w-[30%]"
+                initialValue={0}
+              >
+                <InputNumber
+                  type="number"
+                  name="min_price"
+                  placeholder="min_price"
+                  size="large"
+                  min={0}
+                  className="w-full"
+                  defaultValue={0}
+                />
+              </Form.Item>
+            </div>
+            <div className="flex flex-row gap-2 items-center mt-2">
+              <Form.Item
+                name={["delivery", "max_km"]}
+                label={<h1 className="!text-white pl-2">Maximum Km</h1>}
+                rules={[{ type: "number" }]}
+                className="w-[30%]"
+                initialValue={0}
+              >
+                <InputNumber
+                  type="number"
+                  name="max_km"
+                  placeholder="max"
+                  size="large"
+                  min={0}
+                  className="w-full"
+                  defaultValue={0}
+                />
+              </Form.Item>
+              <Form.Item
+                name={["delivery", "max_price"]}
+                label={<h1 className="!text-white pl-2">Maximum Price</h1>}
+                rules={[{ type: "number" }]}
+                className="w-[30%]"
+                initialValue={0}
+              >
+                <InputNumber
+                  type="number"
+                  name="max_price"
+                  placeholder="max_price"
+                  size="large"
+                  min={0}
+                  className="w-full"
+                  defaultValue={0}
+                />
+              </Form.Item>
+            </div>
+            <div className="flex flex-row gap-2 items-center mt-2">
+              <Form.Item
+                name={["delivery", "extra_charges"]}
+                label={<h1 className="!text-white pl-2">Extra Km Charges</h1>}
+                rules={[{ type: "number" }]}
+                className="w-[30%]"
+                initialValue={0}
+              >
+                <InputNumber
+                  type="number"
+                  name="extra_charges"
+                  placeholder="max"
+                  size="large"
+                  min={0}
+                  className="w-full"
+                  defaultValue={0}
+                />
               </Form.Item>
             </div>
 

@@ -976,20 +976,22 @@ function Product() {
                           align="baseline"
                           className="form-commodity-row"
                         >
-                          <Form.Item
-                            {...restField}
-                            label=""
-                            name={[name, "Type"]}
-                            rules={[
-                              {
-                                required: true,
-                                message: "Enter Valid Type",
-                                pattern: /^[A-Za-z\s]+$/,
-                              },
-                            ]}
-                          >
-                            <Input placeholder="Type" />
-                          </Form.Item>
+                          
+                            <Form.Item
+                              {...restField}
+                              label=""
+                              name={[name, "Type"]}
+                              rules={[
+                                {
+                                  required: true,
+                                  message: "Enter Valid Type",
+                                  pattern: /^[A-Za-z0-9 \s]+$/,
+                                },
+                              ]}
+                            >
+                              <Input placeholder="Type" />
+                            </Form.Item>
+
 
                           <Form.Item
                             {...restField}
