@@ -42,6 +42,7 @@ import { socket } from "./socket";
 import Sound from "./assets/notify.mp3";
 import Coupons from "./components/coupons";
 import Charges from "./components/Charges";
+import HistoryOnlineOrder from "./components/orderHistory/onlineOrder";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -66,7 +67,7 @@ const router = createBrowserRouter(
       <Route path="takeaway" element={<TakeAway />} />
       <Route path="dinning" element={<Dinning />} />
       <Route path="callfororder" element={<CallForOrder />} />
-      <Route path="orderhistory/onlineorder" element={<OnlineOrder />} />
+      <Route path="orderhistory/onlineorder" element={<HistoryOnlineOrder />} />
       <Route path="orderhistory/takeaway" element={<TakeAway />} />
       <Route path="orderhistory/dinning" element={<Dinning />} />
       <Route path="orderhistory/callfororder" element={<CallForOrder />} />
