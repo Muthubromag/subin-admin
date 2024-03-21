@@ -1123,7 +1123,11 @@ function OnlineOrder() {
                     item?.location[0]?.landMark
                   }
                   preview={() => mobilePreviewModal(item?.orderedFood)}
-                  Inventory={getInventory.length}
+                  Inventory={`${getInventory[0]?.productName} ${
+                    item?.inventory[0]?.quantity > 0
+                      ? item?.inventory[0]?.quantity
+                      : 0
+                  }`}
                   print={item._id}
                 />
               );

@@ -20,7 +20,7 @@ export const OrdersCard = ({
 }) => {
   const user = useSelector((state) => state.user.user);
   const navigate = useNavigate();
-  console.log("user", user.name);
+
   return (
     <div className="flex mt-8 flex-col ">
       <div className="bg-white w-96 m-auto rounded-lg">

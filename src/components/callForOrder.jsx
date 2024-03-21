@@ -1441,7 +1441,15 @@ function CallForOrder() {
                             deliveryStatus={item.status}
                             billAmount={item.billAmount}
                             location={item?.location}
-                            Inventory={getInventory.length}
+                            Inventory={`${
+                              getInventory[0]?.productName
+                                ? getInventory[0]?.productName
+                                : ""
+                            } ${
+                              item?.inventory[0]?.quantity > 0
+                                ? item?.inventory[0]?.quantity
+                                : 0
+                            }`}
                             preview={() =>
                               mobilePreviewModal(item?.orderedFood)
                             }

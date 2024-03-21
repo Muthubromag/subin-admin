@@ -1080,6 +1080,15 @@ function TakeAway() {
                   orderId={item.orderId}
                   billAmount={item.billAmount}
                   preview={() => openPreviewModal(item?.orderedFood)}
+                  Inventory={`${
+                    getInventory[0]?.productName
+                      ? getInventory[0]?.productName
+                      : ""
+                  } ${
+                    item?.inventory[0]?.quantity > 0
+                      ? item?.inventory[0]?.quantity
+                      : 0
+                  }`}
                 />
               );
             })}
