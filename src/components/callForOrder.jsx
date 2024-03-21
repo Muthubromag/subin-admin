@@ -27,7 +27,7 @@ import { v4 as uuidv4 } from "uuid";
 import { useNavigate } from "react-router-dom";
 // import { initializeSocket } from "../helper/socketService";
 import "../assets/css/callorder.css";
-import OrdersCard from "../cards/OrdersCard";
+import { OrdersCard } from "../cards/OrdersCard";
 function CallForOrder() {
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState([]);

@@ -23,6 +23,7 @@ import axios from "axios";
 import { get } from "lodash";
 import EditNoteOutlinedIcon from "@mui/icons-material/EditNoteOutlined";
 import { useSelector } from "react-redux";
+import { MenuManageCards } from "../cards/OrdersCard";
 
 function Category() {
   const [open, setOpen] = useState(false);
@@ -205,7 +206,7 @@ function Category() {
   };
 
   const handleSearch = async (val) => {
-    console.log({ val });
+    console.log(val, "sds");
     if (val) {
       const filter = data?.filter((td) =>
         td?.name?.toLowerCase()?.includes(val?.toLowerCase())
@@ -216,19 +217,49 @@ function Category() {
       setFilteredData(data);
     }
   };
+
   const handleSearchKeyPress = async (e) => {
     const val = e.target.value;
-    console.log({ val });
+    // console.log( val );
     if (val) {
       const filter = data?.filter((td) =>
         td?.name?.toLowerCase()?.includes(val?.toLowerCase())
       );
-
+      console.log(filter, "xsjbxj");
       setFilteredData(filter);
     } else {
+      console.log(data, "kkk");
       setFilteredData(data);
     }
   };
+  // const handleSearchmobile = async (val) => {
+  //   console.log(val, "sds");
+  //   if (val) {
+  //     const filter = data?.filter((td) =>
+  //       td?.name?.toLowerCase()?.includes(val?.toLowerCase())
+  //     );
+  //     console.log(filter, "xsjbxj");
+  //     setFilteredData(filter);
+  //   } else {
+  //     setFilteredData(data);
+  //     console.log(data, "kkk");
+  //   }
+  // };
+  // const handleSearchKeyPressMobile = async (e) => {
+  //   const val = e.target.value;
+  //   console.log(val, "ggg");
+  //   if (val) {
+  //     const filter = data?.filter((td) =>
+  //       td?.name?.toLowerCase()?.includes(val?.toLowerCase())
+  //     );
+
+  //     setFilteredData(filter);
+  //     console.log(filter, "xsjbxj");
+  //   } else {
+  //     setFilteredData(data);
+  //     console.log(data, "kkk");
+  //   }
+  // };
 
   const columns = [
     {
@@ -367,8 +398,8 @@ function Category() {
   ];
 
   return (
-    <div className="mt-28 md:pl-[20vw]">
-      <div className="w-[80vw]">
+    <div className="mt-28 p-0 md:pl-[20vw]">
+      <div className="lg:w-[80vw]  hidden lg:inline">
         <Collapse
           defaultActiveKey={["1"]}
           expandIcon={({ isActive }) => (
@@ -378,7 +409,7 @@ function Category() {
             />
           )}
           collapsible="icon"
-          className="lg:!w-[78vw]"
+          className="lg:!w-[78vw] "
         >
           <Panel
             header={
@@ -419,6 +450,7 @@ function Category() {
                         className="custom-search"
                       />
                     </div>
+
                     <Table
                       key="id"
                       size="middle"
@@ -442,6 +474,37 @@ function Category() {
             </div>
           </Panel>
         </Collapse>
+      </div>
+      <div className="inline lg:hidden  ">
+        <Spin spinning={loading}>
+          <div className="my-2 p-4 ">
+            <Input.Search
+              placeholder="search cusines"
+              // onSearch={handleSearchmobile}
+              onKeyDown={handleSearchKeyPress}
+              style={{
+                width: "100%",
+              }}
+              className="custom-search"
+            />
+          </div>
+
+          {filterData.map((item, index) => {
+            return (
+              <MenuManageCards
+                id={index + 1}
+                name={
+                  item.name.length > 10
+                    ? item.name.slice(0, 10) + "..."
+                    : item.name
+                }
+                foodimg={item.image}
+                status={item.status}
+                switchChange={(checked) => handleStatus(checked, item)}
+              />
+            );
+          })}
+        </Spin>
       </div>
       <Modal
         open={open}

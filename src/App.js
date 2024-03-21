@@ -42,7 +42,14 @@ import { socket } from "./socket";
 import Sound from "./assets/notify.mp3";
 import Coupons from "./components/coupons";
 import Charges from "./components/Charges";
-import {requestPermission} from "./firebase/firebaseConfig"
+import { requestPermission } from "./firebase/firebaseConfig";
+import HistoryOnlineOrder from "./components/orderHistory/onlineOrder";
+import HistoryCallOrder from "./components/orderHistory/callforOrder";
+import HistoryDinningOrder from "./components/orderHistory/dinningOrder";
+import HistorTakeAwayOrder from "./components/orderHistory/takeawauOrder";
+import BookingOrder from "./components/viewBooking/bookingOrder";
+import TableSlot from "./components/viewBooking/tableSlot";
+
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path="/" element={<RootLayout />}>
@@ -54,7 +61,9 @@ const router = createBrowserRouter(
       <Route path="coupons" element={<Coupons />} />
       <Route path="subcategory" element={<SubCategory />} />
       <Route path="wallet" element={<Wallet />} />
-      <Route path="tablebooking" element={<TableBooking />} />
+      {/* <Route path="tablebooking" element={<TableBooking />} /> */}
+      <Route path="tableslot" element={<TableSlot />} />
+      <Route path="bookingorder" element={<BookingOrder />} />
       <Route path="feedback" element={<Feedback />} />
       <Route path="inventory" element={<Inventory />} />
       <Route path="video" element={<Video />} />
@@ -66,10 +75,10 @@ const router = createBrowserRouter(
       <Route path="takeaway" element={<TakeAway />} />
       <Route path="dinning" element={<Dinning />} />
       <Route path="callfororder" element={<CallForOrder />} />
-      <Route path="orderhistory/onlineorder" element={<OnlineOrder />} />
-      <Route path="orderhistory/takeaway" element={<TakeAway />} />
-      <Route path="orderhistory/dinning" element={<Dinning />} />
-      <Route path="orderhistory/callfororder" element={<CallForOrder />} />
+      <Route path="orderhistory/onlineorder" element={<HistoryOnlineOrder />} />
+      <Route path="orderhistory/takeaway" element={<HistorTakeAwayOrder />} />
+      <Route path="orderhistory/dinning" element={<HistoryDinningOrder />} />
+      <Route path="orderhistory/callfororder" element={<HistoryCallOrder />} />
       <Route index path="login" element={<Login />} />
       <Route path="scratchcard" element={<ScratchCard />} />
       <Route path="footer" element={<Footer />} />

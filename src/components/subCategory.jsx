@@ -24,6 +24,7 @@ import {
   FileAddOutlined,
 } from "@ant-design/icons";
 import { useSelector } from "react-redux";
+import { MenuManageCards } from "../cards/OrdersCard";
 
 function SubCategory() {
   const { Panel } = Collapse;
@@ -405,74 +406,113 @@ function SubCategory() {
 
   return (
     <div className="mt-28 md:pl-[20vw]">
-      <Collapse
-        defaultActiveKey={[1]}
-        expandIcon={({ isActive }) => (
-          <CaretRightOutlined
-            rotate={isActive ? 90 : 0}
-            className="!text-[#CD5C08]"
-          />
-        )}
-        collapsible="icon"
-        className="w-[95vw] md:!w-[78vw]"
-      >
-        <Panel
-          header={
-            <p className="md:text-[14px] !text-[#CD5C08] font-semibold">
-              Subcuisines
-            </p>
-          }
-          extra={
-            <div
-              className="cursor-pointer"
-              onClick={() => {
-                setOpen(!open);
-              }}
-            >
-              <FileAddOutlined
-                className={`!text-[#CD5C08] !text-xl ${
-                  get(user, "name")?.split("@")?.includes("partner")
-                    ? "!hidden"
-                    : "!block"
-                }`}
-              />
-            </div>
-          }
-          key="1"
-        >
-          <Spin spinning={loading}>
-            <div className="my-2">
-              <Input.Search
-                placeholder="search cusines"
-                onSearch={handleSearch}
-                onKeyDown={handleSearchKeyPress}
-                style={{
-                  width: "100%",
-                }}
-                className="custom-search"
-              />
-            </div>
-            <Table
-              columns={
-                get(user, "name")?.split("@")?.includes("partner")
-                  ? partnerColumns
-                  : columns
-              }
-              dataSource={filterData}
-              size="middle"
-              key="id"
-              pagination={{
-                pageSize: 5,
-                current: currentPage,
-                onChange: (page) => {
-                  setCurrentPage(page);
-                },
-              }}
-              scroll={{ x: 300 }}
+      <div className="hidden lg:inline">
+        <Collapse
+          defaultActiveKey={[1]}
+          expandIcon={({ isActive }) => (
+            <CaretRightOutlined
+              rotate={isActive ? 90 : 0}
+              className="!text-[#CD5C08]"
             />
-          </Spin>
-        </Panel>
-      </Collapse>
+          )}
+          collapsible="icon"
+          className="w-[95vw] md:!w-[78vw]"
+        >
+          <Panel
+            header={
+              <p className="md:text-[14px] !text-[#CD5C08] font-semibold">
+                Subcuisines
+              </p>
+            }
+            extra={
+              <div
+                className="cursor-pointer"
+                onClick={() => {
+                  setOpen(!open);
+                }}
+              >
+                <FileAddOutlined
+                  className={`!text-[#CD5C08] !text-xl ${
+                    get(user, "name")?.split("@")?.includes("partner")
+                      ? "!hidden"
+                      : "!block"
+                  }`}
+                />
+              </div>
+            }
+            key="1"
+          >
+            <Spin spinning={loading}>
+              <div className="my-2">
+                <Input.Search
+                  placeholder="search cusines"
+                  onSearch={handleSearch}
+                  onKeyDown={handleSearchKeyPress}
+                  style={{
+                    width: "100%",
+                  }}
+                  className="custom-search"
+                />
+              </div>
+              <Table
+                columns={
+                  get(user, "name")?.split("@")?.includes("partner")
+                    ? partnerColumns
+                    : columns
+                }
+                dataSource={filterData}
+                size="middle"
+                key="id"
+                pagination={{
+                  pageSize: 5,
+                  current: currentPage,
+                  onChange: (page) => {
+                    setCurrentPage(page);
+                  },
+                }}
+                scroll={{ x: 300 }}
+              />
+            </Spin>
+          </Panel>
+        </Collapse>
+      </div>
+
+      <div className="inline lg:hidden">
+        <Spin spinning={loading}>
+          <div className="my-2 p-4">
+            <Input.Search
+              placeholder="search cusines"
+              // onSearch={handleSearchmobile}
+              onKeyDown={handleSearchKeyPress}
+              style={{
+                width: "100%",
+              }}
+              className="custom-search"
+            />
+          </div>
+
+          <div>
+            {filterData.map((item, index) => {
+              // console.log("item", item);
+              return (
+                <div className=" m-auto ">
+                  <MenuManageCards
+                    id={index + 1}
+                    name={
+                      item.name.length > 10
+                        ? item.name.slice(0, 10) + "..."
+                        : item.name
+                    }
+                    foodimg={item.image}
+                    status={item.status}
+                    switchChange={(checked) => handleStatus(checked, item)}
+                  />
+                </div>
+              );
+            })}
+          </div>
+        </Spin>
+      </div>
 
       <Modal
         open={open}
