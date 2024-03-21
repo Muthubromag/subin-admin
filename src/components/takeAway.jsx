@@ -537,8 +537,8 @@ function TakeAway() {
     },
     {
       title: <h1 className="text-[10px] md:text-[14px]">Bill Amount</h1>,
-      dataIndex: "billAmount",
-      key: "billAmount",
+      dataIndex: "item_price",
+      key: "item_price",
       align: "center",
       render: (name) => {
         return <h1 className="text-[10px] md:text-[14px]">{name}</h1>;

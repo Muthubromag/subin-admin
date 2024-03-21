@@ -578,8 +578,8 @@ function OnlineOrder() {
     },
     {
       title: <h1 className="text-[10px] md:text-[14px]">Bill Amount</h1>,
-      dataIndex: "billAmount",
-      key: "billAmount",
+      dataIndex: "itemPrice",
+      key: "itemPrice",
       align: "center",
       render: (name) => {
         return <h1 className="text-[10px] md:text-[14px]">{name}</h1>;
