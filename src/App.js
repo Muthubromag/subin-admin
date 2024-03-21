@@ -42,7 +42,7 @@ import { socket } from "./socket";
 import Sound from "./assets/notify.mp3";
 import Coupons from "./components/coupons";
 import Charges from "./components/Charges";
-
+import {requestPermission} from "./firebase/firebaseConfig"
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path="/" element={<RootLayout />}>
@@ -138,6 +138,7 @@ function App() {
       console.log("=== Socket disconnected ===");
       // setConnected(false);
     });
+    requestPermission();
   }, []);
 
   // navigator.usb.getDevices().then((devices) => {
