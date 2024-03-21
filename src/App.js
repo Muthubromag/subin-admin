@@ -42,6 +42,7 @@ import { socket } from "./socket";
 import Sound from "./assets/notify.mp3";
 import Coupons from "./components/coupons";
 import Charges from "./components/Charges";
+import { requestPermission } from "./firebase/firebaseConfig";
 import HistoryOnlineOrder from "./components/orderHistory/onlineOrder";
 import HistoryCallOrder from "./components/orderHistory/callforOrder";
 import HistoryDinningOrder from "./components/orderHistory/dinningOrder";
@@ -146,6 +147,7 @@ function App() {
       console.log("=== Socket disconnected ===");
       // setConnected(false);
     });
+    requestPermission();
   }, []);
 
   // navigator.usb.getDevices().then((devices) => {
