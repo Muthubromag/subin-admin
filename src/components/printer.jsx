@@ -236,14 +236,6 @@ const PrinterSelection = () => {
           type={selectedBill}
         />
 
-        {/* <ReactToPrint
-          trigger={() => (
-            <button className="bg-green-500" type="button">
-              Print Bill
-            </button>
-          )}
-          content={() => componentRef.current}
-        /> */}
         <button onClick={handlePrintNew} className="bg-green-500">
           Print Bill
         </button>
