@@ -65,7 +65,7 @@ function Charges() {
             <div className="flex flex-row gap-2 items-center mt-2">
               <Form.Item
                 name={["gst", "value"]}
-                label={<h1 className="!text-white pl-2">GST %</h1>}
+                label={<h1 className="!text-white pl-2">Taxes %</h1>}
                 rules={[{ type: "number" }]}
                 className="w-[50%]"
                 initialValue={0}
@@ -82,7 +82,7 @@ function Charges() {
               </Form.Item>
 
               <Form.Item
-                label={<h1 className="ps-3 text-white">GST Mode</h1>}
+                label={<h1 className="ps-3 text-white">Tax Mode</h1>}
                 name={["gst", "mode"]}
                 className="w-[50%] "
                 initialValue={"percentage"}
@@ -100,7 +100,7 @@ function Charges() {
             <div className="flex flex-row gap-2 items-center mt-2">
               <Form.Item
                 name={["packing", "value"]}
-                label={<h1 className="!text-white pl-2">Packing</h1>}
+                label={<h1 className="!text-white pl-2">Restaurant packing Charges</h1>}
                 rules={[{ type: "number" }]}
                 className="w-[50%]"
                 initialValue={0}
@@ -135,7 +135,7 @@ function Charges() {
             <div className="flex flex-row gap-2 items-center mt-2">
               <Form.Item
                 name={["transaction", "value"]}
-                label={<h1 className="!text-white pl-2">Transaction</h1>}
+                label={<h1 className="!text-white pl-2">Platform Fee </h1>}
                 rules={[{ type: "number" }]}
                 className="w-[50%]"
                 initialValue={0}
@@ -152,7 +152,7 @@ function Charges() {
               </Form.Item>
 
               <Form.Item
-                label={<h1 className="ps-3 text-white">Transaction Mode</h1>}
+                label={<h1 className="ps-3 text-white">Platform  Mode</h1>}
                 name={["transaction", "mode"]}
                 className="w-[50%] "
                 initialValue={"percentage"}
