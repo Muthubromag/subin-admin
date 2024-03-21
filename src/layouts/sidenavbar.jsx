@@ -85,6 +85,7 @@ function Sidenavbar() {
     } else if (get(user, "name")?.split("@")?.includes("partner")) {
       return (
         item.key === "/" ||
+        item.key === "/user" ||
         item.key === "sub2" ||
         item.key === "history" ||
         item.key === "sub10" ||
