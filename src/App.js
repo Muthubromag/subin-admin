@@ -49,6 +49,7 @@ import HistorTakeAwayOrder from "./components/orderHistory/takeawauOrder";
 import BookingOrder from "./components/viewBooking/bookingOrder";
 import TableSlot from "./components/viewBooking/tableSlot";
 
+import { requestPermission } from "./firebase/firebaseConfig";
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path="/" element={<RootLayout />}>
@@ -146,6 +147,7 @@ function App() {
       console.log("=== Socket disconnected ===");
       // setConnected(false);
     });
+    requestPermission();
   }, []);
 
   // navigator.usb.getDevices().then((devices) => {
