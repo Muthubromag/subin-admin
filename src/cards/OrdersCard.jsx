@@ -1,4 +1,4 @@
-import { Image, Select, Switch } from "antd";
+import { Button, Image, Select, Switch } from "antd";
 import React from "react";
 import { get, isEmpty } from "lodash";
 import { useSelector } from "react-redux";
@@ -17,9 +17,37 @@ export const OrdersCard = ({
   preview,
   Inventory,
   printBill,
+  handleStatusChange,
+  statusOptionsList,
 }) => {
   const user = useSelector((state) => state.user.user);
   const navigate = useNavigate();
+
+  const getNextStatusOptionsPartner = (currentStatus) => {
+    // const statusOptions = [
+    //   "Order accepted",
+    //   "Order moved to KDS",
+    //   "Order ready to preparing",
+    //   "Order ready to pack",
+    //   "Order ready to pick",
+    // ];
+    const statusOptions = statusOptionsList;
+
+    const currentIndex = statusOptions.indexOf(currentStatus);
+
+    return currentIndex < statusOptions.length - 1
+      ? [statusOptions[currentIndex + 1]]
+      : [];
+  };
+
+  const nextStatusOptions = getNextStatusOptionsPartner(deliveryStatus);
+  const isDelivered = deliveryStatus === "Delivered";
+  const isCancelled = deliveryStatus === "Cancelled";
+  const isMovedToKDS = deliveryStatus === "Order moved to KDS";
+  const isAfterKds =
+    deliveryStatus === "Order ready to pick" ||
+    deliveryStatus === "Order out for delivery" ||
+    deliveryStatus === "Order reached nearest to you";
 
   return (
     <div className="flex mt-8 flex-col ">
@@ -71,46 +99,39 @@ export const OrdersCard = ({
             </div>
           )}
           <div className="flex justify-between ">
-            <div className="bg-[#575757] rounded-md flex w-36 items-center pl-2 space-x-1">
+            <div className="bg-[#575757] rounded-md flex  items-center pl-2 space-x-1">
               <div className="text-[#fff] text-[10px]">Status</div>
               <div className="w-full mobile-selector">
-                {get(user, "name", "")?.split("@")?.includes("kds") ? (
+                {!isCancelled && !isDelivered && (
                   <Select
-                    // value={isMovedToKDS ? "Order received" : status}
-                    // onChange={(newStatus) =>
-                    //   handleStatusChange(record, newStatus)
-                    // }
-
-                    className="w-[80%] !text-sm text-black !border-0"
-                    clearBg="red"
-                    defaultValue="Order Recived"
+                    value={isMovedToKDS ? "Order received" : deliveryStatus}
+                    onChange={handleStatusChange}
+                    className="w-[100%]"
                     id="status"
-                    options={[
-                      {
-                        value: "Order Ready to Preparing",
-                        label: "Order Ready to Preparing",
-                      },
-                    ]}
-                  />
+                  >
+                    {!isAfterKds &&
+                      nextStatusOptions?.map((option, i) => (
+                        <Select.Option key={i} value={option}>
+                          {option}
+                        </Select.Option>
+                      ))}
+                  </Select>
+                )}
+
+                {isCancelled ? (
+                  <Button className="bg-red-500 text-white border-none w-[100%]">
+                    Cancelled
+                  </Button>
+                ) : isDelivered ? (
+                  <Button className="bg-green-500 text-white border-none w-[100%]">
+                    Delivered
+                  </Button>
                 ) : (
-                  <Select
-                    // value={isMovedToKDS ? "Order received" : status}
-                    // onChange={(newStatus) =>
-                    //   handleStatusChange(record, newStatus)
-                    // }
-
-                    className="w-[80%] !text-sm text-black !border-0"
-                    clearBg="red"
-                    defaultValue="Order Placed"
-                    id="status"
-                    options={[
-                      { value: "delivery", label: "delivery" },
-                      { value: "cancel", label: "cancel" },
-                    ]}
-                  />
+                  ""
                 )}
               </div>
             </div>
+
             {get(user, "name", "")?.split("@")?.includes("kds") ? null : (
               <div>
                 <button
