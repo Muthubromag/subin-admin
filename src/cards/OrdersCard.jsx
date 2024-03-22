@@ -1,5 +1,8 @@
 import { Image, Select, Switch } from "antd";
 import React from "react";
+import { get, isEmpty } from "lodash";
+import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
 export const OrdersCard = ({
   id,
@@ -12,10 +15,15 @@ export const OrdersCard = ({
   billAmount,
   location,
   preview,
+  Inventory,
+  printBill,
 }) => {
+  const user = useSelector((state) => state.user.user);
+  const navigate = useNavigate();
+
   return (
     <div className="flex mt-8 flex-col ">
-      <div className="bg-white w-80 m-auto rounded-lg">
+      <div className="bg-white w-96 m-auto rounded-lg">
         <div className="flex bg-[#ED7802] rounded-t-lg justify-between  p-4 ">
           <div>S.No: {id}</div>
           <div>{date}</div>
@@ -36,15 +44,24 @@ export const OrdersCard = ({
               Table No : <span className="font-bold text-black">{tableNo}</span>{" "}
             </div>
           )}
-          <div className="text-[#828282] font-medium">
-            Bill Amount :{" "}
-            <span className="font-bold text-black">{billAmount}</span>{" "}
-          </div>
+
+          {billAmount && !get(user, "name", "")?.split("@")?.includes("kds") ? (
+            <div className="text-[#828282] font-medium">
+              Bill Amount:
+              <span className="font-bold text-black"> ₹ {billAmount}</span>{" "}
+            </div>
+          ) : null}
 
           {deliveryStatus && (
             <div className="text-[#828282] font-medium">
               Delivery Status :{" "}
               <span className="font-bold text-black">{deliveryStatus}</span>{" "}
+            </div>
+          )}
+          {get(user, "name", "")?.split("@")?.includes("kds") && Inventory && (
+            <div className="text-[#828282] font-medium">
+              Inventory:{" "}
+              <span className="font-bold text-black">{Inventory}</span>{" "}
             </div>
           )}
           {location && (
@@ -54,26 +71,59 @@ export const OrdersCard = ({
             </div>
           )}
           <div className="flex justify-between ">
-            <div className="bg-[#575757] rounded-md flex w-44 items-center pl-2 space-x-1">
-              <div className="text-[#fff] text-[12px]">Status</div>
+            <div className="bg-[#575757] rounded-md flex w-36 items-center pl-2 space-x-1">
+              <div className="text-[#fff] text-[10px]">Status</div>
               <div className="w-full mobile-selector">
-                <Select
-                  // value={isMovedToKDS ? "Order received" : status}
-                  // onChange={(newStatus) =>
-                  //   handleStatusChange(record, newStatus)
-                  // }
+                {get(user, "name", "")?.split("@")?.includes("kds") ? (
+                  <Select
+                    // value={isMovedToKDS ? "Order received" : status}
+                    // onChange={(newStatus) =>
+                    //   handleStatusChange(record, newStatus)
+                    // }
 
-                  className="w-[100%] !text-sm text-black !border-0"
-                  clearBg="red"
-                  defaultValue="Order Placed"
-                  id="status"
-                  options={[
-                    { value: "delivery", label: "delivery" },
-                    { value: "cancel", label: "cancel" },
-                  ]}
-                />
+                    className="w-[80%] !text-sm text-black !border-0"
+                    clearBg="red"
+                    defaultValue="Order Recived"
+                    id="status"
+                    options={[
+                      {
+                        value: "Order Ready to Preparing",
+                        label: "Order Ready to Preparing",
+                      },
+                    ]}
+                  />
+                ) : (
+                  <Select
+                    // value={isMovedToKDS ? "Order received" : status}
+                    // onChange={(newStatus) =>
+                    //   handleStatusChange(record, newStatus)
+                    // }
+
+                    className="w-[80%] !text-sm text-black !border-0"
+                    clearBg="red"
+                    defaultValue="Order Placed"
+                    id="status"
+                    options={[
+                      { value: "delivery", label: "delivery" },
+                      { value: "cancel", label: "cancel" },
+                    ]}
+                  />
+                )}
               </div>
             </div>
+            {get(user, "name", "")?.split("@")?.includes("kds") ? null : (
+              <div>
+                <button
+                  className="bg-[#ED7802] text-black  w-full rounded-lg p-2  !text-[12px]"
+                  onClick={() => {
+                    navigate(`/printer/${printBill}/online`);
+                  }}
+                >
+                  Print Bill
+                </button>
+              </div>
+            )}
+
             <div className="">
               <button
                 className=" bg-[#222222] text-white rounded-lg p-2  !text-[10px]"
@@ -98,65 +148,79 @@ export const MenuManageCards = ({
   status,
   switchChange,
   discountPrice,
-}) => {
-  return (
-    <div className="flex mt-8 flex-col p-2 w-96 ">
-      <div className="bg-white w-full m-auto rounded-lg">
-        <div className="flex bg-[#ED7802] rounded-t-lg justify-between  p-4 ">
-          <div>S.No: {id}</div>
-          <div>{name}</div>
-        </div>
-        <div className="p-4 flex  flex-col space-y-3">
-          <div className="flex items-center space-x-2 justify-between">
-            <div className="img-crd w-32">
-              <Image
-                alt="food_img"
-                className=" w-32 rounded-md h-28 border-2 border-[#CD5C08]  "
-                src={foodimg}
+}) =>
+  // get(user, "name", "")?.split("@")?.includes("kds")
+  // ? kdsColumns
+  // : get(user, "name", "")
+  //     ?.split("@")
+  //     ?.includes("frontdesk") ||
+  //   get(user, "name", "")
+  //     ?.split("@")
+  //     ?.includes("partner")
+  // ? columnsOperation
+  // : columns
+
+  {
+    return (
+      <div className="flex mt-8 flex-col p-2 w-96 ">
+        <div className="bg-white w-full m-auto rounded-lg">
+          <div className="flex bg-[#ED7802] rounded-t-lg justify-between  p-4 ">
+            <div>S.No: {id}</div>
+            <div>{name}</div>
+          </div>
+          <div className="p-4 flex  flex-col space-y-3">
+            <div className="flex items-center space-x-2 justify-between">
+              <div className="img-crd w-32">
+                <Image
+                  alt="food_img"
+                  className=" w-32 rounded-md h-28 border-2 border-[#CD5C08]  "
+                  src={foodimg}
+                />
+              </div>
+              <div className="flex flex-col">
+                <div
+                  className={`${
+                    offer
+                      ? "font-bold text-black"
+                      : " text-[#828282] font-medium"
+                  }`}
+                >
+                  {name}
+                </div>
+                {price && (
+                  <div className="text-[#828282] text-sm">
+                    Price :{" "}
+                    <span className="font-normal text-black"> ₹ {price}</span>{" "}
+                  </div>
+                )}
+                {offer && (
+                  <div className="text-[#828282] text-sm">
+                    offer :{" "}
+                    <span className="font-normal text-black">{offer}%</span>{" "}
+                  </div>
+                )}
+                {discountPrice && (
+                  <div className="text-[#828282]  text-sm">
+                    discountPrice :{" "}
+                    <span className="font-normal text-black">
+                      {" "}
+                      ₹ {discountPrice}
+                    </span>{" "}
+                  </div>
+                )}
+              </div>
+
+              <Switch
+                className="text-md"
+                checked={status}
+                onChange={switchChange}
               />
             </div>
-            <div className="flex flex-col">
-              <div
-                className={`${
-                  offer ? "font-bold text-black" : " text-[#828282] font-medium"
-                }`}
-              >
-                {name}
-              </div>
-              {price && (
-                <div className="text-[#828282] text-sm">
-                  Price :{" "}
-                  <span className="font-normal text-black"> ₹ {price}</span>{" "}
-                </div>
-              )}
-              {offer && (
-                <div className="text-[#828282] text-sm">
-                  offer :{" "}
-                  <span className="font-normal text-black">{offer}%</span>{" "}
-                </div>
-              )}
-              {discountPrice && (
-                <div className="text-[#828282]  text-sm">
-                  discountPrice :{" "}
-                  <span className="font-normal text-black">
-                    {" "}
-                    ₹ {discountPrice}
-                  </span>{" "}
-                </div>
-              )}
-            </div>
-
-            <Switch
-              className="text-md"
-              checked={status}
-              onChange={switchChange}
-            />
           </div>
         </div>
       </div>
-    </div>
-  );
-};
+    );
+  };
 
 export const FeedBackCard = ({
   id,
