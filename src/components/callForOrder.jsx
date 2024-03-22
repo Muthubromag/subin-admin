@@ -802,8 +802,8 @@ function CallForOrder() {
     },
     {
       title: <h1 className="text-[10px] md:text-[14px]">Bill Amount</h1>,
-      dataIndex: "grandTotal",
-      key: "grandTotal",
+      dataIndex: "billAmount",
+      key: "billAmount",
       align: "center",
       render: (name) => {
         return <h1 className="text-[10px] md:text-[14px]">{name}</h1>;
