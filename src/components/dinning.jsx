@@ -8,6 +8,7 @@ import {
   Modal,
   Spin,
   Image,
+  Pagination,
 } from "antd";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import axios from "axios";
@@ -113,16 +114,6 @@ function Dinning() {
     }
   };
 
-  const getNextStatusOptions = (currentStatus) => {
-    const statusOptions = ["Order accepted", "Order moved to KDS"];
-
-    const currentIndex = statusOptions.indexOf(currentStatus);
-
-    return currentIndex < statusOptions.length - 1
-      ? [statusOptions[currentIndex + 1]]
-      : [];
-  };
-
   const getNextStatusOptionsAfterKds = (currentStatus) => {
     const statusOptions = ["Order picked", "Order served", "Cancelled"];
 
@@ -169,6 +160,32 @@ function Dinning() {
 
   const getNextStatusOptionsinKds = (currentStatus) => {
     const statusOptions = ["Order ready to preparing", "Order ready to serve"];
+
+    const currentIndex = statusOptions.indexOf(currentStatus);
+
+    return currentIndex < statusOptions.length - 1
+      ? [statusOptions[currentIndex + 1]]
+      : [];
+  };
+
+  const getNextStatusOptionsPartner = (currentStatus) => {
+    const statusOptions = [
+      "Order accepted",
+      "Order moved to KDS",
+      "Order ready to preparing",
+
+      "Order served",
+    ];
+
+    const currentIndex = statusOptions.indexOf(currentStatus);
+
+    return currentIndex < statusOptions.length - 1
+      ? [statusOptions[currentIndex + 1]]
+      : [];
+  };
+
+  const getNextStatusOptions = (currentStatus) => {
+    const statusOptions = ["Order accepted", "Order moved to KDS"];
 
     const currentIndex = statusOptions.indexOf(currentStatus);
 
@@ -331,6 +348,7 @@ function Dinning() {
       render: (status, record) => {
         const nextStatusOptions = getNextStatusOptions(status);
         const nextOptionsAfterKds = getNextStatusOptionsAfterKds(status);
+
         const isDelivered = status === "Order served";
         const isCancelled = status === "Cancelled";
         const isPick =
@@ -538,6 +556,7 @@ function Dinning() {
       render: (status, record) => {
         const nextStatusOptions = getNextStatusOptions(status);
         const nextOptionsAfterKds = getNextStatusOptionsAfterKds(status);
+        const nextStatusOptionspartner = getNextStatusOptionsPartner(status);
         const isDelivered = status === "Order served";
         const isCancelled = status === "Cancelled";
         const isPick =
@@ -547,67 +566,111 @@ function Dinning() {
         const isbeforeKds =
           status === "Order accepted" || status === "Order placed";
 
+        const rolefront = get(user, "name", "")
+          ?.split("@")
+          ?.includes("frontdesk");
+
+        const isMovedToKDS = status === "Order moved to KDS";
+        const isAfterKds =
+          status === "Order ready to pick" ||
+          status === "Order served" ||
+          status === "Order reached nearest to you";
+
         return (
           <>
-            {isPick ? (
-              <div>
-                {!isCancelled && !isDelivered && (
-                  <Select
-                    value={status}
-                    onChange={(newStatus) =>
-                      handleStatusChange(record, newStatus)
-                    }
-                    className="w-[100%]"
-                  >
-                    {nextOptionsAfterKds.map((option) => (
-                      <Select.Option key={option} value={option}>
-                        {option}
-                      </Select.Option>
-                    ))}
-                    <Select.Option value="Cancelled">Cancelled</Select.Option>
-                  </Select>
-                )}
-                {isCancelled ? (
-                  <Button className="bg-red-500 text-white border-none w-[100%]">
-                    Cancelled
-                  </Button>
-                ) : isDelivered ? (
-                  <Button className="bg-green-500 text-white border-none w-[100%]">
-                    Order served
-                  </Button>
+            {rolefront ? (
+              <>
+                {isPick ? (
+                  <div>
+                    {!isCancelled && !isDelivered && (
+                      <Select
+                        value={status}
+                        onChange={(newStatus) =>
+                          handleStatusChange(record, newStatus)
+                        }
+                        className="w-[100%]"
+                      >
+                        {nextOptionsAfterKds.map((option) => (
+                          <Select.Option key={option} value={option}>
+                            {option}
+                          </Select.Option>
+                        ))}
+                        <Select.Option value="Cancelled">
+                          Cancelled
+                        </Select.Option>
+                      </Select>
+                    )}
+                    {isCancelled ? (
+                      <Button className="bg-red-500 text-white border-none w-[100%]">
+                        Cancelled
+                      </Button>
+                    ) : isDelivered ? (
+                      <Button className="bg-green-500 text-white border-none w-[100%]">
+                        Order served
+                      </Button>
+                    ) : (
+                      ""
+                    )}
+                  </div>
                 ) : (
-                  ""
+                  <div>
+                    {!isCancelled && (
+                      <Select
+                        value={status}
+                        onChange={(newStatus) =>
+                          handleStatusChange(record, newStatus)
+                        }
+                        className="w-[100%]"
+                      >
+                        {isbeforeKds &&
+                          nextStatusOptions.map((option) => (
+                            <Select.Option key={option} value={option}>
+                              {option}
+                            </Select.Option>
+                          ))}
+                        <Select.Option value="Cancelled">
+                          Cancelled
+                        </Select.Option>
+                      </Select>
+                    )}
+                    {isCancelled ? (
+                      <Button className="bg-red-500 text-white border-none w-[100%]">
+                        Cancelled
+                      </Button>
+                    ) : isDelivered ? (
+                      <Button className="bg-green-500 text-white border-none w-[100%]">
+                        Order served
+                      </Button>
+                    ) : (
+                      ""
+                    )}
+                  </div>
                 )}
-              </div>
+              </>
             ) : (
               <div>
-                {!isCancelled && !isDelivered && (
+                {!isCancelled && (
                   <Select
-                    value={status}
+                    value={isMovedToKDS ? "Order received" : status}
                     onChange={(newStatus) =>
                       handleStatusChange(record, newStatus)
                     }
                     className="w-[100%]"
+                    id="status"
                   >
-                    {isbeforeKds &&
-                      nextStatusOptions.map((option) => (
-                        <Select.Option key={option} value={option}>
+                    {!isAfterKds &&
+                      nextStatusOptionspartner?.map((option, i) => (
+                        <Select.Option key={i} value={option}>
                           {option}
                         </Select.Option>
                       ))}
-                    <Select.Option value="Cancelled">Cancelled</Select.Option>
                   </Select>
                 )}
-                {isCancelled ? (
+
+                {isCancelled && (
                   <Button className="bg-red-500 text-white border-none w-[100%]">
                     Cancelled
                   </Button>
-                ) : isDelivered ? (
-                  <Button className="bg-green-500 text-white border-none w-[100%]">
-                    Order served
-                  </Button>
-                ) : (
-                  ""
                 )}
               </div>
             )}
@@ -857,6 +920,14 @@ function Dinning() {
     return Math.max(minWidth, Math.min(calculatedWidth, maxWidth));
   };
 
+  const itemsPerPage = 5;
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const paginatedData = data.slice(startIndex, endIndex);
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+  };
+
   return (
     <div className="pt-28 md:pl-[20vw]">
       <div className="w-[98vw]  md:w-[78vw]">
@@ -896,53 +967,74 @@ function Dinning() {
             />
           </div>
           <div className="inline lg:hidden">
-            {data.map((item, index) => {
-              const dateTimeString = item.createdAt;
+            <>
+              {paginatedData.map((item, index) => {
+                const dateTimeString = item.createdAt;
 
-              // Split the date and time using the 'T' delimiter
-              const [datePart] = dateTimeString.split("T");
-              const date = datePart;
+                // Split the date and time using the 'T' delimiter
+                const [datePart] = dateTimeString.split("T");
+                const date = datePart;
 
-              const indianStandardTime = new Date(item.createdAt);
+                const indianStandardTime = new Date(item.createdAt);
 
-              indianStandardTime.setUTCHours(
-                indianStandardTime.getUTCHours() + 5
-              ); // IST is UTC+5:30
-              indianStandardTime.setUTCMinutes(
-                indianStandardTime.getUTCMinutes() + 30
-              );
+                indianStandardTime.setUTCHours(
+                  indianStandardTime.getUTCHours() + 5
+                ); // IST is UTC+5:30
+                indianStandardTime.setUTCMinutes(
+                  indianStandardTime.getUTCMinutes() + 30
+                );
 
-              // Extract hours, minutes, and seconds
-              let hours = indianStandardTime.getHours();
-              const minutes = indianStandardTime.getMinutes();
+                // Extract hours, minutes, and seconds
+                let hours = indianStandardTime.getHours();
+                const minutes = indianStandardTime.getMinutes();
 
-              // Convert hours to 12-hour format
-              let period = "AM";
-              if (hours >= 12) {
-                period = "PM";
-              }
-              hours = hours % 12 || 12;
+                // Convert hours to 12-hour format
+                let period = "AM";
+                if (hours >= 12) {
+                  period = "PM";
+                }
+                hours = hours % 12 || 12;
 
-              hours = hours < 10 ? "0" + hours : hours;
-              const formattedTime = `${hours}:${
-                minutes < 10 ? "0" + minutes : minutes
-              }`;
+                hours = hours < 10 ? "0" + hours : hours;
+                const formattedTime = `${hours}:${
+                  minutes < 10 ? "0" + minutes : minutes
+                }`;
 
-              return (
-                <OrdersCard
-                  key={index}
-                  id={index + 1}
-                  date={date}
-                  time={`${formattedTime}`}
-                  orderId={item.orderId}
-                  bookingID={item.bookingId}
-                  tableNo={item.tableNo}
-                  deliveryStatus={item.status}
-                  billAmount={item.billAmount}
-                  preview={() => openPreviewModal(item?.orderedFood)}
-                />
-              );
-            })}
+                const statusOptions = [
+                  "Order accepted",
+                  "Order moved to KDS",
+                  "Order ready to preparing",
+                  "Order served",
+                ];
+
+                return (
+                  <OrdersCard
+                    key={index}
+                    id={index + 1}
+                    date={date}
+                    time={`${formattedTime}`}
+                    orderId={item.orderId}
+                    bookingID={item.bookingId}
+                    tableNo={item.tableNo}
+                    deliveryStatus={item.status}
+                    billAmount={item.billAmount}
+                    preview={() => openPreviewModal(item?.orderedFood)}
+                    handleStatusChange={(newstatus) =>
+                      handleStatusChange(item, newstatus)
+                    }
+                    statusOptionsList={statusOptions}
+                  />
+                );
+              })}
+            </>
+            <div className="mt-4 mb-2">
+              <Pagination
+                current={currentPage}
+                total={data.length}
+                pageSize={itemsPerPage}
+                onChange={handlePageChange}
+              />
+            </div>
           </div>
         </Spin>
       </div>

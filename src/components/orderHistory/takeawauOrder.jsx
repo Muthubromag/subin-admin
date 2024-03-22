@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { DatePicker, Spin } from "antd";
+import { DatePicker, Pagination, Spin } from "antd";
 import axios from "axios";
 import { get, isEmpty } from "lodash";
 import HistoryCards from "../../cards/HistoryCards";
@@ -8,6 +8,7 @@ function HistorTakeAwayOrder() {
   const { RangePicker } = DatePicker;
   const [takeAway, setTakeAway] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
 
   const fetchData = async () => {
     try {
@@ -28,6 +29,16 @@ function HistorTakeAwayOrder() {
   useEffect(() => {
     fetchData();
   }, []);
+
+  const itemsPerPage = 5;
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const paginatedData = takeAway.slice(startIndex, endIndex);
+
+  // Function to handle page change
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+  };
   return (
     <div className="pt-28 md:pl-[20vw]">
       <div className="w-[98vw] md:w-[78vw]">
@@ -44,7 +55,7 @@ function HistorTakeAwayOrder() {
               size="large"
             />
             <div className="!bg-white p-4 rounded-lg ">
-              {takeAway.map((item) => {
+              {paginatedData.map((item) => {
                 const dateTimeString = item.createdAt;
 
                 // Split the date and time using the 'T' delimiter
@@ -80,6 +91,14 @@ function HistorTakeAwayOrder() {
                 return <HistoryCards date={date} order={occurrences} />;
               })}
             </div>
+          </div>
+          <div className="mt-4 mb-2">
+            <Pagination
+              current={currentPage}
+              total={takeAway.length}
+              pageSize={itemsPerPage}
+              onChange={handlePageChange}
+            />
           </div>
         </Spin>
       </div>

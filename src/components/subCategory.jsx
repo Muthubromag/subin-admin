@@ -12,6 +12,7 @@ import {
   Image,
   Spin,
   Switch,
+  Pagination,
 } from "antd";
 import React, { useEffect, useState } from "react";
 import EditNoteOutlinedIcon from "@mui/icons-material/EditNoteOutlined";
@@ -404,6 +405,16 @@ function SubCategory() {
     },
   ];
 
+  const itemsPerPage = 5;
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const paginatedData = filterData.slice(startIndex, endIndex);
+
+  // Function to handle page change
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+  };
+
   return (
     <div className="mt-28 md:pl-[20vw]">
       <div className="hidden lg:inline">
@@ -492,7 +503,7 @@ function SubCategory() {
           </div>
 
           <div>
-            {filterData.map((item, index) => {
+            {paginatedData.map((item, index) => {
               // console.log("item", item);
               return (
                 <div className=" m-auto ">
@@ -510,6 +521,15 @@ function SubCategory() {
                 </div>
               );
             })}
+          </div>
+
+          <div className="mt-4 mb-2">
+            <Pagination
+              current={currentPage}
+              total={data.length}
+              pageSize={itemsPerPage}
+              onChange={handlePageChange}
+            />
           </div>
         </Spin>
       </div>
