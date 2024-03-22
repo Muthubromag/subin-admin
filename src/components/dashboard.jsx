@@ -612,13 +612,13 @@ function Dashboard() {
   ];
 
   return (
-    <div className="md:pl-[20vw] min-h-[92vh] overflow-y-scroll flex items-center justify-center md:items-start md:justify-start mt-28 md:mt-24">
+    <div className="md:pl-[20vw]  flex items-center justify-center md:items-start md:justify-start mt-28 md:mt-24 mb-48 lg:mb-0">
       {!localStorage.getItem("token") ? (
         <LoadingPage />
       ) : (
         <Spin spinning={loading}>
           <div
-            className={`flex flex-wrap  items-center justify-center md:items-start md:justify-start  gap-4 md:w-[80vw] `}
+            className={`flex flex-wrap  items-center justify-center md:items-start md:justify-start  gap-4 md:w-[80vw]  `}
           >
             <div
               className={` w-96 m-auto lg:m-0 py-4 px-4 ${

@@ -1403,20 +1403,27 @@ function CallForOrder() {
                         );
 
                         // Extract hours, minutes, and seconds
-                        let hours = indianStandardTime.getHours();
-                        const minutes = indianStandardTime.getMinutes();
+                        // let hours = indianStandardTime.getHours();
+                        // const minutes = indianStandardTime.getMinutes();
 
                         // Convert hours to 12-hour format
-                        let period = "AM";
-                        if (hours >= 12) {
-                          period = "PM";
-                        }
-                        hours = hours % 12 || 12;
+                        // let period = "AM";
+                        // if (hours >= 12) {
+                        //   period = "PM";
+                        // }
+                        // hours = hours % 12 || 12;
 
-                        hours = hours < 10 ? "0" + hours : hours;
+                        // hours = hours < 10 ? "0" + hours : hours;
+
+                        const hours = indianStandardTime.getHours() % 12 || 12;
+                        const minutes = indianStandardTime.getMinutes();
+
                         const formattedTime = `${hours}:${
                           minutes < 10 ? "0" + minutes : minutes
                         }`;
+
+                        const ampm =
+                          indianStandardTime.getHours() >= 12 ? "PM" : "AM";
 
                         const mobilePreviewModal = (orderedFood) => {
                           setPreviewData(!previewData);
@@ -1429,11 +1436,20 @@ function CallForOrder() {
                             key={index}
                             id={index + 1}
                             date={date}
-                            time={`${formattedTime}`}
+                            time={`${formattedTime}${ampm}`}
                             orderId={item.orderId}
                             deliveryStatus={item.status}
                             billAmount={item.billAmount}
                             location={item?.location}
+                            Inventory={`${
+                              getInventory[0]?.productName
+                                ? getInventory[0]?.productName
+                                : ""
+                            } ${
+                              item?.inventory[0]?.quantity > 0
+                                ? item?.inventory[0]?.quantity
+                                : 0
+                            }`}
                             preview={() =>
                               mobilePreviewModal(item?.orderedFood)
                             }

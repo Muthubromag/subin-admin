@@ -85,6 +85,7 @@ function Sidenavbar() {
     } else if (get(user, "name")?.split("@")?.includes("partner")) {
       return (
         item.key === "/" ||
+        item.key === "/user" ||
         item.key === "sub2" ||
         item.key === "history" ||
         item.key === "sub10" ||
@@ -113,7 +114,7 @@ function Sidenavbar() {
       {!localStorage.getItem("token") ? (
         <LoadingPage />
       ) : (
-        <div className="menunavdrawer h-[100vh] !bg-[--secondary-color] mt-[8vh] fixed md:mt-[8vh]   md:flex flex-col justify-between lg:border-r">
+        <div className="menunavdrawer h-[100vh] mt-[8vh] fixed md:mt-[8vh]   md:flex flex-col justify-between lg:border-r">
           <div
             className="h-[4vh] md:hidden  w-[100vw] flex items-center shadow-[2px]"
             onClick={() => {

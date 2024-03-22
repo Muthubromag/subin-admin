@@ -1099,18 +1099,21 @@ function OnlineOrder() {
                 minutes < 10 ? "0" + minutes : minutes
               }`;
 
+              const ampm = indianStandardTime.getHours() >= 12 ? "PM" : "AM";
+
               const mobilePreviewModal = (orderedFood) => {
                 setPreviewData(!previewData);
                 console.log(orderedFood[0]?.foodName, "orderedFood");
                 setFoodInformationList(orderedFood);
                 setSelectedProduct(orderedFood);
               };
+
               return (
                 <OrdersCard
                   key={index}
                   id={index + 1}
                   date={date}
-                  time={`${formattedTime}`}
+                  time={`${formattedTime} ${ampm}`}
                   orderId={item.orderId}
                   deliveryStatus={item.status}
                   billAmount={item.billAmount}
@@ -1120,6 +1123,12 @@ function OnlineOrder() {
                     item?.location[0]?.landMark
                   }
                   preview={() => mobilePreviewModal(item?.orderedFood)}
+                  Inventory={`${getInventory[0]?.productName} ${
+                    item?.inventory[0]?.quantity > 0
+                      ? item?.inventory[0]?.quantity
+                      : 0
+                  }`}
+                  print={item._id}
                 />
               );
             })}
