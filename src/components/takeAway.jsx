@@ -1158,7 +1158,7 @@ function TakeAway() {
                 "Order moved to KDS",
                 "Order ready to preparing",
                 "Order ready to pack",
-                "Order ready to pick",
+                // "Order ready to pick",
               ];
               return (
                 <>
@@ -1170,6 +1170,7 @@ function TakeAway() {
                     orderId={item.orderId}
                     billAmount={item.billAmount}
                     preview={() => openPreviewModal(item?.orderedFood)}
+                    deliveryStatus={item.status}
                     Inventory={`${
                       getInventory[0]?.productName
                         ? getInventory[0]?.productName
