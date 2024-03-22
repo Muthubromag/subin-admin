@@ -1153,6 +1153,13 @@ function TakeAway() {
               }`;
               console.log("itemsss", item);
 
+              const statusOptions = [
+                "Order accepted",
+                "Order moved to KDS",
+                "Order ready to preparing",
+                "Order ready to pack",
+                "Order ready to pick",
+              ];
               return (
                 <>
                   <OrdersCard
@@ -1175,6 +1182,7 @@ function TakeAway() {
                     handleStatusChange={(newstatus) =>
                       handleStatusChange(item, newstatus)
                     }
+                    statusOptionsList={statusOptions}
                   />
                 </>
               );
