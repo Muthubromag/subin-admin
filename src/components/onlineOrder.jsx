@@ -1203,7 +1203,12 @@ function OnlineOrder() {
                     time={`${formattedTime} ${period}`}
                     orderId={item.orderId}
                     deliveryStatus={item.status}
-                    billAmount={item.billAmount}
+                    billAmount={
+                      get(user, "name", "")?.split("@")?.includes("partner") ||
+                      get(user, "name", "")?.split("@")?.includes("frontdesk")
+                        ? item.itemPrice
+                        : item.billAmount
+                    }
                     location={
                       item?.location[0]?.streetName +
                       " " +
