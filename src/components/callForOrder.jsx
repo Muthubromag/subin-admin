@@ -1530,7 +1530,13 @@ function CallForOrder() {
                   time={`${formattedTime}${ampm}`}
                   orderId={item.orderId}
                   deliveryStatus={item.status}
-                  billAmount={item.billAmount}
+                  orderstatus={item.deliveryStatus}
+                  billAmount={
+                    get(user, "name", "")?.split("@")?.includes("partner") ||
+                    get(user, "name", "")?.split("@")?.includes("frontdesk")
+                      ? item?.orderedFood[0]?.originalPrice
+                      : item.billAmount
+                  }
                   location={item?.location}
                   Inventory={`${
                     getInventory[0]?.productName

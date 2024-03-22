@@ -1168,7 +1168,12 @@ function TakeAway() {
                     date={date}
                     time={`${formattedTime} ${period}`}
                     orderId={item.orderId}
-                    billAmount={item.billAmount}
+                    billAmount={
+                      get(user, "name", "")?.split("@")?.includes("partner") ||
+                      get(user, "name", "")?.split("@")?.includes("frontdesk")
+                        ? item?.item_price
+                        : item.billAmount
+                    }
                     preview={() => openPreviewModal(item?.orderedFood)}
                     deliveryStatus={item.status}
                     Inventory={`${
