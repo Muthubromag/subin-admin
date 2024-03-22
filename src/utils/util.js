@@ -1,3 +1,6 @@
+import Sound from "../assets/notify.mp3";
+const audio = new Audio(Sound);
+
 function formatTime(date) {
   const hours = date.getHours();
   const minutes = date.getMinutes();
@@ -28,4 +31,18 @@ export function generateTimeSlots({ interval }) {
   }
 
   return timeSlots;
+}
+
+export async function playSound() {
+  if (audio) {
+    audio.loop = true;
+    await audio.play();
+  }
+}
+
+export function stopSound() {
+  if (audio) {
+    audio.pause();
+    audio.currentTime = 0; // Reset audio playback position to the beginning
+  }
 }

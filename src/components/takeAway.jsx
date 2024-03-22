@@ -19,6 +19,7 @@ import { MinusCircleOutlined, PlusOutlined } from "@ant-design/icons";
 import moment from "moment";
 import { useNavigate } from "react-router-dom";
 import { OrdersCard } from "../cards/OrdersCard";
+import { playSound, stopSound } from "../utils/util";
 
 function TakeAway() {
   const [loading, setLoading] = useState(false);
@@ -68,6 +69,17 @@ function TakeAway() {
   useEffect(() => {
     fetchData();
   }, []);
+  // useEffect(() => {
+  //   // Check for orders with status "received" and play sound
+  //   const ordersToCheck = data.filter(
+  //     (order) => order.status === "Order placed"
+  //   );
+  //   if (ordersToCheck.length > 0) {
+  //     playSound();
+  //   } else {
+  //     stopSound();
+  //   }
+  // }, [data]);
   useEffect(() => {
     if (refresher?.order === "takeaway") {
       fetchData(false);

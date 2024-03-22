@@ -48,6 +48,7 @@ import HistoryDinningOrder from "./components/orderHistory/dinningOrder";
 import HistorTakeAwayOrder from "./components/orderHistory/takeawauOrder";
 import BookingOrder from "./components/viewBooking/bookingOrder";
 import TableSlot from "./components/viewBooking/tableSlot";
+import { playSound, stopSound } from "./utils/util";
 
 import { requestPermission } from "./firebase/firebaseConfig";
 const router = createBrowserRouter(
@@ -112,6 +113,20 @@ function App() {
     }
   };
 
+  const checkData = async () => {
+    const token = localStorage.getItem("token");
+    try {
+      const result = await axios.get(
+        `${process.env.REACT_APP_URL}/checkOrders`
+      );
+      if (result?.data) {
+        await playSound();
+      } else {
+        await stopSound();
+      }
+    } catch (err) {}
+  };
+
   useEffect(() => {
     fetchData();
   }, [loading]);
@@ -136,6 +151,7 @@ function App() {
       notification.success({
         message: `${data?.order?.toUpperCase()} - ${data?.status}`,
       });
+      await checkData();
 
       dispatch(setRefreshData(data));
     });
