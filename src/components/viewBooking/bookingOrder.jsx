@@ -11,6 +11,7 @@ import {
   Spin,
   Collapse,
   Image,
+  Pagination,
 } from "antd";
 import React, { useEffect, useState } from "react";
 import {
@@ -415,6 +416,16 @@ function BookingOrder() {
     (item) => item.booking === "CheckIn"
   );
 
+  const itemsPerPage = 5;
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const paginatedData = tableBookingData.slice(startIndex, endIndex);
+
+  // Function to handle page change
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+  };
+
   return (
     <div className="pt-28 md:pl-[20vw] ">
       <div className="w-[96vw].md:w-[85vw]">
@@ -478,48 +489,58 @@ function BookingOrder() {
         </div>
         <div className="inline lg:hidden">
           <Spin spinning={loading}>
-            {tableBookingData.map((item, index) => {
-              const dateTimeString = item.createdAt;
+            <>
+              {paginatedData.map((item, index) => {
+                const dateTimeString = item.createdAt;
 
-              // Split the date and time using the 'T' delimiter
-              const [datePart] = dateTimeString.split("T");
-              const date = datePart;
+                // Split the date and time using the 'T' delimiter
+                const [datePart] = dateTimeString.split("T");
+                const date = datePart;
 
-              const indianStandardTime = new Date(item.createdAt);
+                const indianStandardTime = new Date(item.createdAt);
 
-              indianStandardTime.setUTCHours(
-                indianStandardTime.getUTCHours() + 5
-              ); // IST is UTC+5:30
-              indianStandardTime.setUTCMinutes(
-                indianStandardTime.getUTCMinutes() + 30
-              );
+                indianStandardTime.setUTCHours(
+                  indianStandardTime.getUTCHours() + 5
+                ); // IST is UTC+5:30
+                indianStandardTime.setUTCMinutes(
+                  indianStandardTime.getUTCMinutes() + 30
+                );
 
-              // Extract hours, minutes, and seconds
-              let hours = indianStandardTime.getHours();
-              const minutes = indianStandardTime.getMinutes();
+                // Extract hours, minutes, and seconds
+                let hours = indianStandardTime.getHours();
+                const minutes = indianStandardTime.getMinutes();
 
-              // Convert hours to 12-hour format
-              let period = "AM";
-              if (hours >= 12) {
-                period = "PM";
-              }
-              hours = hours % 12 || 12;
+                // Convert hours to 12-hour format
+                let period = "AM";
+                if (hours >= 12) {
+                  period = "PM";
+                }
+                hours = hours % 12 || 12;
 
-              hours = hours < 10 ? "0" + hours : hours;
-              const formattedTime = `${hours}:${
-                minutes < 10 ? "0" + minutes : minutes
-              }`;
+                hours = hours < 10 ? "0" + hours : hours;
+                const formattedTime = `${hours}:${
+                  minutes < 10 ? "0" + minutes : minutes
+                }`;
 
-              return (
-                <BookingOrderCard
-                  id={index + 1}
-                  date={date}
-                  tableNo={item.tableNo}
-                  diningId={item.diningID}
-                  slot={item.diningTime}
+                return (
+                  <BookingOrderCard
+                    id={index + 1}
+                    date={date}
+                    tableNo={item.tableNo}
+                    diningId={item.diningID}
+                    slot={item.diningTime}
+                  />
+                );
+              })}
+              <div className="mt-4 mb-2">
+                <Pagination
+                  current={currentPage}
+                  total={tableBookingData.length}
+                  pageSize={itemsPerPage}
+                  onChange={handlePageChange}
                 />
-              );
-            })}
+              </div>
+            </>
           </Spin>
         </div>
       </div>

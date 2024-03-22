@@ -1,10 +1,8 @@
-/* eslint-disable no-unused-vars */
-/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useState, useRef } from "react";
 import { useParams } from "react-router-dom";
 import { get } from "lodash";
 import axios from "axios";
-import { useReactToPrint } from "react-to-print";
+import ReactToPrint, { useReactToPrint } from "react-to-print";
 
 import { ComponentToPrint } from "./print";
 import { useSelector } from "react-redux";
@@ -18,9 +16,6 @@ const PrinterSelection = () => {
   const [selectedBill, setSelectBill] = useState("kot");
   const [restaurant, setRestaturannt] = useState("kot");
   const componentRef = useRef();
-  const handlePrintNew = useReactToPrint({
-    content: () => componentRef.current,
-  });
 
   const fetchData = async () => {
     if (name === "takeaway") {
@@ -177,6 +172,11 @@ const PrinterSelection = () => {
     }
   };
 
+  const handlePrintNew = useReactToPrint({
+    content: () => componentRef.current,
+  });
+  console.log("nsjn", handlePrintNew);
+
   return (
     <div className="pl-[20vw] mt-20 text-white flex gap-20">
       {/* <div className="flex flex-col">
@@ -230,11 +230,12 @@ const PrinterSelection = () => {
           ) : null}
         </div>
         <ComponentToPrint
-          ref={componentRef}
+          ref={componentRef.current}
           data={filteredData}
           footer={restaurant?.[0]}
           type={selectedBill}
         />
+
         <button onClick={handlePrintNew} className="bg-green-500">
           Print Bill
         </button>
