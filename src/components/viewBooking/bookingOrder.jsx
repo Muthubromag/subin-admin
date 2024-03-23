@@ -529,6 +529,9 @@ function BookingOrder() {
                     tableNo={item.tableNo}
                     diningId={item.diningID}
                     slot={item.diningTime}
+                    allData={item}
+                    data={item.booking}
+                    handleChangeStatus={(e) => handleChangeStatus(e, item)}
                   />
                 );
               })}

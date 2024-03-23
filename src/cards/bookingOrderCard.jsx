@@ -1,7 +1,22 @@
-import { Select } from "antd";
+import { Button, Select } from "antd";
 import React from "react";
 
-function BookingOrderCard({ id, date, tableNo, diningId, slot }) {
+function BookingOrderCard({
+  id,
+  date,
+  tableNo,
+  diningId,
+  slot,
+  allData,
+  data,
+  handleChangeStatus,
+}) {
+  const createdAtTime = new Date(allData.createdAt);
+  const currentTime = new Date();
+  const timeDifferenceInMinutes = Math.floor(
+    (currentTime - createdAtTime) / (1000 * 60)
+  );
+
   return (
     <div className="flex mt-8 flex-col p-4 ">
       <div className="bg-white w-96 m-auto rounded-lg">
@@ -24,11 +39,8 @@ function BookingOrderCard({ id, date, tableNo, diningId, slot }) {
         </div>
         <div className=" rounded-md flex w-44 items-end p-4 space-x-1">
           <div className="w-full mobile-selector">
-            <Select
-              // value={isMovedToKDS ? "Order received" : status}
-              // onChange={(newStatus) =>
-              //   handleStatusChange(record, newStatus)
-              // }
+            {/* <Select
+          
 
               className="w-[100%] !text-sm text-black !border-0"
               clearBg="red"
@@ -38,7 +50,32 @@ function BookingOrderCard({ id, date, tableNo, diningId, slot }) {
                 { value: "Checkout", label: "Checkout" },
                 { value: "cancel", label: "cancel" },
               ]}
-            />
+            /> */}
+            {data === "Checkout" ? (
+              <Button className="w-full !bg-green-500 text-white">
+                Checkout
+              </Button>
+            ) : data === "Cancelled" ? (
+              <Button className="w-full !bg-red-500 text-white">Cancel</Button>
+            ) : timeDifferenceInMinutes > 30 ? (
+              <Select
+                className="w-full"
+                // onChange={(e) => handleChangeStatus(e, allData)}
+                defaultValue={data}
+              >
+                <Select.Option value="Checkout">Checkout</Select.Option>
+                <Select.Option value="Cancelled">Cancel</Select.Option>
+              </Select>
+            ) : (
+              <Select
+                className="w-full"
+                defaultValue={data}
+                // onChange={(e) => handleChangeStatus(e, allData)}
+                onChange={handleChangeStatus}
+              >
+                <Select.Option value="Checkout">Checkout</Select.Option>
+              </Select>
+            )}
           </div>
         </div>
       </div>
