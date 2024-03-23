@@ -42,6 +42,14 @@ import { socket } from "./socket";
 import Sound from "./assets/notify.mp3";
 import Coupons from "./components/coupons";
 import Charges from "./components/Charges";
+import { requestPermission } from "./firebase/firebaseConfig";
+import HistoryOnlineOrder from "./components/orderHistory/onlineOrder";
+import HistoryCallOrder from "./components/orderHistory/callforOrder";
+import HistoryDinningOrder from "./components/orderHistory/dinningOrder";
+import HistorTakeAwayOrder from "./components/orderHistory/takeawauOrder";
+import BookingOrder from "./components/viewBooking/bookingOrder";
+import TableSlot from "./components/viewBooking/tableSlot";
+import { playSound, stopSound } from "./utils/util";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -54,7 +62,9 @@ const router = createBrowserRouter(
       <Route path="coupons" element={<Coupons />} />
       <Route path="subcategory" element={<SubCategory />} />
       <Route path="wallet" element={<Wallet />} />
-      <Route path="tablebooking" element={<TableBooking />} />
+      {/* <Route path="tablebooking" element={<TableBooking />} /> */}
+      <Route path="tableslot" element={<TableSlot />} />
+      <Route path="bookingorder" element={<BookingOrder />} />
       <Route path="feedback" element={<Feedback />} />
       <Route path="inventory" element={<Inventory />} />
       <Route path="video" element={<Video />} />
@@ -66,10 +76,10 @@ const router = createBrowserRouter(
       <Route path="takeaway" element={<TakeAway />} />
       <Route path="dinning" element={<Dinning />} />
       <Route path="callfororder" element={<CallForOrder />} />
-      <Route path="orderhistory/onlineorder" element={<OnlineOrder />} />
-      <Route path="orderhistory/takeaway" element={<TakeAway />} />
-      <Route path="orderhistory/dinning" element={<Dinning />} />
-      <Route path="orderhistory/callfororder" element={<CallForOrder />} />
+      <Route path="orderhistory/onlineorder" element={<HistoryOnlineOrder />} />
+      <Route path="orderhistory/takeaway" element={<HistorTakeAwayOrder />} />
+      <Route path="orderhistory/dinning" element={<HistoryDinningOrder />} />
+      <Route path="orderhistory/callfororder" element={<HistoryCallOrder />} />
       <Route index path="login" element={<Login />} />
       <Route path="scratchcard" element={<ScratchCard />} />
       <Route path="footer" element={<Footer />} />
@@ -103,6 +113,20 @@ function App() {
     }
   };
 
+  const checkData = async () => {
+    const token = localStorage.getItem("token");
+    try {
+      const result = await axios.get(
+        `${process.env.REACT_APP_URL}/checkOrders`
+      );
+      if (result?.data) {
+        await playSound();
+      } else {
+        await stopSound();
+      }
+    } catch (err) {}
+  };
+
   useEffect(() => {
     fetchData();
   }, [loading]);
@@ -127,6 +151,7 @@ function App() {
       notification.success({
         message: `${data?.order?.toUpperCase()} - ${data?.status}`,
       });
+      await checkData();
 
       dispatch(setRefreshData(data));
     });
@@ -138,6 +163,7 @@ function App() {
       console.log("=== Socket disconnected ===");
       // setConnected(false);
     });
+    requestPermission();
   }, []);
 
   // navigator.usb.getDevices().then((devices) => {

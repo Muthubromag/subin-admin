@@ -12,6 +12,7 @@ import {
   Button,
   Image,
   Spin,
+  Pagination,
 } from "antd";
 import {
   DeleteOutlined,
@@ -397,8 +398,18 @@ function Category() {
     },
   ];
 
+  const itemsPerPage = 5;
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const paginatedData = filterData.slice(startIndex, endIndex);
+
+  // Function to handle page change
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+  };
+
   return (
-    <div className="mt-28 md:pl-[20vw]">
+    <div className="mt-28 p-0 md:pl-[20vw]">
       <div className="lg:w-[80vw]  hidden lg:inline">
         <Collapse
           defaultActiveKey={["1"]}
@@ -475,9 +486,9 @@ function Category() {
           </Panel>
         </Collapse>
       </div>
-      <div className="inline lg:hidden">
+      <div className="inline lg:hidden  ">
         <Spin spinning={loading}>
-          <div className="my-2">
+          <div className="my-2 p-4 ">
             <Input.Search
               placeholder="search cusines"
               // onSearch={handleSearchmobile}
@@ -489,24 +500,28 @@ function Category() {
             />
           </div>
 
-          <div>
-            {filterData.map((item, index) => {
-              return (
-                <div className=" ">
-                  <MenuManageCards
-                    id={index + 1}
-                    name={
-                      item.name.length > 10
-                        ? item.name.slice(0, 10) + "..."
-                        : item.name
-                    }
-                    foodimg={item.image}
-                    status={item.status}
-                    switchChange={(checked) => handleStatus(checked, item)}
-                  />
-                </div>
-              );
-            })}
+          {paginatedData.map((item, index) => {
+            return (
+              <MenuManageCards
+                id={index + 1}
+                name={
+                  item.name.length > 10
+                    ? item.name.slice(0, 10) + "..."
+                    : item.name
+                }
+                foodimg={item.image}
+                status={item.status}
+                switchChange={(checked) => handleStatus(checked, item)}
+              />
+            );
+          })}
+          <div className="mt-4 mb-2">
+            <Pagination
+              current={currentPage}
+              total={data.length}
+              pageSize={itemsPerPage}
+              onChange={handlePageChange}
+            />
           </div>
         </Spin>
       </div>

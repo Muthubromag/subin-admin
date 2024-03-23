@@ -9,7 +9,7 @@ export { default as Notification } from "./notification";
 export { default as SubCategory } from "./subCategory";
 export { default as Video } from "./video";
 export { default as User } from "./user";
-export { default as TableBooking } from "./tableBooking";
+export { default as TableBooking } from "./viewBooking/tableBooking";
 export { default as OnlineOrder } from "./onlineOrder";
 export { default as CallForOrder } from "./callForOrder";
 export { default as Dinning } from "./dinning";

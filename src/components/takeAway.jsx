@@ -9,6 +9,7 @@ import {
   Spin,
   Space,
   Image,
+  Pagination,
 } from "antd";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import axios from "axios";
@@ -18,6 +19,7 @@ import { MinusCircleOutlined, PlusOutlined } from "@ant-design/icons";
 import moment from "moment";
 import { useNavigate } from "react-router-dom";
 import { OrdersCard } from "../cards/OrdersCard";
+import { playSound, stopSound } from "../utils/util";
 
 function TakeAway() {
   const [loading, setLoading] = useState(false);
@@ -67,6 +69,17 @@ function TakeAway() {
   useEffect(() => {
     fetchData();
   }, []);
+  // useEffect(() => {
+  //   // Check for orders with status "received" and play sound
+  //   const ordersToCheck = data.filter(
+  //     (order) => order.status === "Order placed"
+  //   );
+  //   if (ordersToCheck.length > 0) {
+  //     playSound();
+  //   } else {
+  //     stopSound();
+  //   }
+  // }, [data]);
   useEffect(() => {
     if (refresher?.order === "takeaway") {
       fetchData(false);
@@ -122,6 +135,7 @@ function TakeAway() {
   };
 
   const handleStatusChange = async (Id, Status) => {
+    console.log(Id, Status, "ssdsd");
     if (Status === "Order ready to preparing") {
       setTimeSlot(!timeSlot);
       setTimeOrders(Id);
@@ -254,6 +268,22 @@ function TakeAway() {
         return get(res, "_id", "") === value;
       })
     );
+  };
+
+  const getNextStatusOptionsPartner = (currentStatus) => {
+    const statusOptions = [
+      "Order accepted",
+      "Order moved to KDS",
+      "Order ready to preparing",
+      "Order ready to pack",
+      "Order ready to pick",
+    ];
+
+    const currentIndex = statusOptions.indexOf(currentStatus);
+
+    return currentIndex < statusOptions.length - 1
+      ? [statusOptions[currentIndex + 1]]
+      : [];
   };
 
   const columns = [
@@ -537,8 +567,8 @@ function TakeAway() {
     },
     {
       title: <h1 className="text-[10px] md:text-[14px]">Bill Amount</h1>,
-      dataIndex: "billAmount",
-      key: "billAmount",
+      dataIndex: "item_price",
+      key: "item_price",
       align: "center",
       render: (name) => {
         return <h1 className="text-[10px] md:text-[14px]">{name}</h1>;
@@ -606,56 +636,109 @@ function TakeAway() {
         const isbeforeKds =
           status === "Order accepted" || status === "Order placed";
 
+        const nextStatusOptionspartner = getNextStatusOptionsPartner(status);
+        const isMovedToKDS = status === "Order moved to KDS";
+        const isAfterKds =
+          status === "Order ready to pick" ||
+          status === "Order out for delivery" ||
+          status === "Order reached nearest to you";
+
+        const rolefront = get(user, "name", "")
+          ?.split("@")
+          ?.includes("frontdesk");
+
+        console.log("rolefront", rolefront);
+
         return (
           <>
-            {isPick ? (
-              <div>
-                {!isCancelled && !isDelivered && (
-                  <Select
-                    value={status}
-                    onChange={(newStatus) =>
-                      handleStatusChange(record, newStatus)
-                    }
-                    className="w-[100%]"
-                  >
-                    {nextOptionsAfterKds.map((option, i) => (
-                      <Select.Option key={i} value={option}>
-                        {option}
-                      </Select.Option>
-                    ))}
-                    <Select.Option value="Cancelled">Cancelled</Select.Option>
-                  </Select>
-                )}
+            {rolefront ? (
+              <>
+                {isPick ? (
+                  <div>
+                    {!isCancelled && !isDelivered && (
+                      <Select
+                        value={status}
+                        onChange={(newStatus) =>
+                          handleStatusChange(record, newStatus)
+                        }
+                        className="w-[100%]"
+                      >
+                        {nextOptionsAfterKds.map((option, i) => (
+                          <Select.Option key={i} value={option}>
+                            {option}
+                          </Select.Option>
+                        ))}
+                        <Select.Option value="Cancelled">
+                          Cancelled
+                        </Select.Option>
+                      </Select>
+                    )}
 
-                {isCancelled ? (
-                  <Button className="bg-red-500 text-white border-none w-[100%]">
-                    Cancelled
-                  </Button>
-                ) : isDelivered ? (
-                  <Button className="bg-green-500 text-white border-none w-[100%]">
-                    Picked
-                  </Button>
+                    {isCancelled ? (
+                      <Button className="bg-red-500 text-white border-none w-[100%]">
+                        Cancelled
+                      </Button>
+                    ) : isDelivered ? (
+                      <Button className="bg-green-500 text-white border-none w-[100%]">
+                        Picked
+                      </Button>
+                    ) : (
+                      ""
+                    )}
+                  </div>
                 ) : (
-                  ""
+                  <div>
+                    {!isCancelled && !isDelivered && (
+                      <Select
+                        value={status}
+                        onChange={(newStatus) =>
+                          handleStatusChange(record, newStatus)
+                        }
+                        className="w-[100%]"
+                      >
+                        {isbeforeKds &&
+                          nextStatusOptions.map((option, i) => (
+                            <Select.Option key={i} value={option}>
+                              {option}
+                            </Select.Option>
+                          ))}
+                        <Select.Option value="Cancelled">
+                          Cancelled
+                        </Select.Option>
+                      </Select>
+                    )}
+
+                    {isCancelled ? (
+                      <Button className="bg-red-500 text-white border-none w-[100%]">
+                        Cancelled
+                      </Button>
+                    ) : isDelivered ? (
+                      <Button className="bg-green-500 text-white border-none w-[100%]">
+                        Picked
+                      </Button>
+                    ) : (
+                      ""
+                    )}
+                  </div>
                 )}
-              </div>
+              </>
             ) : (
               <div>
                 {!isCancelled && !isDelivered && (
                   <Select
-                    value={status}
+                    value={isMovedToKDS ? "Order received" : status}
                     onChange={(newStatus) =>
                       handleStatusChange(record, newStatus)
                     }
                     className="w-[100%]"
+                    id="status"
                   >
-                    {isbeforeKds &&
-                      nextStatusOptions.map((option, i) => (
+                    {!isAfterKds &&
+                      nextStatusOptionspartner?.map((option, i) => (
                         <Select.Option key={i} value={option}>
                           {option}
                         </Select.Option>
                       ))}
-                    <Select.Option value="Cancelled">Cancelled</Select.Option>
                   </Select>
                 )}
 
@@ -665,7 +748,7 @@ function TakeAway() {
                   </Button>
                 ) : isDelivered ? (
                   <Button className="bg-green-500 text-white border-none w-[100%]">
-                    Picked
+                    Delivered
                   </Button>
                 ) : (
                   ""
@@ -1001,6 +1084,16 @@ function TakeAway() {
     return Math.max(minWidth, Math.min(calculatedWidth, maxWidth));
   };
 
+  const itemsPerPage = 5;
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const paginatedData = data.slice(startIndex, endIndex);
+
+  // Function to handle page change
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+  };
+
   return (
     <div className="pt-28 md:pl-[20vw]">
       <div className="w-[98vw] md:w-[78vw]">
@@ -1039,7 +1132,7 @@ function TakeAway() {
             />
           </div>
           <div className="inline lg:hidden">
-            {data.map((item, index) => {
+            {paginatedData.map((item, index) => {
               const dateTimeString = item.createdAt;
 
               // Split the date and time using the 'T' delimiter
@@ -1071,18 +1164,59 @@ function TakeAway() {
                 minutes < 10 ? "0" + minutes : minutes
               }`;
 
+              const statusOptionsFDS = ["Order accepted", "Order moved to KDS"];
+
+              const statusOptions = [
+                "Order accepted",
+                "Order moved to KDS",
+                "Order ready to preparing",
+                "Order ready to pack",
+              ];
               return (
-                <OrdersCard
-                  key={index}
-                  id={index + 1}
-                  date={date}
-                  time={`${formattedTime}`}
-                  orderId={item.orderId}
-                  billAmount={item.billAmount}
-                  preview={() => openPreviewModal(item?.orderedFood)}
-                />
+                <>
+                  <OrdersCard
+                    key={index}
+                    id={index + 1}
+                    date={date}
+                    time={`${formattedTime} ${period}`}
+                    orderId={item.orderId}
+                    billAmount={
+                      get(user, "name", "")?.split("@")?.includes("partner") ||
+                      get(user, "name", "")?.split("@")?.includes("frontdesk")
+                        ? item?.item_price
+                        : item.billAmount
+                    }
+                    preview={() => openPreviewModal(item?.orderedFood)}
+                    deliveryStatus={item.status}
+                    Inventory={`${
+                      getInventory[0]?.productName
+                        ? getInventory[0]?.productName
+                        : ""
+                    } ${
+                      item?.inventory[0]?.quantity > 0
+                        ? item?.inventory[0]?.quantity
+                        : 0
+                    }`}
+                    handleStatusChange={(newstatus) =>
+                      handleStatusChange(item, newstatus)
+                    }
+                    statusOptionsList={
+                      get(user, "name", "")?.split("@")?.includes("frontdesk")
+                        ? statusOptionsFDS
+                        : statusOptions
+                    }
+                  />
+                </>
               );
             })}
+            <div className="mt-4 mb-2">
+              <Pagination
+                current={currentPage}
+                total={data.length}
+                pageSize={itemsPerPage}
+                onChange={handlePageChange}
+              />
+            </div>
           </div>
         </Spin>
       </div>

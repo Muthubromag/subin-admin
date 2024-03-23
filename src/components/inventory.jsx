@@ -16,13 +16,13 @@ import {
   DeleteOutlined,
   CaretRightOutlined,
   FileAddOutlined,
-  PlusOutlined
+  PlusOutlined,
 } from "@ant-design/icons";
 import axios from "axios";
 import { get } from "lodash";
 import moment from "moment";
 import { useSelector } from "react-redux";
-
+import { InventerCard } from "../cards/OrdersCard";
 
 function Inventory() {
   const { Panel } = Collapse;
@@ -33,10 +33,9 @@ function Inventory() {
   const [data, setData] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const user = useSelector((state) => state.user.user);
-  const [loadingButton,setLoadingButton]=useState(false);
+  const [loadingButton, setLoadingButton] = useState(false);
   const [fileList, setFileList] = useState([]);
-  const [imageurl,setImageUrl] = useState(null)
-  
+  const [imageurl, setImageUrl] = useState(null);
 
   const fetchData = async () => {
     try {
@@ -44,9 +43,8 @@ function Inventory() {
       const result = await axios.get(
         `${process.env.REACT_APP_URL}/getinventory`
       );
-      setData(get(result, "data.data",[]));
+      setData(get(result, "data.data", []));
     } catch (e) {
-     
     } finally {
       setLoading(false);
     }
@@ -58,48 +56,49 @@ function Inventory() {
 
   const handleFinish = async (value) => {
     try {
-     
       setLoadingButton(true);
       const data = new FormData();
-      if(updateId){
-        data.append("file", get(value, "img.fileList[0].originFileObj")||null);
-      }else{
+      if (updateId) {
+        data.append(
+          "file",
+          get(value, "img.fileList[0].originFileObj") || null
+        );
+      } else {
         data.append("file", get(value, "img.fileList[0].originFileObj"));
       }
-        data.append("productName",get(value,"productName"));
-        data.append("category",get(value,"category"));
-        data.append("provided",get(value,"provided"));
-        data.append("consumed",get(value,"consumed"));
-        data.append("available",get(value,"provided")-get(value,"consumed"));
-        data.append("image",imageurl);
-     
-  
+      data.append("productName", get(value, "productName"));
+      data.append("category", get(value, "category"));
+      data.append("provided", get(value, "provided"));
+      data.append("consumed", get(value, "consumed"));
+      data.append("available", get(value, "provided") - get(value, "consumed"));
+      data.append("image", imageurl);
+
       const url = updateId
         ? `${process.env.REACT_APP_URL}/updateinventory/${updateId}`
         : `${process.env.REACT_APP_URL}/createinventory`;
-  
+
       const method = updateId ? axios.put : axios.post;
-  
-      await method(url, data );
-  
+
+      await method(url, data);
+
       const successMessage = updateId
         ? "inventory updated successfully"
         : "inventory created successfully";
-  
+
       notification.success({ message: successMessage });
-  
+
       setOpen(!open);
       fetchData();
       form.resetFields();
       setUpdateId("");
-      setFileList([])
+      setFileList([]);
     } catch (err) {
-      notification.error({message:"Something went wrong"})
+      notification.error({ message: "Something went wrong" });
     } finally {
       setLoadingButton(false);
     }
   };
-  
+
   const handleChange = ({ fileList }) => {
     setFileList(fileList);
   };
@@ -111,24 +110,24 @@ function Inventory() {
     setFileList([
       { uid: "-1", name: "existing_image", status: "done", url: values.image },
     ]);
-    setImageUrl(values.image)
+    setImageUrl(values.image);
   };
 
   const handleDelete = async (val) => {
     try {
-
       let data = {
         image: get(val, "image"),
       };
 
       await axios.delete(
-        `${process.env.REACT_APP_URL}/deleteinventory/${val._id}`,{data}
+        `${process.env.REACT_APP_URL}/deleteinventory/${val._id}`,
+        { data }
       );
 
       notification.success({ message: "inventory deleted successfully" });
       fetchData();
     } catch (err) {
-      notification.error({message:"Something went wrong"})
+      notification.error({ message: "Something went wrong" });
     }
   };
 
@@ -138,11 +137,11 @@ function Inventory() {
       key: "serialNumber",
       align: "center",
       render: (_, __, index) => {
-        return(
+        return (
           <h1 className="text-[10px] md:text-[14px]">
-          {(currentPage - 1) * 5 + index + 1}
-        </h1>
-        )
+            {(currentPage - 1) * 5 + index + 1}
+          </h1>
+        );
       },
     },
     {
@@ -169,12 +168,13 @@ function Inventory() {
       key: "image",
       align: "center",
       render: (name) => {
-      
-        return  <Image
-        alt="bill"
-        className="!w-[80px] border-2 border-[#CD5C08] h-auto rounded-md"
-        src={name}
-      />
+        return (
+          <Image
+            alt="bill"
+            className="!w-[80px] border-2 border-[#CD5C08] h-auto rounded-md"
+            src={name}
+          />
+        );
       },
     },
     {
@@ -205,7 +205,18 @@ function Inventory() {
       },
     },
     {
-      title: <h1 className={`text-[10px] md:text-[14px] ${get(user,"name","")==="bromag@kds"||get(user,"name","")==="bromag@partner"?"hidden":"block"}`}>Edit</h1>,
+      title: (
+        <h1
+          className={`text-[10px] md:text-[14px] ${
+            get(user, "name", "") === "bromag@kds" ||
+            get(user, "name", "") === "bromag@partner"
+              ? "hidden"
+              : "block"
+          }`}
+        >
+          Edit
+        </h1>
+      ),
       width: 100,
       align: "center",
       render: (values) => {
@@ -238,11 +249,11 @@ function Inventory() {
       key: "serialNumber",
       align: "center",
       render: (_, __, index) => {
-        return(
+        return (
           <h1 className="text-[10px] md:text-[14px]">
-          {(currentPage - 1) * 5 + index + 1}
-        </h1>
-        )
+            {(currentPage - 1) * 5 + index + 1}
+          </h1>
+        );
       },
     },
     {
@@ -269,7 +280,11 @@ function Inventory() {
       key: "arrivalDate",
       align: "center",
       render: (date) => {
-        return <h1 className="text-[10px] md:text-[14px]">{moment(date).format("DD-MM-YYYY")}</h1>;
+        return (
+          <h1 className="text-[10px] md:text-[14px]">
+            {moment(date).format("DD-MM-YYYY")}
+          </h1>
+        );
       },
     },
     {
@@ -299,11 +314,10 @@ function Inventory() {
         return <h1 className="text-[10px] md:text-[14px]">{name}</h1>;
       },
     },
-
   ];
   return (
     <div className="mt-28 md:pl-[20vw]">
-      <div className="!w-[99vw] md:!w-[80vw] lg:!w-[80vw]">
+      <div className="!w-[99vw] md:!w-[80vw] lg:!w-[80vw] hidden lg:inline">
         <Collapse
           defaultActiveKey={["1"]}
           expandIcon={({ isActive }) => (
@@ -323,7 +337,12 @@ function Inventory() {
             }
             extra={
               <div
-                className={`${get(user,"name","")==="bromag@kds"||get(user,"name","")==="bromag@partner"?"hidden":"block"} cursor-pointer`}
+                className={`${
+                  get(user, "name", "") === "bromag@kds" ||
+                  get(user, "name", "") === "bromag@partner"
+                    ? "hidden"
+                    : "block"
+                } cursor-pointer`}
                 onClick={() => {
                   setOpen(!open);
                 }}
@@ -347,9 +366,14 @@ function Inventory() {
                           setCurrentPage(page);
                         },
                       }}
-                      columns={get(user,"name","")==="bromag@kds"||get(user,"name","")==="bromag@partner"?Kdscolumns:columns}
+                      columns={
+                        get(user, "name", "") === "bromag@kds" ||
+                        get(user, "name", "") === "bromag@partner"
+                          ? Kdscolumns
+                          : columns
+                      }
                       dataSource={data}
-                      scroll={{x:800}}
+                      scroll={{ x: 800 }}
                       className="overflow-x-scroll"
                     />
                   </Spin>
@@ -359,14 +383,66 @@ function Inventory() {
           </Panel>
         </Collapse>
       </div>
+      <div className="inline lg:hidden !p-4">
+        <Spin spinning={loading} className="!p-4">
+          <div>
+            {data.map((item, index) => {
+              // // console.log("item", item);
+              // const dateTimeString = item.createdAt;
+
+              // // Split the date and time using the 'T' delimiter
+              // const [datePart] = dateTimeString.split("T");
+              // const date = datePart;
+
+              // const indianStandardTime = new Date(item.createdAt);
+
+              // indianStandardTime.setUTCHours(
+              //   indianStandardTime.getUTCHours() + 5
+              // ); // IST is UTC+5:30
+              // indianStandardTime.setUTCMinutes(
+              //   indianStandardTime.getUTCMinutes() + 30
+              // );
+
+              // // Extract hours, minutes, and seconds
+              // let hours = indianStandardTime.getHours();
+              // const minutes = indianStandardTime.getMinutes();
+
+              // // Convert hours to 12-hour format
+              // let period = "AM";
+              // if (hours >= 12) {
+              //   period = "PM";
+              // }
+              // hours = hours % 12 || 12;
+
+              // hours = hours < 10 ? "0" + hours : hours;
+              // const formattedTime = `${hours}:${
+              //   minutes < 10 ? "0" + minutes : minutes
+              // }`;
+              return (
+                <InventerCard
+                  id={index + 1}
+                  foodimg={item.image}
+                  name={item.productName}
+                  category={item.category}
+                  provided={item.provided}
+                  consumed={item.consumed}
+                  available={item.available}
+                  // date={date}
+                  // time={`${formattedTime}`}
+                />
+              );
+            })}
+          </div>
+        </Spin>
+      </div>
 
       <Drawer
         open={open}
         onClose={() => {
           setOpen(!open);
           form.resetFields();
-          setFileList([])
-          setUpdateId("")
+          setFileList([]);
+          setUpdateId("");
         }}
         width={400}
         title={<p>Add Inventory</p>}
@@ -389,7 +465,17 @@ function Inventory() {
               },
             ]}
           >
-            <Input type="text" disabled={ get(user, "name", "")?.split("@")?.includes("kds")|| get(user, "name", "")?.split("@")?.includes("partner")?true:false} placeholder="Product name..." size="large" />
+            <Input
+              type="text"
+              disabled={
+                get(user, "name", "")?.split("@")?.includes("kds") ||
+                get(user, "name", "")?.split("@")?.includes("partner")
+                  ? true
+                  : false
+              }
+              placeholder="Product name..."
+              size="large"
+            />
           </Form.Item>
           <Form.Item
             name="category"
@@ -401,7 +487,17 @@ function Inventory() {
               },
             ]}
           >
-            <Input type="text" disabled={ get(user, "name", "")?.split("@")?.includes("kds")|| get(user, "name", "")?.split("@")?.includes("partner")?true:false}  placeholder="Category name..." size="large" />
+            <Input
+              type="text"
+              disabled={
+                get(user, "name", "")?.split("@")?.includes("kds") ||
+                get(user, "name", "")?.split("@")?.includes("partner")
+                  ? true
+                  : false
+              }
+              placeholder="Category name..."
+              size="large"
+            />
           </Form.Item>
           <Form.Item
             name="img"
@@ -416,9 +512,7 @@ function Inventory() {
             <Upload
               onChange={handleChange}
               fileList={fileList}
-              onPreview={(e) => {
-              
-              }}
+              onPreview={(e) => {}}
               maxCount={1}
               listType="picture-card"
               multiple={false}
@@ -449,7 +543,17 @@ function Inventory() {
               },
             ]}
           >
-            <Input type="text" disabled={ get(user, "name", "")?.split("@")?.includes("kds")|| get(user, "name", "")?.split("@")?.includes("partner")?true:false} placeholder="provided count..." size="large" />
+            <Input
+              type="text"
+              disabled={
+                get(user, "name", "")?.split("@")?.includes("kds") ||
+                get(user, "name", "")?.split("@")?.includes("partner")
+                  ? true
+                  : false
+              }
+              placeholder="provided count..."
+              size="large"
+            />
           </Form.Item>
           <Form.Item
             name="consumed"
@@ -481,13 +585,17 @@ function Inventory() {
                 onClick={() => {
                   setOpen(!open);
                   form.resetFields();
-                  setFileList([])
-                  setUpdateId("")
+                  setFileList([]);
+                  setUpdateId("");
                 }}
               >
                 Cancel
               </Button>
-              <Button loading={loadingButton} htmlType="submit" className="bg-green-500 text-white">
+              <Button
+                loading={loadingButton}
+                htmlType="submit"
+                className="bg-green-500 text-white"
+              >
                 {updateId !== "" ? "Update" : "Save"}
               </Button>
             </div>
