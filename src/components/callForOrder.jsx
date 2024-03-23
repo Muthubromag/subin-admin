@@ -1468,103 +1468,113 @@ function CallForOrder() {
         </Collapse>
       </div>
       <div className="inline lg:hidden">
-        <Spin spinning={loading}>
-          <div>
-            {paginatedData.map((item, index) => {
-              const dateTimeString = item.createdAt;
-
-              // Split the date and time using the 'T' delimiter
-              const [datePart] = dateTimeString.split("T");
-              const date = datePart;
-
-              const indianStandardTime = new Date(item.createdAt);
-
-              indianStandardTime.setUTCHours(
-                indianStandardTime.getUTCHours() + 5
-              ); // IST is UTC+5:30
-              indianStandardTime.setUTCMinutes(
-                indianStandardTime.getUTCMinutes() + 30
-              );
-
-              // Extract hours, minutes, and seconds
-              // let hours = indianStandardTime.getHours();
-              // const minutes = indianStandardTime.getMinutes();
-
-              // Convert hours to 12-hour format
-              // let period = "AM";
-              // if (hours >= 12) {
-              //   period = "PM";
-              // }
-              // hours = hours % 12 || 12;
-
-              // hours = hours < 10 ? "0" + hours : hours;
-
-              const hours = indianStandardTime.getHours() % 12 || 12;
-              const minutes = indianStandardTime.getMinutes();
-
-              const formattedTime = `${hours}:${
-                minutes < 10 ? "0" + minutes : minutes
-              }`;
-
-              const ampm = indianStandardTime.getHours() >= 12 ? "PM" : "AM";
-
-              const mobilePreviewModal = (orderedFood) => {
-                setPreviewData(!previewData);
-                console.log(orderedFood[0]?.foodName, "orderedFood");
-                setFoodInformationList(orderedFood);
-                setSelectedProduct(orderedFood);
-              };
-              const statusOptions = [
-                "Order accepted",
-                "Order moved to KDS",
-                "Order ready to preparing",
-                "Order ready to pack",
-                "Order ready to pick",
-              ];
-
-              return (
-                <OrdersCard
-                  key={index}
-                  id={index + 1}
-                  date={date}
-                  time={`${formattedTime}${ampm}`}
-                  orderId={item.orderId}
-                  deliveryStatus={item.status}
-                  orderstatus={item.deliveryStatus}
-                  billAmount={
-                    get(user, "name", "")?.split("@")?.includes("partner") ||
-                    get(user, "name", "")?.split("@")?.includes("frontdesk")
-                      ? item?.orderedFood[0]?.originalPrice
-                      : item.billAmount
-                  }
-                  location={item?.location}
-                  Inventory={`${
-                    getInventory[0]?.productName
-                      ? getInventory[0]?.productName
-                      : ""
-                  } ${
-                    item?.inventory[0]?.quantity > 0
-                      ? item?.inventory[0]?.quantity
-                      : 0
-                  }`}
-                  preview={() => mobilePreviewModal(item?.orderedFood)}
-                  handleStatusChange={(newstatus) =>
-                    handleStatusChange(item, newstatus)
-                  }
-                  statusOptionsList={statusOptions}
+        <div className="w-screen p-2">
+          <Spin spinning={loading}>
+            {get(user, "name", "")?.split("@")?.includes("kds") ? null : (
+              <div className="flex justify-end">
+                <FileAddOutlined
+                  className="!text-[#CD5C08] !text-xl"
+                  onClick={() => {
+                    setOpen(!open);
+                  }}
                 />
-              );
-            })}
-          </div>
-          <div className="mt-4 mb-2">
-            <Pagination
-              current={currentPage}
-              total={data.length}
-              pageSize={itemsPerPage}
-              onChange={handlePageChange}
-            />
-          </div>
-        </Spin>
+              </div>
+            )}
+
+            <div>
+              {paginatedData.map((item, index) => {
+                const dateTimeString = item.createdAt;
+
+                // Split the date and time using the 'T' delimiter
+                const [datePart] = dateTimeString.split("T");
+                const date = datePart;
+
+                const indianStandardTime = new Date(item.createdAt);
+
+                indianStandardTime.setUTCHours(
+                  indianStandardTime.getUTCHours() + 5
+                ); // IST is UTC+5:30
+                indianStandardTime.setUTCMinutes(
+                  indianStandardTime.getUTCMinutes() + 30
+                );
+
+                const hours = indianStandardTime.getHours() % 12 || 12;
+                const minutes = indianStandardTime.getMinutes();
+
+                const formattedTime = `${hours}:${
+                  minutes < 10 ? "0" + minutes : minutes
+                }`;
+
+                const ampm = indianStandardTime.getHours() >= 12 ? "PM" : "AM";
+
+                const mobilePreviewModal = (orderedFood) => {
+                  setPreviewData(!previewData);
+                  console.log(orderedFood[0]?.foodName, "orderedFood");
+                  setFoodInformationList(orderedFood);
+                  setSelectedProduct(orderedFood);
+                };
+
+                const statusOptionsFDS = [
+                  "Order accepted",
+                  "Order moved to KDS",
+                ];
+
+                const statusOptions = [
+                  "Order accepted",
+                  "Order moved to KDS",
+                  "Order ready to preparing",
+                  "Order ready to pack",
+                  "Order ready to pick",
+                ];
+
+                return (
+                  <OrdersCard
+                    key={index}
+                    id={index + 1}
+                    date={date}
+                    time={`${formattedTime}${ampm}`}
+                    orderId={item.orderId}
+                    deliveryStatus={item.status}
+                    orderstatus={item.deliveryStatus}
+                    billAmount={
+                      get(user, "name", "")?.split("@")?.includes("partner") ||
+                      get(user, "name", "")?.split("@")?.includes("frontdesk")
+                        ? item?.orderedFood[0]?.originalPrice
+                        : item.billAmount
+                    }
+                    location={item?.location}
+                    Inventory={`${
+                      getInventory[0]?.productName
+                        ? getInventory[0]?.productName
+                        : ""
+                    } ${
+                      item?.inventory[0]?.quantity > 0
+                        ? item?.inventory[0]?.quantity
+                        : 0
+                    }`}
+                    preview={() => mobilePreviewModal(item?.orderedFood)}
+                    handleStatusChange={(newstatus) =>
+                      handleStatusChange(item, newstatus)
+                    }
+                    statusOptionsList={
+                      get(user, "name", "")?.split("@")?.includes("frontdesk")
+                        ? statusOptionsFDS
+                        : statusOptions
+                    }
+                  />
+                );
+              })}
+            </div>
+            <div className="mt-4 mb-2">
+              <Pagination
+                current={currentPage}
+                total={data.length}
+                pageSize={itemsPerPage}
+                onChange={handlePageChange}
+              />
+            </div>
+          </Spin>
+        </div>
       </div>
       <Drawer
         open={open}

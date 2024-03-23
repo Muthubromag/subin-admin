@@ -1151,14 +1151,14 @@ function TakeAway() {
               const formattedTime = `${hours}:${
                 minutes < 10 ? "0" + minutes : minutes
               }`;
-              console.log("itemsss", item);
+
+              const statusOptionsFDS = ["Order accepted", "Order moved to KDS"];
 
               const statusOptions = [
                 "Order accepted",
                 "Order moved to KDS",
                 "Order ready to preparing",
                 "Order ready to pack",
-                // "Order ready to pick",
               ];
               return (
                 <>
@@ -1188,7 +1188,11 @@ function TakeAway() {
                     handleStatusChange={(newstatus) =>
                       handleStatusChange(item, newstatus)
                     }
-                    statusOptionsList={statusOptions}
+                    statusOptionsList={
+                      get(user, "name", "")?.split("@")?.includes("frontdesk")
+                        ? statusOptionsFDS
+                        : statusOptions
+                    }
                   />
                 </>
               );
