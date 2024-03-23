@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { get } from "lodash";
 import axios from "axios";
 import moment from "moment";
-import { Spin } from "antd";
+import { Pagination, Spin } from "antd";
 import { useLocation } from "react-router-dom";
 import { NotificationCard } from "../cards/OrdersCard";
 
@@ -11,6 +11,7 @@ function Notification() {
   const [loading, setLoading] = useState(false);
   const location = useLocation();
   let pathname = location?.pathname;
+  const [currentPage, setCurrentPage] = useState(1);
 
   const fetchData = async () => {
     try {
@@ -42,6 +43,13 @@ function Notification() {
       color += letters[Math.floor(Math.random() * 16)];
     }
     return color;
+  };
+  const itemsPerPage = 5;
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const paginatedData = data.slice(startIndex, endIndex);
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
   };
 
   return (
@@ -94,7 +102,7 @@ function Notification() {
       <div className="inline lg:hidden">
         <Spin spinning={loading}>
           <div className=" mt-24 ">
-            {data.map((item, index) => {
+            {paginatedData.map((item, index) => {
               // console.log("item", item);
               const dateTimeString = item.createdAt;
 
@@ -126,12 +134,13 @@ function Notification() {
               const formattedTime = `${hours}:${
                 minutes < 10 ? "0" + minutes : minutes
               }`;
+
               return (
                 <div className="shadow-2xl p-3 ">
                   <NotificationCard
                     confirmed={item.heading}
                     date={date}
-                    time={`${formattedTime}`}
+                    time={`${formattedTime} ${period}`}
                     orderId={
                       item.status.length > 24
                         ? item.status.slice(0, 24)
@@ -153,6 +162,14 @@ function Notification() {
                 </div>
               );
             })}
+            <div className="mt-4 mb-2">
+              <Pagination
+                current={currentPage}
+                total={data.length}
+                pageSize={itemsPerPage}
+                onChange={handlePageChange}
+              />
+            </div>
           </div>
         </Spin>
       </div>
