@@ -19,6 +19,7 @@ export const OrdersCard = ({
   printBill,
   handleStatusChange,
   statusOptionsList,
+  orderstatus,
 }) => {
   const user = useSelector((state) => state.user.user);
   const navigate = useNavigate();
@@ -80,10 +81,10 @@ export const OrdersCard = ({
             </div>
           ) : null}
 
-          {deliveryStatus && (
+          {orderstatus && (
             <div className="text-[#828282] font-medium">
               Delivery Status :{" "}
-              <span className="font-bold text-black">{deliveryStatus}</span>{" "}
+              <span className="font-bold text-black">{orderstatus}</span>{" "}
             </div>
           )}
           {get(user, "name", "")?.split("@")?.includes("kds") && Inventory && (
@@ -96,6 +97,12 @@ export const OrdersCard = ({
             <div className="text-[#828282] font-medium">
               location :{" "}
               <span className="font-bold text-black">{location}</span>{" "}
+            </div>
+          )}
+          {deliveryStatus && (
+            <div className="text-[#828282] font-medium">
+              Status :{" "}
+              <span className="font-bold text-black">{deliveryStatus}</span>{" "}
             </div>
           )}
           <div className="flex justify-between ">

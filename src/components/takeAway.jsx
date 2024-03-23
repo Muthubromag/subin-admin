@@ -1163,14 +1163,14 @@ function TakeAway() {
               const formattedTime = `${hours}:${
                 minutes < 10 ? "0" + minutes : minutes
               }`;
-              console.log("itemsss", item);
+
+              const statusOptionsFDS = ["Order accepted", "Order moved to KDS"];
 
               const statusOptions = [
                 "Order accepted",
                 "Order moved to KDS",
                 "Order ready to preparing",
                 "Order ready to pack",
-                // "Order ready to pick",
               ];
               return (
                 <>
@@ -1180,7 +1180,12 @@ function TakeAway() {
                     date={date}
                     time={`${formattedTime} ${period}`}
                     orderId={item.orderId}
-                    billAmount={item.billAmount}
+                    billAmount={
+                      get(user, "name", "")?.split("@")?.includes("partner") ||
+                      get(user, "name", "")?.split("@")?.includes("frontdesk")
+                        ? item?.item_price
+                        : item.billAmount
+                    }
                     preview={() => openPreviewModal(item?.orderedFood)}
                     deliveryStatus={item.status}
                     Inventory={`${
@@ -1195,7 +1200,11 @@ function TakeAway() {
                     handleStatusChange={(newstatus) =>
                       handleStatusChange(item, newstatus)
                     }
-                    statusOptionsList={statusOptions}
+                    statusOptionsList={
+                      get(user, "name", "")?.split("@")?.includes("frontdesk")
+                        ? statusOptionsFDS
+                        : statusOptions
+                    }
                   />
                 </>
               );

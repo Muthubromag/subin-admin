@@ -1199,6 +1199,10 @@ function OnlineOrder() {
                 setSelectedProduct(orderedFood);
               };
 
+              // const roleUser = ;
+
+              const statusOptionsFDS = ["Order accepted", "Order moved to KDS"];
+
               const statusOptions = [
                 "Order accepted",
                 "Order moved to KDS",
@@ -1237,7 +1241,11 @@ function OnlineOrder() {
                     handleStatusChange={(newstatus) =>
                       handleStatusChange(item, newstatus)
                     }
-                    statusOptionsList={statusOptions}
+                    statusOptionsList={
+                      get(user, "name", "")?.split("@")?.includes("frontdesk")
+                        ? statusOptionsFDS
+                        : statusOptions
+                    }
                   />
                 </>
               );
