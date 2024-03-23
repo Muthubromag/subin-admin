@@ -102,6 +102,7 @@ function OnlineOrder() {
       "Order ready to preparing",
       "Order ready to pack",
       "Order ready to pick",
+      "Delivered",
     ];
 
     const currentIndex = statusOptions.indexOf(currentStatus);
@@ -738,7 +739,7 @@ function OnlineOrder() {
               </>
             ) : (
               <div>
-                {!isCancelled && !isDelivered && (
+                {!isCancelled && (
                   <Select
                     value={isMovedToKDS ? "Order received" : status}
                     onChange={(newStatus) =>
@@ -747,7 +748,7 @@ function OnlineOrder() {
                     className="w-[100%]"
                     id="status"
                   >
-                    {!isAfterKds &&
+                    {isAfterKds &&
                       nextStatusOptionspartner?.map((option, i) => (
                         <Select.Option key={i} value={option}>
                           {option}
@@ -756,16 +757,10 @@ function OnlineOrder() {
                   </Select>
                 )}
 
-                {isCancelled ? (
+                {isCancelled && (
                   <Button className="bg-red-500 text-white border-none w-[100%]">
                     Cancelled
                   </Button>
-                ) : isDelivered ? (
-                  <Button className="bg-green-500 text-white border-none w-[100%]">
-                    Delivered
-                  </Button>
-                ) : (
-                  ""
                 )}
               </div>
             )}
