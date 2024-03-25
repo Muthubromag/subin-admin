@@ -163,11 +163,13 @@ function Sidenavbar() {
             className=" menudrawer !bg-inherit !w-0"
           >
             <div
-              className="fixed flex !items-start  flex-col rounded-r-3xl h-screen
+              className="fixed flex !items-start  flex-col rounded-r-3xl overflow-hidden h-[800px]
                bg-[#001529] rounded-md bg-clip-padding backdrop-filter backdrop-blur-2xl bg-opacity-70 border border-gray-100"
             >
               <div
-                className="text-white text-end flex justify-end w-full p-4 "
+                className="text-white text-end flex justify-end w-full p-4 
+     
+                "
                 onClick={() => {
                   setModalOpen(!modalOpen);
                 }}
@@ -201,10 +203,10 @@ function Sidenavbar() {
                 }
                 defaultOpenKeys={open}
                 onOpenChange={(keys) => setOpen(keys)}
-                // className="h-screen"
+                className="overflow-y-scroll h-screen"
               />
               <div
-                className="text-[#CD5C08]  flex justify-center w-full p-4 mt-8 hover:text-white  "
+                className="text-[#CD5C08]  flex justify-center w-full p-4 mt-4 mb-4 hover:text-white  "
                 onClick={() => {
                   handeLogout();
                 }}
