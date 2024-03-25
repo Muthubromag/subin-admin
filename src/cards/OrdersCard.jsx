@@ -109,14 +109,14 @@ export const OrdersCard = ({
             <div className="bg-[#575757] rounded-md flex  items-center pl-2 space-x-1">
               <div className="text-[#fff] text-[10px]">Status</div>
               <div className="w-full mobile-selector">
-                {!isCancelled && !isDelivered && (
+                {!isCancelled && (
                   <Select
                     value={isMovedToKDS ? "Order received" : deliveryStatus}
                     onChange={handleStatusChange}
                     className="w-[100%]"
                     id="status"
                   >
-                    {!isAfterKds &&
+                    {isAfterKds &&
                       nextStatusOptions?.map((option, i) => (
                         <Select.Option key={i} value={option}>
                           {option}
@@ -125,16 +125,10 @@ export const OrdersCard = ({
                   </Select>
                 )}
 
-                {isCancelled ? (
+                {isCancelled && (
                   <Button className="bg-red-500 text-white border-none w-[100%]">
                     Cancelled
                   </Button>
-                ) : isDelivered ? (
-                  <Button className="bg-green-500 text-white border-none w-[100%]">
-                    Delivered
-                  </Button>
-                ) : (
-                  ""
                 )}
               </div>
             </div>

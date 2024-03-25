@@ -277,6 +277,7 @@ function TakeAway() {
       "Order ready to preparing",
       "Order ready to pack",
       "Order ready to pick",
+      "Delivered",
     ];
 
     const currentIndex = statusOptions.indexOf(currentStatus);
@@ -724,7 +725,7 @@ function TakeAway() {
               </>
             ) : (
               <div>
-                {!isCancelled && !isDelivered && (
+                {!isCancelled && (
                   <Select
                     value={isMovedToKDS ? "Order received" : status}
                     onChange={(newStatus) =>
@@ -733,7 +734,7 @@ function TakeAway() {
                     className="w-[100%]"
                     id="status"
                   >
-                    {!isAfterKds &&
+                    {isAfterKds &&
                       nextStatusOptionspartner?.map((option, i) => (
                         <Select.Option key={i} value={option}>
                           {option}
@@ -742,16 +743,10 @@ function TakeAway() {
                   </Select>
                 )}
 
-                {isCancelled ? (
+                {isCancelled && (
                   <Button className="bg-red-500 text-white border-none w-[100%]">
                     Cancelled
                   </Button>
-                ) : isDelivered ? (
-                  <Button className="bg-green-500 text-white border-none w-[100%]">
-                    Delivered
-                  </Button>
-                ) : (
-                  ""
                 )}
               </div>
             )}
@@ -1139,30 +1134,10 @@ function TakeAway() {
               const [datePart] = dateTimeString.split("T");
               const date = datePart;
 
-              const indianStandardTime = new Date(item.createdAt);
-
-              indianStandardTime.setUTCHours(
-                indianStandardTime.getUTCHours() + 5
-              ); // IST is UTC+5:30
-              indianStandardTime.setUTCMinutes(
-                indianStandardTime.getUTCMinutes() + 30
-              );
-
-              // Extract hours, minutes, and seconds
-              let hours = indianStandardTime.getHours();
+              const indianStandardTime = new Date(dateTimeString);
+              const hours = indianStandardTime.getHours() % 12 || 12;
               const minutes = indianStandardTime.getMinutes();
-
-              // Convert hours to 12-hour format
-              let period = "AM";
-              if (hours >= 12) {
-                period = "PM";
-              }
-              hours = hours % 12 || 12;
-
-              hours = hours < 10 ? "0" + hours : hours;
-              const formattedTime = `${hours}:${
-                minutes < 10 ? "0" + minutes : minutes
-              }`;
+              const ampm = indianStandardTime.getHours() >= 12 ? "PM" : "AM";
 
               const statusOptionsFDS = ["Order accepted", "Order moved to KDS"];
 
@@ -1178,7 +1153,10 @@ function TakeAway() {
                     key={index}
                     id={index + 1}
                     date={date}
-                    time={`${formattedTime} ${period}`}
+                    // time={`${formattedTime} ${period}`}
+                    time={`${hours}:${
+                      minutes < 10 ? "0" : ""
+                    }${minutes} ${ampm}`}
                     orderId={item.orderId}
                     billAmount={
                       get(user, "name", "")?.split("@")?.includes("partner") ||
@@ -1249,6 +1227,7 @@ function TakeAway() {
                     <p className="text-black font-bold">
                       Quantity: {res?.foodQuantity}
                     </p>
+                    <p className="text-black font-bold">Type: {res?.type}</p>
                     {/* <p className="text-black font-bold">Type: {res?.type}</p> */}
                     {selectedProduct?.instructionsTakeaway?.[0]?.[res?.id]
                       ?.length ? (
