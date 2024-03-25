@@ -764,6 +764,7 @@ function CallForOrder() {
       "Order ready to preparing",
       "Order ready to pack",
       "Order ready to pick",
+      "Delivered",
     ];
 
     const currentIndex = statusOptions.indexOf(currentStatus);
@@ -1010,7 +1011,7 @@ function CallForOrder() {
               </>
             ) : (
               <div>
-                {!isCancelled && !isDelivered && (
+                {!isCancelled && (
                   <Select
                     value={isMovedToKDS ? "Order received" : status}
                     onChange={(newStatus) =>
@@ -1019,7 +1020,7 @@ function CallForOrder() {
                     className="w-[100%]"
                     id="status"
                   >
-                    {!isAfterKds &&
+                    {isAfterKds &&
                       nextStatusOptionspartner?.map((option, i) => (
                         <Select.Option key={i} value={option}>
                           {option}
@@ -1028,16 +1029,10 @@ function CallForOrder() {
                   </Select>
                 )}
 
-                {isCancelled ? (
+                {isCancelled && (
                   <Button className="bg-red-500 text-white border-none w-[100%]">
                     Cancelled
                   </Button>
-                ) : isDelivered ? (
-                  <Button className="bg-green-500 text-white border-none w-[100%]">
-                    Delivered
-                  </Button>
-                ) : (
-                  ""
                 )}
               </div>
             )}
@@ -1491,20 +1486,8 @@ function CallForOrder() {
 
                 const indianStandardTime = new Date(item.createdAt);
 
-                indianStandardTime.setUTCHours(
-                  indianStandardTime.getUTCHours() + 5
-                ); // IST is UTC+5:30
-                indianStandardTime.setUTCMinutes(
-                  indianStandardTime.getUTCMinutes() + 30
-                );
-
                 const hours = indianStandardTime.getHours() % 12 || 12;
                 const minutes = indianStandardTime.getMinutes();
-
-                const formattedTime = `${hours}:${
-                  minutes < 10 ? "0" + minutes : minutes
-                }`;
-
                 const ampm = indianStandardTime.getHours() >= 12 ? "PM" : "AM";
 
                 const mobilePreviewModal = (orderedFood) => {
@@ -1525,6 +1508,7 @@ function CallForOrder() {
                   "Order ready to preparing",
                   "Order ready to pack",
                   "Order ready to pick",
+                  "Delivered",
                 ];
 
                 return (
@@ -1532,7 +1516,9 @@ function CallForOrder() {
                     key={index}
                     id={index + 1}
                     date={date}
-                    time={`${formattedTime}${ampm}`}
+                    time={`${hours}:${
+                      minutes < 10 ? "0" : ""
+                    }${minutes} ${ampm}`}
                     orderId={item.orderId}
                     deliveryStatus={item.status}
                     orderstatus={item.deliveryStatus}
