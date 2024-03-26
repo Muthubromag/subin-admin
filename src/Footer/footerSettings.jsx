@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { PlusOutlined } from "@ant-design/icons";
-import { Button, Form, Input, Upload, notification } from "antd";
+import { Button, Form, Input, Switch, Upload, notification } from "antd";
 import axios from "axios";
 import { get } from "lodash";
 import { useEffect, useState } from "react";
@@ -32,6 +32,9 @@ function FooterSettings({ data, fetchData }) {
       location: get(data, "[0].location"),
       latitude: get(data, "[0].latitude"),
       longitude: get(data, "[0].longitude"),
+      veg: get(data, "[0].veg"),
+      nonveg: get(data, "[0].nonveg"),
+      isDining: get(data, "[0].isDining"),
     });
   }, [data, form]);
 
@@ -47,6 +50,9 @@ function FooterSettings({ data, fetchData }) {
       data.append("name", get(value, "name"));
       data.append("latitude", get(value, "latitude"));
       data.append("longitude", get(value, "longitude"));
+      data.append("veg", get(value, "veg"));
+      data.append("nonveg", get(value, "nonveg"));
+      data.append("isDining", get(value, "isDining"));
       if (Object.keys(value?.location)?.length) {
         Object.keys(value?.location).forEach((key) =>
           data.append(key, value?.location?.[key])
@@ -85,6 +91,55 @@ function FooterSettings({ data, fetchData }) {
               </div>
             </div>
           </Upload>
+        </Form.Item>
+        <div className="flex flex-row gap-2 items-center">
+          <Form.Item
+            name="veg"
+            label={<h1 className="!text-white pl-2">Veg Restaurant</h1>}
+            valuePropName="checked"
+            initialValue={true}
+          >
+            <Switch
+              name="veg"
+              id="veg"
+              defaultChecked={true}
+              style={{
+                backgroundColor: form.getFieldValue("veg") ? "green" : "#bbb",
+              }}
+            />
+          </Form.Item>
+          <Form.Item
+            name="nonveg"
+            label={<h1 className="!text-white pl-2">Non Veg Restaurant</h1>}
+            valuePropName="checked"
+            initialValue={true}
+          >
+            <Switch
+              name="nonveg"
+              id="nonveg"
+              defaultChecked={true}
+              style={{
+                backgroundColor: form.getFieldValue("nonveg") ? "red" : "#bbb",
+              }}
+            />
+          </Form.Item>
+        </div>
+        <Form.Item
+          name="isDining"
+          label={<h1 className="!text-white pl-2">Dining Availability</h1>}
+          valuePropName="checked"
+          initialValue={true}
+        >
+          <Switch
+            name="isDining"
+            id="isDining"
+            defaultChecked={true}
+            style={{
+              backgroundColor: form.getFieldValue("isDining")
+                ? "green"
+                : "#bbb",
+            }}
+          />
         </Form.Item>
         <Form.Item
           name="name"
