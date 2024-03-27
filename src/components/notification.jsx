@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { get } from "lodash";
 import axios from "axios";
 import moment from "moment";
-import { Spin } from "antd";
+import { Pagination, Spin } from "antd";
 import { useLocation } from "react-router-dom";
 import { NotificationCard } from "../cards/OrdersCard";
 
@@ -11,6 +11,7 @@ function Notification() {
   const [loading, setLoading] = useState(false);
   const location = useLocation();
   let pathname = location?.pathname;
+  const [currentPage, setCurrentPage] = useState(1);
 
   const fetchData = async () => {
     try {
@@ -42,6 +43,13 @@ function Notification() {
       color += letters[Math.floor(Math.random() * 16)];
     }
     return color;
+  };
+  const itemsPerPage = 5;
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const paginatedData = data.slice(startIndex, endIndex);
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
   };
 
   return (
@@ -94,7 +102,7 @@ function Notification() {
       <div className="inline lg:hidden">
         <Spin spinning={loading}>
           <div className=" mt-24 ">
-            {data.map((item, index) => {
+            {paginatedData.map((item, index) => {
               // console.log("item", item);
               const dateTimeString = item.createdAt;
 
@@ -104,34 +112,18 @@ function Notification() {
 
               const indianStandardTime = new Date(item.createdAt);
 
-              indianStandardTime.setUTCHours(
-                indianStandardTime.getUTCHours() + 5
-              ); // IST is UTC+5:30
-              indianStandardTime.setUTCMinutes(
-                indianStandardTime.getUTCMinutes() + 30
-              );
-
-              // Extract hours, minutes, and seconds
-              let hours = indianStandardTime.getHours();
+              const hours = indianStandardTime.getHours() % 12 || 12;
               const minutes = indianStandardTime.getMinutes();
-
-              // Convert hours to 12-hour format
-              let period = "AM";
-              if (hours >= 12) {
-                period = "PM";
-              }
-              hours = hours % 12 || 12;
-
-              hours = hours < 10 ? "0" + hours : hours;
-              const formattedTime = `${hours}:${
-                minutes < 10 ? "0" + minutes : minutes
-              }`;
+              const seconds = indianStandardTime.getSeconds();
+              const ampm = indianStandardTime.getHours() >= 12 ? "PM" : "AM";
               return (
                 <div className="shadow-2xl p-3 ">
                   <NotificationCard
                     confirmed={item.heading}
                     date={date}
-                    time={`${formattedTime}`}
+                    time={`${hours}:${
+                      minutes < 10 ? "0" : ""
+                    }${minutes}: ${seconds} ${ampm}`}
                     orderId={
                       item.status.length > 24
                         ? item.status.slice(0, 24)
@@ -153,6 +145,14 @@ function Notification() {
                 </div>
               );
             })}
+            <div className="mt-4 mb-2">
+              <Pagination
+                current={currentPage}
+                total={data.length}
+                pageSize={itemsPerPage}
+                onChange={handlePageChange}
+              />
+            </div>
           </div>
         </Spin>
       </div>

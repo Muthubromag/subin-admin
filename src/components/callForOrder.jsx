@@ -29,6 +29,10 @@ import { useNavigate } from "react-router-dom";
 // import { initializeSocket } from "../helper/socketService";
 import "../assets/css/callorder.css";
 import { OrdersCard } from "../cards/OrdersCard";
+import GooglePlacesAutocomplete, {
+  geocodeByPlaceId,
+} from "react-google-places-autocomplete";
+import { calculateDistance } from "../utils/util";
 function CallForOrder() {
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState([]);
@@ -52,6 +56,9 @@ function CallForOrder() {
   const [menu, setMenu] = useState(false);
   const [total, setTotal] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
+  const [charges, setCharges] = useState(null);
+  const [rlocation, setLocation] = useState(null);
+  const [distance, setDistance] = useState(0);
   const [filteredInventoryCategory, setFilteredInventoryCategory] = useState(
     []
   );
@@ -117,6 +124,29 @@ function CallForOrder() {
     return Math.max(minWidth, Math.min(calculatedWidth, maxWidth));
   };
 
+  const fetchChargesData = async () => {
+    try {
+      const result = await axios.get(
+        `${process.env.REACT_APP_URL}/getDeliveryCharges`
+      );
+
+      if (result?.status === 200) {
+        let footer = get(result, "data.footer")?.[0];
+        setCharges(get(result, "data.charges")?.[0]);
+        setLocation({
+          latitude: Number(get(footer, "latitude")),
+          longitude: Number(get(footer, "longitude")),
+        });
+      }
+    } catch (e) {
+      console.log(e);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  console.log({ charges, rlocation });
+
   const fetchData = async () => {
     try {
       setLoading(true);
@@ -131,6 +161,7 @@ function CallForOrder() {
       setMenu(get(menu, "data.data", []));
       setGetInventory(get(inventory, "data.data", []));
       setData(get(result, "data.data"));
+      await fetchChargesData();
     } catch (e) {
     } finally {
       setLoading(false);
@@ -338,6 +369,7 @@ function CallForOrder() {
           deliveryStatus: get(value, "deliveryStatus", ""),
           orderedFood: get(value, "orderedFood", ""),
           location: get(value, "location", ""),
+          distance,
           gst: (total * 5) / 100,
           deliveryCharge: get(value, "deliveryStatus") === "Delivery" ? 50 : 0,
           transactionCharge: (total * 5) / 100,
@@ -379,6 +411,8 @@ function CallForOrder() {
         setOpen(!open);
         form.resetFields();
         setTotal("");
+        setDistance(0);
+        setLocation(null);
         fetchData();
       } catch (err) {
         console.log(err);
@@ -407,6 +441,7 @@ function CallForOrder() {
                   (total * 10) / 100 +
                   50
           ),
+          distance,
           orderedFood: get(value, "orderedFood", ""),
           location: get(value, "location", ""),
           types: types?.map((type) => ({
@@ -432,6 +467,8 @@ function CallForOrder() {
         fetchData();
         setOpen(!open);
         setTotal("");
+        setDistance(0);
+        setLocation(null);
       } catch (err) {
         console.log({ err });
       } finally {
@@ -470,8 +507,10 @@ function CallForOrder() {
 
   const handleEdit = (val) => {
     setOpen(!open);
+    console.log({ edit: val });
     form.setFieldsValue(val);
     setUpdateId(get(val, "_id"));
+    setDistance(val?.distance);
     console.log("edit val", form.getFieldValue("orderedFood"));
   };
   //--
@@ -764,6 +803,7 @@ function CallForOrder() {
       "Order ready to preparing",
       "Order ready to pack",
       "Order ready to pick",
+      "Delivered",
     ];
 
     const currentIndex = statusOptions.indexOf(currentStatus);
@@ -1010,7 +1050,7 @@ function CallForOrder() {
               </>
             ) : (
               <div>
-                {!isCancelled && !isDelivered && (
+                {!isCancelled && (
                   <Select
                     value={isMovedToKDS ? "Order received" : status}
                     onChange={(newStatus) =>
@@ -1019,7 +1059,7 @@ function CallForOrder() {
                     className="w-[100%]"
                     id="status"
                   >
-                    {!isAfterKds &&
+                    {isAfterKds &&
                       nextStatusOptionspartner?.map((option, i) => (
                         <Select.Option key={i} value={option}>
                           {option}
@@ -1028,16 +1068,10 @@ function CallForOrder() {
                   </Select>
                 )}
 
-                {isCancelled ? (
+                {isCancelled && (
                   <Button className="bg-red-500 text-white border-none w-[100%]">
                     Cancelled
                   </Button>
-                ) : isDelivered ? (
-                  <Button className="bg-green-500 text-white border-none w-[100%]">
-                    Delivered
-                  </Button>
-                ) : (
-                  ""
                 )}
               </div>
             )}
@@ -1073,6 +1107,64 @@ function CallForOrder() {
     return currentIndex < statusOptions.length - 1
       ? [statusOptions[currentIndex + 1]]
       : [];
+  };
+
+  const [value, setValue] = useState(null);
+
+  const handleChange = async (val) => {
+    try {
+      console.log({ val });
+      if (val) {
+        const data = await geocodeByPlaceId(val?.value?.place_id);
+        console.log({ data });
+        const location = data?.[0]?.geometry.location;
+        const latitude = location?.lat();
+        const clongitude = location?.lng();
+        console.log(
+          "Latitude:",
+          latitude,
+          clongitude,
+          rlocation?.latitude,
+          rlocation?.longitude
+        );
+        const distance = calculateDistance(
+          rlocation?.latitude,
+          rlocation?.longitude,
+          latitude,
+          clongitude
+        );
+        console.log({ distance });
+        if (distance > 20) {
+          alert("Currently !!!We are not deliver to this locations");
+          return;
+        }
+        form.setFieldValue("location", val?.label);
+        setDistance(distance?.toFixed(0));
+        setValue(val);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+
+    // setLocation({ latitude, longitude });
+    // setValue(val);
+    // setGoogleAddressLocation({
+    //   doorno: "",
+    //   street,
+    //   area,
+    //   city,
+    //   country,
+    //   pincode,
+    //   state,
+    // });
+
+    // form.setFieldsValue({
+    //   streetName: ``,
+    //   landMark: area,
+    //   city: city,
+    //   picCode: pincode,
+    //   customerState: state,
+    // });
   };
 
   useEffect(() => {
@@ -1491,20 +1583,8 @@ function CallForOrder() {
 
                 const indianStandardTime = new Date(item.createdAt);
 
-                indianStandardTime.setUTCHours(
-                  indianStandardTime.getUTCHours() + 5
-                ); // IST is UTC+5:30
-                indianStandardTime.setUTCMinutes(
-                  indianStandardTime.getUTCMinutes() + 30
-                );
-
                 const hours = indianStandardTime.getHours() % 12 || 12;
                 const minutes = indianStandardTime.getMinutes();
-
-                const formattedTime = `${hours}:${
-                  minutes < 10 ? "0" + minutes : minutes
-                }`;
-
                 const ampm = indianStandardTime.getHours() >= 12 ? "PM" : "AM";
 
                 const mobilePreviewModal = (orderedFood) => {
@@ -1525,6 +1605,7 @@ function CallForOrder() {
                   "Order ready to preparing",
                   "Order ready to pack",
                   "Order ready to pick",
+                  "Delivered",
                 ];
 
                 return (
@@ -1532,7 +1613,9 @@ function CallForOrder() {
                     key={index}
                     id={index + 1}
                     date={date}
-                    time={`${formattedTime}${ampm}`}
+                    time={`${hours}:${
+                      minutes < 10 ? "0" : ""
+                    }${minutes} ${ampm}`}
                     orderId={item.orderId}
                     deliveryStatus={item.status}
                     orderstatus={item.deliveryStatus}
@@ -1642,10 +1725,33 @@ function CallForOrder() {
               size="large"
             />
           </Form.Item>
+          <div>
+            <div className="text-dark3a_color">
+              Search google address <span className="text-[red]">*</span>
+            </div>
+            <GooglePlacesAutocomplete
+              apiKey="AIzaSyBTKE5U_KnZAbWR4qUhsHLsj4titj2uIWg"
+              selectProps={{
+                value: value,
+                onChange: handleChange,
+                classNamePrefix: "google-autocomplete",
+                placeholder: "search address",
+                isClearable: true,
+                backspaceRemovesValue: true,
+                escapeClearsValue: true,
+              }}
+              autocompletionRequest={{
+                componentRestrictions: {
+                  country: ["in"],
+                },
+              }}
+            />
+          </div>
           <Form.Item
             name="location"
             label="Enter Location"
             rules={[{ required: true }]}
+            className="mt-2"
           >
             <Input.TextArea
               id="location"
@@ -1700,6 +1806,7 @@ function CallForOrder() {
                       ...restField,
                       selectedType,
                       typess,
+                      lastitem,
                       formvalues: form.getFieldsValue(),
                     });
                     return (
@@ -1768,7 +1875,7 @@ function CallForOrder() {
                               <div className="hidden">
                                 Selected Food Price:
                                 {
-                                  menu.filter((res) => {
+                                  menu?.filter((res) => {
                                     return (
                                       res.name ===
                                       form.getFieldValue([
@@ -1838,7 +1945,7 @@ function CallForOrder() {
                               ])
                             ) &&
                               !isNaN(
-                                menu.filter((res) => {
+                                menu?.filter((res) => {
                                   return (
                                     res.name ===
                                     form.getFieldValue([
