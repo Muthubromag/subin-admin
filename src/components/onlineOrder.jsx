@@ -99,8 +99,56 @@ function OnlineOrder() {
     );
   }, [data]);
 
+  const getStatusOptions = (currentStatus) => {
+    const statusOptions = [
+      "Order accepted",
+      "Order moved to KDS",
+      "Order ready to preparing",
+      "Order ready to pack",
+      "Order ready to pick",
+      "Order out for delivery",
+      "Delivered",
+    ];
+    const partnerOptions = [
+      "Order accepted",
+      "Order moved to KDS",
+      "Order ready to preparing",
+      "Order ready to pack",
+      "Order ready to pick",
+      "Order out for delivery",
+      "Delivered",
+    ];
+    const kdsOptions = [
+      "Order ready to preparing",
+      "Order ready to pack",
+      "Order ready to pick",
+    ];
+    let iskds = get(user, "name", "")?.split("@")?.includes("kds");
+    let isPartner = get(user, "name", "")?.split("@")?.includes("partner");
+    let isFrontdesk = get(user, "name", "")?.split("@")?.includes("frontdesk");
+
+    let options = iskds
+      ? kdsOptions
+      : isPartner || isFrontdesk
+      ? partnerOptions
+      : statusOptions;
+
+    const currentIndex = options.indexOf(currentStatus);
+
+    return currentIndex < statusOptions.length - 1
+      ? [statusOptions[currentIndex + 1]]
+      : [];
+  };
   const getNextStatusOptions = (currentStatus) => {
-    const statusOptions = ["Order accepted", "Order moved to KDS"];
+    const statusOptions = [
+      "Order accepted",
+      "Order moved to KDS",
+      "Order ready to preparing",
+      "Order ready to pack",
+      "Order ready to pick",
+      "Order out for delivery",
+      "Delivered",
+    ];
 
     const currentIndex = statusOptions.indexOf(currentStatus);
 
@@ -115,6 +163,7 @@ function OnlineOrder() {
       "Order ready to preparing",
       "Order ready to pack",
       "Order ready to pick",
+      "Order out for delivery",
       "Delivered",
     ];
 
@@ -125,19 +174,19 @@ function OnlineOrder() {
       : [];
   };
 
-  // const getNextStatusOptionsAfterKds = (currentStatus) => {
-  //   const statusOptions = [
-  //     "Order out for delivery",
-  //     "Order reached nearest to you",
-  //     "Delivered",
-  //   ];
+  const getNextStatusOptionsAfterKds = (currentStatus) => {
+    const statusOptions = [
+      "Order out for delivery",
+      // "Order reached nearest to you",
+      "Delivered",
+    ];
 
-  //   const currentIndex = statusOptions.indexOf(currentStatus);
+    const currentIndex = statusOptions.indexOf(currentStatus);
 
-  //   return currentIndex < statusOptions.length - 1
-  //     ? [statusOptions[currentIndex + 1]]
-  //     : [];
-  // };
+    return currentIndex < statusOptions.length - 1
+      ? [statusOptions[currentIndex + 1]]
+      : [];
+  };
 
   const getNextStatusOptionsinKds = (currentStatus) => {
     const statusOptions = [
@@ -475,78 +524,51 @@ function OnlineOrder() {
       key: "status",
       align: "center",
       render: (status, record) => {
-        const nextStatusOptions = getNextStatusOptions(status);
+        const nextStatusOptions = getStatusOptions(status);
         const isDelivered = status === "Delivered";
         const isCancelled = status === "Cancelled";
-        const isPick =
-          status === "Order ready to pick" ||
-          status === "Order out for delivery" ||
-          status === "Order reached nearest to you";
+        const isPick = status === "Order ready to pick";
         const isbeforeKds =
           status === "Order accepted" || status === "Order placed";
-
+        const isafterKds = status === "Order out for delivery";
+        console.log({
+          nextStatusOptions,
+          isDelivered,
+          isCancelled,
+          isPick,
+          isbeforeKds,
+          status,
+          record,
+        });
         return (
           <>
-            {isPick ? (
-              <div>
-                {!isCancelled && !isDelivered && (
-                  <Select
-                    value={status}
-                    onChange={(newStatus) =>
-                      handleStatusChange(record, newStatus)
-                    }
-                    className="w-[100%]"
-                    id="status"
-                  >
-                    <Select.Option value="Cancelled">Cancelled</Select.Option>
-                  </Select>
-                )}
-
-                {isCancelled ? (
-                  <Button className="bg-red-500 text-white border-none w-[100%]">
-                    Cancelled
-                  </Button>
-                ) : isDelivered ? (
-                  <Button className="bg-green-500 text-white border-none w-[100%]">
-                    Delivered
-                  </Button>
-                ) : (
-                  ""
-                )}
-              </div>
-            ) : (
-              <div>
-                {!isCancelled && !isDelivered && (
-                  <Select
-                    value={status}
-                    onChange={(newStatus) =>
-                      handleStatusChange(record, newStatus)
-                    }
-                    className="w-[100%]"
-                  >
-                    {isbeforeKds &&
-                      nextStatusOptions.map((option, i) => (
-                        <Select.Option key={i} value={option}>
-                          {option}
-                        </Select.Option>
-                      ))}
-                    <Select.Option value="Cancelled">Cancelled</Select.Option>
-                  </Select>
-                )}
-
-                {isCancelled ? (
-                  <Button className="bg-red-500 text-white border-none w-[100%]">
-                    Cancelled
-                  </Button>
-                ) : isDelivered ? (
-                  <Button className="bg-green-500 text-white border-none w-[100%]">
-                    Delivered
-                  </Button>
-                ) : (
-                  ""
-                )}
-              </div>
-            )}
+            <div>
+              {isCancelled ? (
+                <Button className="bg-red-500 text-white border-none w-[100%]">
+                  Cancelled
+                </Button>
+              ) : isDelivered ? (
+                <Button className="bg-green-500 text-white border-none w-[100%]">
+                  Delivered
+                </Button>
+              ) : (
+                <Select
+                  value={status}
+                  onChange={(newStatus) =>
+                    handleStatusChange(record, newStatus)
+                  }
+                  className="w-[100%]"
+                  id="status"
+                >
+                  {nextStatusOptions.map((option, i) => (
+                    <Select.Option key={i} value={option}>
+                      {option}
+                    </Select.Option>
+                  ))}
+                  <Select.Option value="Cancelled">Cancelled</Select.Option>
+                </Select>
+              )}
+            </div>
           </>
         );
       },
@@ -659,23 +681,17 @@ function OnlineOrder() {
       key: "status",
       align: "center",
       render: (status, record) => {
-        const nextStatusOptions = getNextStatusOptions(status);
+        const nextStatusOptions = getStatusOptions(status);
         const nextStatusOptionspartner = getNextStatusOptionsPartner(status);
 
         const isDelivered = status === "Delivered";
         const isCancelled = status === "Cancelled";
-        const isPick =
-          status === "Order ready to pick" ||
-          status === "Order out for delivery" ||
-          status === "Order reached nearest to you";
+        const isPick = status === "Order ready to pick";
         const isbeforeKds =
           status === "Order accepted" || status === "Order placed";
 
         const isMovedToKDS = status === "Order moved to KDS";
-        const isAfterKds =
-          status === "Order ready to pick" ||
-          status === "Order out for delivery" ||
-          status === "Order reached nearest to you";
+        const isAfterKds = status === "Order ready to pick";
 
         const rolefront = get(user, "name", "")
           ?.split("@")
@@ -684,98 +700,28 @@ function OnlineOrder() {
         console.log("rolefront", rolefront);
         return (
           <>
-            {rolefront ? (
-              <>
-                {isPick ? (
-                  <div>
-                    {!isCancelled && !isDelivered && (
-                      <Select
-                        value={status}
-                        onChange={(newStatus) =>
-                          handleStatusChange(record, newStatus)
-                        }
-                        className="w-[100%]"
-                      >
-                        <Select.Option value="Cancelled">
-                          Cancelled
-                        </Select.Option>
-                      </Select>
-                    )}
-
-                    {isCancelled ? (
-                      <Button className="bg-red-500 text-white border-none w-[100%]">
-                        Cancelled
-                      </Button>
-                    ) : isDelivered ? (
-                      <Button className="bg-green-500 text-white border-none w-[100%]">
-                        Delivered
-                      </Button>
-                    ) : (
-                      ""
-                    )}
-                  </div>
-                ) : (
-                  <div>
-                    {!isCancelled && !isDelivered && (
-                      <Select
-                        value={status}
-                        onChange={(newStatus) =>
-                          handleStatusChange(record, newStatus)
-                        }
-                        className="w-[100%]"
-                      >
-                        {isbeforeKds &&
-                          nextStatusOptions.map((option, i) => (
-                            <Select.Option key={i} value={option}>
-                              {option}
-                            </Select.Option>
-                          ))}
-                        <Select.Option value="Cancelled">
-                          Cancelled
-                        </Select.Option>
-                      </Select>
-                    )}
-
-                    {isCancelled ? (
-                      <Button className="bg-red-500 text-white border-none w-[100%]">
-                        Cancelled
-                      </Button>
-                    ) : isDelivered ? (
-                      <Button className="bg-green-500 text-white border-none w-[100%]">
-                        Delivered
-                      </Button>
-                    ) : (
-                      ""
-                    )}
-                  </div>
-                )}
-              </>
+            {isCancelled ? (
+              <Button className="bg-red-500 text-white border-none w-[100%]">
+                Cancelled
+              </Button>
+            ) : isDelivered ? (
+              <Button className="bg-green-500 text-white border-none w-[100%]">
+                Delivered
+              </Button>
             ) : (
-              <div>
-                {!isCancelled && (
-                  <Select
-                    value={isMovedToKDS ? "Order received" : status}
-                    onChange={(newStatus) =>
-                      handleStatusChange(record, newStatus)
-                    }
-                    className="w-[100%]"
-                    id="status"
-                  >
-                    {isAfterKds &&
-                      nextStatusOptionspartner?.map((option, i) => (
-                        <Select.Option key={i} value={option}>
-                          {option}
-                        </Select.Option>
-                      ))}
-                  </Select>
-                )}
-
-                {isCancelled && (
-                  <Button className="bg-red-500 text-white border-none w-[100%]">
-                    Cancelled
-                  </Button>
-                )}
-              </div>
+              <Select
+                value={status}
+                onChange={(newStatus) => handleStatusChange(record, newStatus)}
+                className="w-[100%]"
+                id="status"
+              >
+                {nextStatusOptions.map((option, i) => (
+                  <Select.Option key={i} value={option}>
+                    {option}
+                  </Select.Option>
+                ))}
+                <Select.Option value="Cancelled">Cancelled</Select.Option>
+              </Select>
             )}
           </>
         );
@@ -1182,6 +1128,8 @@ function OnlineOrder() {
                 "Order ready to preparing",
                 "Order ready to pack",
                 "Order ready to pick",
+                "Order out for delivery",
+                "Delivered",
               ];
 
               return (
@@ -1313,7 +1261,13 @@ function OnlineOrder() {
           </Form.Item>
         </Form>
       </Modal>
-      <Modal open={openInventory} footer={false} closable={false} form={form}>
+      <Modal
+        open={openInventory}
+        footer={false}
+        closable={true}
+        onCancel={() => setOpenInventory(false)}
+        form={form}
+      >
         <Form
           name="dynamic_form_nest_item"
           onFinish={handleInventory}

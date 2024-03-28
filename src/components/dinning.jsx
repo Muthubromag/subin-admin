@@ -115,8 +115,8 @@ function Dinning() {
   };
 
   const getNextStatusOptionsAfterKds = (currentStatus) => {
-    const statusOptions = ["Order picked", "Order served", "Cancelled"];
-
+    // const statusOptions = ["Order picked", "Order served", "Cancelled"];
+    const statusOptions = ["Order picked", "Order served"];
     const currentIndex = statusOptions.indexOf(currentStatus);
 
     return currentIndex < statusOptions.length - 1
@@ -375,7 +375,7 @@ function Dinning() {
                         {option}
                       </Select.Option>
                     ))}
-                    <Select.Option value="Cancelled">Cancelled</Select.Option>
+                    {/* <Select.Option value="Cancelled">Cancelled</Select.Option> */}
                   </Select>
                 )}
                 {isCancelled ? (
@@ -406,7 +406,7 @@ function Dinning() {
                           {option}
                         </Select.Option>
                       ))}
-                    <Select.Option value="Cancelled">Cancelled</Select.Option>
+                    {/* <Select.Option value="Cancelled">Cancelled</Select.Option> */}
                   </Select>
                 )}
                 {isCancelled ? (
@@ -595,9 +595,9 @@ function Dinning() {
                             {option}
                           </Select.Option>
                         ))}
-                        <Select.Option value="Cancelled">
+                        {/* <Select.Option value="Cancelled">
                           Cancelled
-                        </Select.Option>
+                        </Select.Option> */}
                       </Select>
                     )}
                     {isCancelled ? (
@@ -628,9 +628,9 @@ function Dinning() {
                               {option}
                             </Select.Option>
                           ))}
-                        <Select.Option value="Cancelled">
+                        {/* <Select.Option value="Cancelled">
                           Cancelled
-                        </Select.Option>
+                        </Select.Option> */}
                       </Select>
                     )}
                     {isCancelled ? (
