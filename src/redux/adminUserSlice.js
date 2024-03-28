@@ -2,7 +2,12 @@ import { createSlice } from "@reduxjs/toolkit";
 import Cookies from "js-cookie";
 const userSlice = createSlice({
   name: "userSlice",
-  initialState: { user: Cookies.get("token"), refreshData: null ,fcm:null},
+  initialState: {
+    user: Cookies.get("token"),
+    refreshData: null,
+    fcm: null,
+    footer: null,
+  },
   reducers: {
     changeUserValues: (state, action) => {
       state.user = action.payload;
@@ -14,8 +19,12 @@ const userSlice = createSlice({
     setFcmToken: (state, action) => {
       state.fcm = action.payload;
     },
+    setFooterData: (state, action) => {
+      state.footer = action.payload;
+    },
   },
 });
 
-export const {setFcmToken, changeUserValues, setRefreshData } = userSlice.actions;
+export const { setFcmToken, changeUserValues, setRefreshData, setFooterData } =
+  userSlice.actions;
 export default userSlice.reducer;

@@ -1725,42 +1725,6 @@ function CallForOrder() {
               size="large"
             />
           </Form.Item>
-          <div>
-            <div className="text-dark3a_color">
-              Search google address <span className="text-[red]">*</span>
-            </div>
-            <GooglePlacesAutocomplete
-              apiKey="AIzaSyBTKE5U_KnZAbWR4qUhsHLsj4titj2uIWg"
-              selectProps={{
-                value: value,
-                onChange: handleChange,
-                classNamePrefix: "google-autocomplete",
-                placeholder: "search address",
-                isClearable: true,
-                backspaceRemovesValue: true,
-                escapeClearsValue: true,
-              }}
-              autocompletionRequest={{
-                componentRestrictions: {
-                  country: ["in"],
-                },
-              }}
-            />
-          </div>
-          <Form.Item
-            name="location"
-            label="Enter Location"
-            rules={[{ required: true }]}
-            className="mt-2"
-          >
-            <Input.TextArea
-              id="location"
-              type="text"
-              placeholder="Location..."
-              size="large"
-            />
-          </Form.Item>
-
           <Form.Item
             name="deliveryStatus"
             label="Enter Delivery Status"
@@ -1771,7 +1735,50 @@ function CallForOrder() {
               <Select.Option value="Delivery">Delivery</Select.Option>
             </Select>
           </Form.Item>
-
+          {form.getFieldValue("deliveryStatus") === "Delivery" ? (
+            <>
+              <div>
+                <div className="text-dark3a_color">
+                  Search google address <span className="text-[red]">*</span>
+                </div>
+                <GooglePlacesAutocomplete
+                  apiKey="AIzaSyBTKE5U_KnZAbWR4qUhsHLsj4titj2uIWg"
+                  selectProps={{
+                    value: value,
+                    onChange: handleChange,
+                    classNamePrefix: "google-autocomplete",
+                    placeholder: "search address",
+                    isClearable: true,
+                    backspaceRemovesValue: true,
+                    escapeClearsValue: true,
+                  }}
+                  autocompletionRequest={{
+                    componentRestrictions: {
+                      country: ["in"],
+                    },
+                  }}
+                />
+              </div>
+              <Form.Item
+                name="location"
+                label="Enter Location"
+                rules={[
+                  {
+                    required:
+                      form.getFieldValue("deliveryStatus") === "Delivery",
+                  },
+                ]}
+                className="mt-2"
+              >
+                <Input.TextArea
+                  id="location"
+                  type="text"
+                  placeholder="Location..."
+                  size="large"
+                />
+              </Form.Item>
+            </>
+          ) : null}
           {/* ================================================= */}
           {console.log({ updateId })}
           <Form.Item
