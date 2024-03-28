@@ -32,7 +32,11 @@ import RootLayout from "./layouts/rootLayout";
 import { useEffect, useState, useCallback } from "react";
 import { Modal, notification } from "antd";
 import SignalCellularConnectedNoInternet4BarIcon from "@mui/icons-material/SignalCellularConnectedNoInternet4Bar";
-import { changeUserValues, setRefreshData } from "./redux/adminUserSlice";
+import {
+  changeUserValues,
+  setFooterData,
+  setRefreshData,
+} from "./redux/adminUserSlice";
 import { get } from "lodash";
 import { useDispatch } from "react-redux";
 import axios from "axios";
@@ -95,6 +99,13 @@ function App() {
   const [audio] = useState(new Audio(Sound));
   const [loading, setLoading] = useState(true);
   const [connected, setConnected] = useState(false);
+
+  const fetchFooterData = async () => {
+    try {
+      const result = await axios.get(`${process.env.REACT_APP_URL}/get_footer`);
+      dispatch(setFooterData(get(result, "data.data")?.[0]));
+    } catch (err) {}
+  };
   const fetchData = async () => {
     const token = localStorage.getItem("token");
     try {
@@ -106,7 +117,9 @@ function App() {
           },
         }
       );
+
       dispatch(changeUserValues(get(result, "data")));
+      await fetchFooterData();
     } catch (err) {
     } finally {
       setLoading(false);

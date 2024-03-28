@@ -5,7 +5,7 @@ import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { changeUserValues } from "../redux/adminUserSlice";
 import { get } from "lodash";
-import { items } from "../helper/menu";
+import { getMenus, items } from "../helper/menu";
 import { Drawer, Menu } from "antd";
 import { useLocation } from "react-router-dom";
 import LoadingPage from "../components/loadingPage";
@@ -14,14 +14,16 @@ import { useNavigate } from "react-router-dom";
 import { CloseOutlined, LoginOutlined } from "@ant-design/icons";
 import menu from "../assets/menu.png";
 
-function Sidenavbar() {
+const Sidenavbar = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [open, setOpen] = useState("");
   const user = useSelector((state) => state.user.user);
   const location = useLocation();
   const [modalOpen, setModalOpen] = useState(false);
+  const [menus, setMenus] = useState([]);
 
+  console.log({ menus });
   const fetchData = async () => {
     const token = localStorage.getItem("token");
     try {
@@ -33,25 +35,32 @@ function Sidenavbar() {
           },
         }
       );
+
       dispatch(changeUserValues(get(result, "data")));
     } catch (err) {
       console.log(err);
     }
   };
 
+  const fetchMenu = async () => {
+    const menusData = await getMenus();
+    setMenus(menusData);
+  };
+
   useEffect(() => {
+    fetchMenu();
     fetchData();
   }, []);
 
   useEffect(() => {}, [get(location, "pathname", "")]);
 
-  const supportFilter = items.filter((item) => {
+  const supportFilter = menus.filter((item) => {
     if (get(user, "name")?.split("@")?.includes("scratch")) {
       return item.key === "/scratchcard" || item.key === "/";
     }
   });
 
-  const MenuFilter = items.filter((item) => {
+  const MenuFilter = menus.filter((item) => {
     if (get(user, "name")?.split("@")?.includes("menu")) {
       return (
         item.key === "sub1" ||
@@ -65,7 +74,7 @@ function Sidenavbar() {
       return item.key === "/banner" || item.key === "/";
     }
   });
-  const filteredItems = items.filter((item) => {
+  const filteredItems = menus.filter((item) => {
     if (get(user, "name")?.split("@")?.includes("kds")) {
       return (
         item.key === "/" ||
@@ -114,9 +123,9 @@ function Sidenavbar() {
       {!localStorage.getItem("token") ? (
         <LoadingPage />
       ) : (
-        <div className="menunavdrawer h-[100vh] mt-[8vh] fixed md:mt-[8vh]   md:flex flex-col justify-between lg:border-r">
+        <div className="menunavdrawer h-[100vh] mt-[8vh] fixed md:mt-[8vh] md:flex flex-col justify-between lg:border-r">
           <div
-            className="h-[4vh] md:hidden  w-[100vw] flex items-center shadow-[2px]"
+            className="h-[4vh] md:hidden  lg:w-[100vw] flex items-center shadow-[2px]"
             onClick={() => {
               setModalOpen(!modalOpen);
             }}
@@ -140,7 +149,7 @@ function Sidenavbar() {
                     get(user, "name")?.split("@")?.includes("banner")
                   ? MenuFilter
                   : get(user, "name")?.split("@")?.includes("admin")
-                  ? items
+                  ? menus
                   : MenuFilter
               }
               className="h-screen"
@@ -163,7 +172,7 @@ function Sidenavbar() {
             className=" menudrawer !bg-inherit !w-0"
           >
             <div
-              className="fixed flex !items-start  flex-col rounded-r-3xl overflow-hidden h-full
+              className="fixed flex !items-start flex-col rounded-r-3xl overflow-hidden h-full
                bg-[#001529] rounded-md bg-clip-padding backdrop-filter backdrop-blur-2xl bg-opacity-70 border border-gray-100"
             >
               <div
@@ -199,14 +208,14 @@ function Sidenavbar() {
                     : get(user, "name")?.split("@")?.includes("menu") ||
                       get(user, "name")?.split("@")?.includes("banner")
                     ? MenuFilter
-                    : items
+                    : menus
                 }
                 defaultOpenKeys={open}
                 onOpenChange={(keys) => setOpen(keys)}
                 className="overflow-y-scroll h-screen"
               />
               <div
-                className="text-[#CD5C08]  flex justify-center w-full  mt-2 mb-4 hover:text-white  "
+                className="text-[#CD5C08]  flex justify-center w-full  mt-2 mb-4 hover:text-white"
                 onClick={() => {
                   handeLogout();
                 }}
@@ -229,6 +238,6 @@ function Sidenavbar() {
       )}
     </div>
   );
-}
+};
 
 export default Sidenavbar;

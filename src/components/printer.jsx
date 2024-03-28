@@ -175,7 +175,6 @@ const PrinterSelection = () => {
   const handlePrintNew = useReactToPrint({
     content: () => componentRef.current,
   });
-  console.log("nsjn", handlePrintNew);
 
   return (
     <div className="pl-[20vw] mt-20 text-white flex gap-20">
@@ -216,25 +215,38 @@ const PrinterSelection = () => {
             />
             KOT
           </label>
-          {user?.name?.split("@")?.includes("admin") ? (
-            <label>
-              <input
-                type="radio"
-                value="bill"
-                checked={selectedBill === "bill"}
-                onChange={handleBillChange}
-                className="me-1"
-              />
-              Bill
-            </label>
-          ) : null}
+          {/* {user?.name?.split("@")?.includes("admin") ? ( */}
+          <label>
+            <input
+              type="radio"
+              value="bill"
+              checked={selectedBill === "bill"}
+              onChange={handleBillChange}
+              className="me-1"
+            />
+            Bill
+          </label>
+          {/* ) : null} */}
         </div>
         <ComponentToPrint
-          ref={componentRef.current}
+          ref={componentRef}
           data={filteredData}
           footer={restaurant?.[0]}
           type={selectedBill}
         />
+        {/* 
+        <ReactToPrint
+          trigger={() => (
+            <button
+              className="bg-green-500"
+              type="button"
+              onClick={handlePrintNew}
+            >
+              Print Bill
+            </button>
+          )}
+          content={() => componentRef.current}
+        /> */}
 
         <button onClick={handlePrintNew} className="bg-green-500">
           Print Bill
