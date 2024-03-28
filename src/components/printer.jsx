@@ -177,7 +177,7 @@ const PrinterSelection = () => {
   });
 
   return (
-    <div className="pl-[20vw] mt-20 text-white flex gap-20">
+    <div className="lg:pl-[20vw] pl-[12vw]  lg:mt-20 mt-28 text-white flex gap-20">
       {/* <div className="flex flex-col">
         <h1>Printer Selection</h1>
         <div>
