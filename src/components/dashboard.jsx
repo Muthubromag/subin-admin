@@ -705,7 +705,6 @@ function Dashboard() {
               className={` w-96 m-auto lg:m-0 lg:w-[220px] py-4 px-4 h-[308px] bg-gradient-to-r from-blue-500 via-sky-500 to-white/50 rounded-md ${
                 get(user, "name", "")?.split("@")?.includes("kds") ||
                 get(user, "name", "")?.split("@")?.includes("frontdesk") ||
-                get(user, "name", "")?.split("@")?.includes("partner") ||
                 get(user, "name", "")?.split("@")?.includes("scratch") ||
                 get(user, "name", "")?.split("@")?.includes("menu") ||
                 get(user, "name", "")?.split("@")?.includes("banner") ||
