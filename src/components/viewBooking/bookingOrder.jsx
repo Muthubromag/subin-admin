@@ -142,17 +142,17 @@ function BookingOrder() {
         status: false,
       };
 
-      if (current === "Checkout" || current === "Canceled") {
-        await axios.put(
-          `${process.env.REACT_APP_URL}/updatetable/${all.tableId}`,
-          formData3
-        );
-      } else if (current === "CheckIn") {
-        await axios.put(
-          `${process.env.REACT_APP_URL}/updatetable/${all.tableId}`,
-          formData2
-        );
-      }
+      // if (current === "Checkout" || current === "Cancelled") {
+      //   await axios.put(
+      //     `${process.env.REACT_APP_URL}/updatetable/${all.tableId}`,
+      //     formData3
+      //   );
+      // } else if (current === "CheckIn") {
+      //   await axios.put(
+      //     `${process.env.REACT_APP_URL}/updatetable/${all.tableId}`,
+      //     formData2
+      //   );
+      // }
 
       await axios.put(
         `${process.env.REACT_APP_URL}/updatebooking/${all._id}`,
@@ -263,22 +263,26 @@ function BookingOrder() {
           </Button>
         ) : data === "Cancelled" ? (
           <Button className="w-[10vw] !bg-red-500 text-white">Cancel</Button>
-        ) : timeDifferenceInMinutes > 30 ? (
-          <Select
-            className="w-[10vw]"
-            // onChange={(e) => handleChangeStatus(e, allData)}
-            defaultValue={data}
-          >
-            <Select.Option value="Checkout">Checkout</Select.Option>
-            <Select.Option value="Cancelled">Cancel</Select.Option>
-          </Select>
         ) : (
+          // timeDifferenceInMinutes > 30 ? (
+          //   <Select
+          //     className="w-[10vw]"
+          //     onChange={(e) => handleChangeStatus(e, allData)}
+          //     defaultValue={data}
+          //   >
+          //     <Select.Option value="CheckIn">Checkin</Select.Option>
+          //     <Select.Option value="Checkout">Checkout</Select.Option>
+          //     {/* <Select.Option value="Cancelled">Cancel</Select.Option> */}
+          //   </Select>
+          // ) :
           <Select
             className="w-[10vw]"
             defaultValue={data}
             onChange={(e) => handleChangeStatus(e, allData)}
           >
+            <Select.Option value="CheckIn">Checkin</Select.Option>
             <Select.Option value="Checkout">Checkout</Select.Option>
+            {/* <Select.Option value="Cancelled">Cancel</Select.Option> */}
           </Select>
         );
       },
@@ -390,22 +394,26 @@ function BookingOrder() {
           </Button>
         ) : data === "Cancelled" ? (
           <Button className="w-[10vw] !bg-red-500 text-white">Cancel</Button>
-        ) : timeDifferenceInMinutes > 30 ? (
-          <Select
-            className="w-[10vw]"
-            // onChange={(e) => handleChangeStatus(e, allData)}
-            defaultValue={data}
-          >
-            <Select.Option value="Checkout">Checkout</Select.Option>
-            <Select.Option value="Cancelled">Cancel</Select.Option>
-          </Select>
         ) : (
+          // timeDifferenceInMinutes > 30 ? (
+          //   <Select
+          //     className="w-[10vw]"
+          //     onChange={(e) => handleChangeStatus(e, allData)}
+          //     defaultValue={data}
+          //   >
+          //     <Select.Option value="CheckIn">Checkin</Select.Option>
+          //     <Select.Option value="Checkout">Checkout</Select.Option>
+          //     <Select.Option value="Cancelled">Cancel</Select.Option>
+          //   </Select>
+          // ) :
           <Select
             className="w-[10vw]"
             defaultValue={data}
             onChange={(e) => handleChangeStatus(e, allData)}
           >
+            <Select.Option value="CheckIn">Checkin</Select.Option>
             <Select.Option value="Checkout">Checkout</Select.Option>
+            {/* <Select.Option value="Cancelled">Cancel</Select.Option> */}
           </Select>
         );
       },

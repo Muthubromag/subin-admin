@@ -483,7 +483,7 @@ function Dashboard() {
   useEffect(() => {
     setTotalWeb(
       users.filter((res) => {
-        return get(res, "status") === "web";
+        return res;
       })
     );
     setTotalApp(
@@ -612,7 +612,7 @@ function Dashboard() {
   ];
 
   return (
-    <div className="md:pl-[20vw]  flex items-center justify-center md:items-start md:justify-start mt-28 md:mt-24 mb-48 lg:mb-0">
+    <div className="pb-5 md:pl-[20vw]  flex items-center justify-center md:items-start md:justify-start mt-28 md:mt-24 mb-48 lg:mb-0">
       {!localStorage.getItem("token") ? (
         <LoadingPage />
       ) : (
@@ -700,7 +700,6 @@ function Dashboard() {
                 })}
               </div>
             </div>
-
             <div
               className={` w-96 m-auto lg:m-0 lg:w-[220px] py-4 px-4 h-[308px] bg-gradient-to-r from-blue-500 via-sky-500 to-white/50 rounded-md ${
                 get(user, "name", "")?.split("@")?.includes("kds") ||
@@ -757,7 +756,6 @@ function Dashboard() {
                 );
               })}
             </div>
-
             <div
               className={`w-96 m-auto lg:m-0 lg:w-[330px]${
                 get(user, "name", "")?.split("@")?.includes("kds") ||
@@ -859,8 +857,7 @@ function Dashboard() {
                 </div>
               </div>
             </div>
-
-            <div
+            {/* <div
               className={`w-96 m-auto lg:m-0 lg:w-[330px] py-4 px-4 h-[308px] bg-gradient-to-r from-red-800 via-red-500 to-white/50 rounded-md ${
                 get(user, "name", "")?.split("@")?.includes("kds") ||
                 get(user, "name", "")?.split("@")?.includes("frontdesk") ||
@@ -909,8 +906,7 @@ function Dashboard() {
                   </div>
                 </div>
               </div>
-            </div>
-
+            </div> */}
             <div
               className={`w-96 m-auto lg:m-0 lg:w-[270px] py-4 px-4 h-[500px] bg-gradient-to-r from-yellow-700 via-yellow-500 to-white/50 rounded-md ${
                 get(user, "name", "")?.split("@")?.includes("kds") ||
@@ -964,7 +960,6 @@ function Dashboard() {
                 );
               })}
             </div>
-
             <div
               className={`py-4 px-4 w-[90vw] md:w-[75vw] flex flex-wrap bg-gradient-to-r from-yellow-500 via-yellow-300 to-white/50 rounded-md ${
                 get(user, "name", "")?.split("@")?.includes("kds") ||
@@ -1013,7 +1008,6 @@ function Dashboard() {
                 );
               })}
             </div>
-
             <div
               className={`w-96 m-auto lg:m-0 lg:w-[330px] py-4 px-4 h-[500px] bg-gradient-to-r from-emerald-800 via-emerald-500 to-white/50 rounded-md ${
                 get(user, "name", "")?.split("@")?.includes("kds") ||
@@ -1113,7 +1107,7 @@ function Dashboard() {
               </div>
             </div>
 
-            <div
+            {/* <div
               className={`w-96 m-auto lg:m-0  py-4 px-4 ${
                 get(user, "name", "")?.split("@")?.includes("scratch")
                   ? "lg:w-[75vw]"
@@ -1239,9 +1233,9 @@ function Dashboard() {
                   </div>
                 </div>
               </div>
-            </div>
+            </div> */}
 
-            <div
+            {/* <div
               className={`w-96 m-auto lg:m-0 lg:w-[270px]${
                 get(user, "name", "")?.split("@")?.includes("kds") ||
                 get(user, "name", "")?.split("@")?.includes("frontdesk") ||
@@ -1254,9 +1248,8 @@ function Dashboard() {
               }`}
             >
               <TableOrders />
-            </div>
-
-            <div
+            </div> */}
+            {/* <div
               className={`hidden lg:inline  flex flex-wrap items-center justify-center md:items-start md:justify-between md:px-28 gap-8 ${
                 get(user, "name", "")?.split("@")?.includes("kds") ||
                 get(user, "name", "")?.split("@")?.includes("frontdesk") ||
@@ -1267,15 +1260,15 @@ function Dashboard() {
                   ? "hidden"
                   : "block"
               }`}
-            >
-              <div>
+            > */}
+            {/* <div>
                 <OrdersChat ordersData={onlineOrder} />
               </div>
 
               <div>
                 <DinningOrderChart ordersData={onlineOrder} />
-              </div>
-              {/* <div
+              </div> */}
+            {/* <div
               className={`md:w-[35vw] xl:w-[17vw] ${
                 get(user, "name", "")?.split("@")?.includes("partner")
                   ? "hidden"
@@ -1284,7 +1277,7 @@ function Dashboard() {
             >
               <UserChart ordersData={onlineOrder} />
             </div> */}
-              <div className="md:w-[35vw]">
+            {/* <div className="md:w-[35vw]">
                 <h1 className="text-center text-[--primary-color] font-bold">
                   Last 5 users
                 </h1>
@@ -1300,8 +1293,8 @@ function Dashboard() {
               </div>
               <div className="md:w-[35vw] xl:w-[20vw]">
                 <CallOrdersChat ordersData={onlineOrder} />
-              </div>
-            </div>
+              </div> */}
+            {/* </div> */}
           </div>
         </Spin>
       )}
