@@ -1169,7 +1169,10 @@ function OnlineOrder() {
                 "Order ready to preparing",
                 "Order ready to pack",
                 "Order ready to pick",
+                "Order out for delivery",
+                "Delivered",
               ];
+              console.log(statusOptions, "status");
 
               return (
                 <>
