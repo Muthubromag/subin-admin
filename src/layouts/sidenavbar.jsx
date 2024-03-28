@@ -114,9 +114,9 @@ function Sidenavbar() {
       {!localStorage.getItem("token") ? (
         <LoadingPage />
       ) : (
-        <div className="menunavdrawer h-[100vh] mt-[8vh] fixed md:mt-[8vh]   md:flex flex-col justify-between lg:border-r">
+        <div className="menunavdrawer h-[100vh] mt-[8vh] fixed md:mt-[8vh] md:flex flex-col justify-between lg:border-r">
           <div
-            className="h-[4vh] md:hidden  w-[100vw] flex items-center shadow-[2px]"
+            className="h-[4vh] md:hidden  lg:w-[100vw] flex items-center shadow-[2px]"
             onClick={() => {
               setModalOpen(!modalOpen);
             }}
@@ -163,7 +163,7 @@ function Sidenavbar() {
             className=" menudrawer !bg-inherit !w-0"
           >
             <div
-              className="fixed flex !items-start  flex-col rounded-r-3xl overflow-hidden h-full
+              className="fixed flex !items-start flex-col rounded-r-3xl overflow-hidden h-full
                bg-[#001529] rounded-md bg-clip-padding backdrop-filter backdrop-blur-2xl bg-opacity-70 border border-gray-100"
             >
               <div
@@ -206,7 +206,7 @@ function Sidenavbar() {
                 className="overflow-y-scroll h-screen"
               />
               <div
-                className="text-[#CD5C08]  flex justify-center w-full  mt-2 mb-4 hover:text-white  "
+                className="text-[#CD5C08]  flex justify-center w-full  mt-2 mb-4 hover:text-white"
                 onClick={() => {
                   handeLogout();
                 }}
