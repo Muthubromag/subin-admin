@@ -46,8 +46,8 @@ export const OrdersCard = ({
   const isCancelled = deliveryStatus === "Cancelled";
   const isMovedToKDS = deliveryStatus === "Order moved to KDS";
   const isAfterKds =
-    deliveryStatus === "Order ready to pick" ||
-    deliveryStatus === "Order out for delivery" ||
+    // deliveryStatus === "Order ready to pick" ||
+    // deliveryStatus === "Order out for delivery" ||
     deliveryStatus === "Order reached nearest to you";
 
   return (
@@ -109,27 +109,37 @@ export const OrdersCard = ({
             <div className="bg-[#575757] rounded-md flex  items-center pl-2 space-x-1">
               <div className="text-[#fff] text-[10px]">Status</div>
               <div className="w-full mobile-selector">
-                {!isCancelled && (
+                {!isCancelled && !isDelivered ? (
                   <Select
                     value={isMovedToKDS ? "Order received" : deliveryStatus}
                     onChange={handleStatusChange}
                     className="w-[100%]"
                     id="status"
                   >
-                    {isAfterKds &&
+                    {!isAfterKds &&
                       nextStatusOptions?.map((option, i) => (
                         <Select.Option key={i} value={option}>
                           {option}
                         </Select.Option>
                       ))}
                   </Select>
+                ) : (
+                  <>
+                    {isCancelled ? (
+                      <Button className="bg-red-500 text-white border-none w-[100%]">
+                        Cancelled
+                      </Button>
+                    ) : (
+                      <Button className="bg-green-500 text-white border-none w-[100%]">
+                        Delivered
+                      </Button>
+                    )}
+                  </>
                 )}
-
+                {/* 
                 {isCancelled && (
-                  <Button className="bg-red-500 text-white border-none w-[100%]">
-                    Cancelled
-                  </Button>
-                )}
+                  
+                )} */}
               </div>
             </div>
 
