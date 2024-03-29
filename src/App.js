@@ -55,6 +55,7 @@ import BookingOrder from "./components/viewBooking/bookingOrder";
 import TableSlot from "./components/viewBooking/tableSlot";
 import { playSound, stopSound } from "./utils/util";
 
+import { requestPermission } from "./firebase/firebaseConfig";
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path="/" element={<RootLayout />}>

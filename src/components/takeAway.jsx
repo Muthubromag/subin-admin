@@ -1069,6 +1069,7 @@ function TakeAway() {
                 "Order moved to KDS",
                 "Order ready to preparing",
                 "Order ready to pack",
+                "Foods Handoff",
               ];
               return (
                 <>
