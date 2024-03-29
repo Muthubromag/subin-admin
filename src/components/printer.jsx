@@ -6,6 +6,7 @@ import ReactToPrint, { useReactToPrint } from "react-to-print";
 
 import { ComponentToPrint } from "./print";
 import { useSelector } from "react-redux";
+import { Button } from "antd";
 
 const PrinterSelection = () => {
   const [selectedConnection, setSelectedConnection] = useState("usb"); // Default to USB
@@ -176,6 +177,10 @@ const PrinterSelection = () => {
     content: () => componentRef.current,
   });
 
+  function handleback() {
+    window.history.back();
+  }
+
   return (
     <div className="lg:pl-[20vw] pl-[12vw]  lg:mt-20 mt-28 text-white flex gap-20">
       {/* <div className="flex flex-col">
@@ -202,8 +207,14 @@ const PrinterSelection = () => {
         </div>
        
       </div> */}
+      <div className="hidden lg:inline">
+        <Button className="text-white" onClick={handleback}>
+          {" "}
+          Back
+        </Button>
+      </div>
 
-      <div className="flex flex-col gap-2 mb-3">
+      <div className="flex flex-col gap-2 mb-3 mt-0 lg:mt-12">
         <div className="flex flex-row gap-3">
           <label>
             <input
