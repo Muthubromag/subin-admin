@@ -70,6 +70,7 @@ function CallForOrder() {
   const [buttonLoader, setButtonLoader] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState({});
   const [selectedType, setSelectedType] = useState([]);
+  const [orderType, setOrderType] = useState("Take away");
   const [fields, setFields] = useState([]);
 
   const [types, setTypes] = useState([]);
@@ -188,6 +189,85 @@ function CallForOrder() {
   //   });
   // });
 
+  const getStatusOptions = (currentStatus) => {
+    const statusOptions = [
+      "Order accepted",
+      "Order moved to KDS",
+      "Order ready to preparing",
+      "Order ready to pack",
+      "Order ready to pickup",
+      "Order out for delivery",
+      "Delivered",
+    ];
+    const partnerOptions = [
+      "Order accepted",
+      "Order moved to KDS",
+      "Order ready to preparing",
+      "Order ready to pack",
+      "Order ready to pickup",
+      "Order out for delivery",
+      "Delivered",
+    ];
+    const kdsOptions = [
+      "Order ready to preparing",
+      "Order ready to pack",
+      "Order ready to pickup",
+    ];
+    let iskds = get(user, "name", "")?.split("@")?.includes("kds");
+    let isPartner = get(user, "name", "")?.split("@")?.includes("partner");
+    let isFrontdesk = get(user, "name", "")?.split("@")?.includes("frontdesk");
+
+    let options = iskds
+      ? kdsOptions
+      : isPartner || isFrontdesk
+      ? partnerOptions
+      : statusOptions;
+
+    const currentIndex = options.indexOf(currentStatus);
+
+    return currentIndex < statusOptions.length - 1
+      ? [statusOptions[currentIndex + 1]]
+      : [];
+  };
+
+  const getTakeAwayStatusOptions = (currentStatus) => {
+    const statusOptions = [
+      "Order accepted",
+      "Order moved to KDS",
+      "Order ready to preparing",
+      "Order ready to pack",
+      "Order ready to pickup",
+      "Foods Handoff",
+    ];
+    const partnerOptions = [
+      "Order accepted",
+      "Order moved to KDS",
+      "Order ready to preparing",
+      "Order ready to pack",
+      "Order ready to pickup",
+      "Foods Handoff",
+    ];
+    const kdsOptions = [
+      "Order ready to preparing",
+      "Order ready to pack",
+      "Order ready to pickup",
+    ];
+    let iskds = get(user, "name", "")?.split("@")?.includes("kds");
+    let isPartner = get(user, "name", "")?.split("@")?.includes("partner");
+    let isFrontdesk = get(user, "name", "")?.split("@")?.includes("frontdesk");
+
+    let options = iskds
+      ? kdsOptions
+      : isPartner || isFrontdesk
+      ? partnerOptions
+      : statusOptions;
+
+    const currentIndex = options.indexOf(currentStatus);
+
+    return currentIndex < statusOptions.length - 1
+      ? [statusOptions[currentIndex + 1]]
+      : [];
+  };
   const handleStatusChange = async (Id, Status) => {
     if (Status === "Order ready to preparing") {
       setTimeSlot(!timeSlot);
@@ -511,6 +591,7 @@ function CallForOrder() {
     form.setFieldsValue(val);
     setUpdateId(get(val, "_id"));
     setDistance(val?.distance);
+    setOrderType(val?.deliveryStatus);
     console.log("edit val", form.getFieldValue("orderedFood"));
   };
   //--
@@ -696,14 +777,15 @@ function CallForOrder() {
       key: "status",
       align: "center",
       render: (status, record) => {
-        const nextStatusOptions = getNextStatusOptions(status);
-        const isDelivered = status === "Delivered" || status === "Picked";
+        const orderType =
+          record?.deliveryStatus === "Take away" ? "takeaway" : "delivery";
+        const nextStatusOptions =
+          orderType === "takeaway"
+            ? getTakeAwayStatusOptions(status)
+            : getStatusOptions(status);
+        const isDelivered = status === "Delivered" || status === "Food Handoff";
         const isCancelled = status === "Cancelled";
-        const isPick =
-          status === "Order ready to pick" ||
-          status === "Food ready to pickup" ||
-          status === "Order out for delivery" ||
-          status === "Order reached nearest to you";
+        const isPick = status === "Order ready to pickup";
 
         const isbeforeKds =
           status === "Order accepted" || status === "Order received";
@@ -712,76 +794,33 @@ function CallForOrder() {
 
         return (
           <>
-            {isPick ? (
-              <div>
-                {!isCancelled && !isDelivered && isTakeAwayStatus ? (
-                  <Select
-                    value={status}
-                    onChange={(newStatus) =>
-                      handleStatusChange(record, newStatus)
-                    }
-                    className="w-[100%]"
-                  >
-                    <Select.Option value="Picked">Picked</Select.Option>
-                    <Select.Option value="Cancelled">Cancelled</Select.Option>
-                  </Select>
-                ) : (
-                  <Select
-                    value={status}
-                    onChange={(newStatus) =>
-                      handleStatusChange(record, newStatus)
-                    }
-                    className="w-[100%]"
-                  >
-                    <Select.Option value="Cancelled">Cancelled</Select.Option>
-                  </Select>
-                )}
-
-                {isCancelled ? (
-                  <Button className="bg-red-500 text-white border-none w-[100%]">
-                    Cancelled
-                  </Button>
-                ) : isDelivered ? (
-                  <Button className="bg-green-500 text-white border-none w-[100%]">
-                    {status === "Picked" ? "Picked" : "Delivered"}
-                  </Button>
-                ) : (
-                  ""
-                )}
-              </div>
-            ) : (
-              <div>
-                {!isCancelled && !isDelivered && (
-                  <Select
-                    value={status}
-                    onChange={(newStatus) =>
-                      handleStatusChange(record, newStatus)
-                    }
-                    className="w-[100%]"
-                  >
-                    {isbeforeKds &&
-                      nextStatusOptions?.map((option, i) => (
-                        <Select.Option key={i} value={option}>
-                          {option}
-                        </Select.Option>
-                      ))}
-                    <Select.Option value="Cancelled">Cancelled</Select.Option>
-                  </Select>
-                )}
-
-                {isCancelled ? (
-                  <Button className="bg-red-500 text-white font-bold border-none w-[100%]">
-                    Cancelled
-                  </Button>
-                ) : isDelivered ? (
-                  <Button className="bg-green-500 text-white border-none w-[100%]">
-                    {isTakeAway ? "Picked" : "Delivered"}
-                  </Button>
-                ) : (
-                  ""
-                )}
-              </div>
-            )}
+            <div>
+              {isCancelled ? (
+                <Button className="bg-red-500 text-white border-none w-[100%]">
+                  Cancelled
+                </Button>
+              ) : isDelivered ? (
+                <Button className="bg-green-500 text-white border-none w-[100%]">
+                  {orderType === "takeaway" ? "Foods Handoff" : "Delivered"}
+                </Button>
+              ) : (
+                <Select
+                  value={status}
+                  onChange={(newStatus) =>
+                    handleStatusChange(record, newStatus)
+                  }
+                  className="w-[100%]"
+                  id="status"
+                >
+                  {nextStatusOptions.map((option, i) => (
+                    <Select.Option key={i} value={option}>
+                      {option}
+                    </Select.Option>
+                  ))}
+                  <Select.Option value="Cancelled">Cancelled</Select.Option>
+                </Select>
+              )}
+            </div>
           </>
         );
       },
@@ -943,138 +982,50 @@ function CallForOrder() {
       key: "status",
       align: "center",
       render: (status, record) => {
-        const nextStatusOptions = getNextStatusOptions(status);
-        const nextStatusOptionspartner = getNextStatusOptionsPartner(status);
-        const isDelivered = status === "Delivered" || status === "Picked";
+        const orderType =
+          record?.deliveryStatus === "Take away" ? "takeaway" : "delivery";
+        const nextStatusOptions =
+          orderType === "takeaway"
+            ? getTakeAwayStatusOptions(status)
+            : getStatusOptions(status);
+        const isDelivered = status === "Delivered" || status === "Food Handoff";
         const isCancelled = status === "Cancelled";
-        const isPick =
-          status === "Order ready to pick" ||
-          status === "Food ready to pickup" ||
-          status === "Order out for delivery" ||
-          status === "Order reached nearest to you";
+        const isPick = status === "Order ready to pickup";
 
         const isbeforeKds =
           status === "Order accepted" || status === "Order received";
         const isTakeAwayStatus = status === "Food ready to pickup";
         const isTakeAway = record.status === "Picked";
 
-        const rolefront = get(user, "name", "")
-          ?.split("@")
-          ?.includes("frontdesk");
-
-        const isMovedToKDS = status === "Order moved to KDS";
-        const isAfterKds =
-          status === "Order ready to pick" ||
-          status === "Order out for delivery" ||
-          status === "Order reached nearest to you";
         return (
           <>
-            {rolefront ? (
-              <>
-                {isPick ? (
-                  <div>
-                    {!isCancelled && !isDelivered && isTakeAwayStatus ? (
-                      <Select
-                        value={status}
-                        onChange={(newStatus) =>
-                          handleStatusChange(record, newStatus)
-                        }
-                        className="w-[100%]"
-                      >
-                        <Select.Option value="Picked">Picked</Select.Option>
-                        <Select.Option value="Cancelled">
-                          Cancelled
-                        </Select.Option>
-                      </Select>
-                    ) : (
-                      <Select
-                        value={status}
-                        onChange={(newStatus) =>
-                          handleStatusChange(record, newStatus)
-                        }
-                        className="w-[100%]"
-                      >
-                        <Select.Option value="Cancelled">
-                          Cancelled
-                        </Select.Option>
-                      </Select>
-                    )}
-
-                    {isCancelled ? (
-                      <Button className="bg-red-500 text-white border-none w-[100%]">
-                        Cancelled
-                      </Button>
-                    ) : isDelivered ? (
-                      <Button className="bg-green-500 text-white border-none w-[100%]">
-                        {status === "Picked" ? "Picked" : "Delivered"}
-                      </Button>
-                    ) : (
-                      ""
-                    )}
-                  </div>
-                ) : (
-                  <div>
-                    {!isCancelled && !isDelivered && (
-                      <Select
-                        value={status}
-                        onChange={(newStatus) =>
-                          handleStatusChange(record, newStatus)
-                        }
-                        className="w-[100%]"
-                      >
-                        {isbeforeKds &&
-                          nextStatusOptions?.map((option, i) => (
-                            <Select.Option key={i} value={option}>
-                              {option}
-                            </Select.Option>
-                          ))}
-                        <Select.Option value="Cancelled">
-                          Cancelled
-                        </Select.Option>
-                      </Select>
-                    )}
-
-                    {isCancelled ? (
-                      <Button className="bg-red-500 text-white border-none w-[100%]">
-                        Cancelled
-                      </Button>
-                    ) : isDelivered ? (
-                      <Button className="bg-green-500 text-white border-none w-[100%]">
-                        {isTakeAway ? "Picked" : "Delivered"}
-                      </Button>
-                    ) : (
-                      ""
-                    )}
-                  </div>
-                )}
-              </>
-            ) : (
-              <div>
-                {!isCancelled && (
-                  <Select
-                    value={isMovedToKDS ? "Order received" : status}
-                    onChange={(newStatus) =>
-                      handleStatusChange(record, newStatus)
-                    }
-                    className="w-[100%]"
-                    id="status"
-                  >
-                    {isAfterKds &&
-                      nextStatusOptionspartner?.map((option, i) => (
-                        <Select.Option key={i} value={option}>
-                          {option}
-                        </Select.Option>
-                      ))}
-                  </Select>
-                )}
-
-                {isCancelled && (
-                  <Button className="bg-red-500 text-white border-none w-[100%]">
-                    Cancelled
-                  </Button>
-                )}
-              </div>
-            )}
+            <div>
+              {isCancelled ? (
+                <Button className="bg-red-500 text-white border-none w-[100%]">
+                  Cancelled
+                </Button>
+              ) : isDelivered ? (
+                <Button className="bg-green-500 text-white border-none w-[100%]">
+                  {orderType === "takeaway" ? "Foods Handoff" : "Delivered"}
+                </Button>
+              ) : (
+                <Select
+                  value={status}
+                  onChange={(newStatus) =>
+                    handleStatusChange(record, newStatus)
+                  }
+                  className="w-[100%]"
+                  id="status"
+                >
+                  {nextStatusOptions.map((option, i) => (
+                    <Select.Option key={i} value={option}>
+                      {option}
+                    </Select.Option>
+                  ))}
+                  <Select.Option value="Cancelled">Cancelled</Select.Option>
+                </Select>
+              )}
+            </div>
           </>
         );
       },
@@ -1730,12 +1681,20 @@ function CallForOrder() {
             label="Enter Delivery Status"
             rules={[{ required: true }]}
           >
-            <Select id="delivery_status" placeholder="Enter delivery status...">
+            <Select
+              id="delivery_status"
+              placeholder="Enter delivery status..."
+              onChange={(value) => {
+                console.log({ value });
+                form.setFieldsValue({ deliveryStatus: value });
+                setOrderType(value);
+              }}
+            >
               <Select.Option value="Take away">Take away</Select.Option>
               <Select.Option value="Delivery">Delivery</Select.Option>
             </Select>
           </Form.Item>
-          {form.getFieldValue("deliveryStatus") === "Delivery" ? (
+          {orderType === "Delivery" ? (
             <>
               <div>
                 <div className="text-dark3a_color">
@@ -2153,7 +2112,14 @@ function CallForOrder() {
           </Form.Item>
         </Form>
       </Modal>
-      <Modal open={openInventory} footer={false} closable={false}>
+      <Modal
+        open={openInventory}
+        footer={false}
+        closable={true}
+        onCancel={() => {
+          setOpenInventory(false);
+        }}
+      >
         <Form
           name="dynamic_form_nest_item"
           onFinish={handleInventory}
