@@ -60,9 +60,10 @@ function BookingOrderCard({
             ) : timeDifferenceInMinutes > 30 ? (
               <Select
                 className="w-full"
-                // onChange={(e) => handleChangeStatus(e, allData)}
+                onChange={handleChangeStatus}
                 defaultValue={data}
               >
+                <Select.Option value="CheckIn">CheckIn</Select.Option>
                 <Select.Option value="Checkout">Checkout</Select.Option>
                 <Select.Option value="Cancelled">Cancel</Select.Option>
               </Select>
@@ -73,7 +74,9 @@ function BookingOrderCard({
                 // onChange={(e) => handleChangeStatus(e, allData)}
                 onChange={handleChangeStatus}
               >
+                <Select.Option value="CheckIn">CheckIn</Select.Option>
                 <Select.Option value="Checkout">Checkout</Select.Option>
+                <Select.Option value="Cancelled">Cancel</Select.Option>
               </Select>
             )}
           </div>
