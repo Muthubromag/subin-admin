@@ -9,6 +9,7 @@ function HistoryOnlineOrder() {
   const [onlineOrder, setOnlineOrder] = useState([]);
   const [loading, setLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
+  const [dayWiseData, setDayWiseData] = useState({}); // Store day-wise data in state
 
   const fetchData = async () => {
     try {
@@ -30,6 +31,20 @@ function HistoryOnlineOrder() {
   useEffect(() => {
     fetchData();
   }, []);
+
+  useEffect(() => {
+    const calculateDayWiseData = () => {
+      const newData = {};
+      onlineOrder.forEach((entry) => {
+        const createdAtDate = new Date(entry.createdAt)
+          .toISOString()
+          .split("T")[0];
+        newData[createdAtDate] = (newData[createdAtDate] || 0) + 1;
+      });
+      setDayWiseData(newData);
+    };
+    calculateDayWiseData();
+  }, [onlineOrder]);
 
   const itemsPerPage = 5;
   const startIndex = (currentPage - 1) * itemsPerPage;
@@ -56,41 +71,9 @@ function HistoryOnlineOrder() {
               size="large"
             />
             <div className="!bg-white p-4 rounded-lg ">
-              {paginatedData.map((item) => {
-                const dateTimeString = item.createdAt;
-
-                // Split the date and time using the 'T' delimiter
-                const [datePart] = dateTimeString.split("T");
-                const date = datePart;
-
-                const indianStandardTime = new Date(item.createdAt);
-
-                indianStandardTime.setUTCHours(
-                  indianStandardTime.getUTCHours() + 5
-                ); // IST is UTC+5:30
-                indianStandardTime.setUTCMinutes(
-                  indianStandardTime.getUTCMinutes() + 30
-                );
-
-                function countOccurrences(data, dateToCount) {
-                  var count = 1;
-                  for (var i = 0; i < data.length; i++) {
-                    if (data[i].date === dateToCount) {
-                      count++;
-                    }
-                  }
-                  return count;
-                }
-
-                // Date to count occurrences for
-                var dateToCount = date;
-                console.log(dateToCount, "dateToCount");
-                // Count occurrences of the specified date
-                var occurrences = countOccurrences(item, dateToCount);
-                console.log(occurrences, "occurrences");
-
-                return <HistoryCards date={date} order={occurrences} />;
-              })}
+              {Object.entries(dayWiseData).map(([date, count]) => (
+                <HistoryCards key={date} date={date} order={count} />
+              ))}
             </div>
           </div>
           <div className="mt-4 mb-2">

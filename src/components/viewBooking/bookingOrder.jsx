@@ -526,9 +526,6 @@ function BookingOrder() {
                 hours = hours % 12 || 12;
 
                 hours = hours < 10 ? "0" + hours : hours;
-                const formattedTime = `${hours}:${
-                  minutes < 10 ? "0" + minutes : minutes
-                }`;
 
                 return (
                   <BookingOrderCard
