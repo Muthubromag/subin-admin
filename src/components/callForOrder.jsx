@@ -308,7 +308,10 @@ function CallForOrder() {
       fetchData();
     }
 
-    if (Status === "Order ready to pick" || Status === "Food ready to pickup") {
+    if (
+      Status === "Order ready to pick" ||
+      Status === "Order ready to pickup"
+    ) {
       setOpenInventory(!openInventory);
       setInventoryUpdateId(Id._id);
     }
@@ -783,7 +786,8 @@ function CallForOrder() {
           orderType === "takeaway"
             ? getTakeAwayStatusOptions(status)
             : getStatusOptions(status);
-        const isDelivered = status === "Delivered" || status === "Food Handoff";
+        const isDelivered =
+          status === "Delivered" || status === "Foods Handoff";
         const isCancelled = status === "Cancelled";
         const isPick = status === "Order ready to pickup";
 
@@ -988,7 +992,8 @@ function CallForOrder() {
           orderType === "takeaway"
             ? getTakeAwayStatusOptions(status)
             : getStatusOptions(status);
-        const isDelivered = status === "Delivered" || status === "Food Handoff";
+        const isDelivered =
+          status === "Delivered" || status === "Foods Handoff";
         const isCancelled = status === "Cancelled";
         const isPick = status === "Order ready to pickup";
 

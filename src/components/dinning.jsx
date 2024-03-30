@@ -168,6 +168,39 @@ function Dinning() {
       : [];
   };
 
+  const getStatusOptions = (currentStatus) => {
+    const statusOptions = [
+      "Order accepted",
+      "Order moved to KDS",
+      "Order ready to preparing",
+      "Order ready to serve",
+      "Order served",
+    ];
+    const partnerOptions = [
+      "Order accepted",
+      "Order moved to KDS",
+      "Order ready to preparing",
+      "Order ready to serve",
+      "Order served",
+    ];
+    const kdsOptions = ["Order ready to preparing", "Order ready to serve"];
+    let iskds = get(user, "name", "")?.split("@")?.includes("kds");
+    let isPartner = get(user, "name", "")?.split("@")?.includes("partner");
+    let isFrontdesk = get(user, "name", "")?.split("@")?.includes("frontdesk");
+
+    let options = iskds
+      ? kdsOptions
+      : isPartner || isFrontdesk
+      ? partnerOptions
+      : statusOptions;
+
+    const currentIndex = options.indexOf(currentStatus);
+
+    return currentIndex < statusOptions.length - 1
+      ? [statusOptions[currentIndex + 1]]
+      : [];
+  };
+
   const getNextStatusOptionsPartner = (currentStatus) => {
     const statusOptions = [
       "Order accepted",
@@ -346,7 +379,7 @@ function Dinning() {
       key: "status",
       align: "center",
       render: (status, record) => {
-        const nextStatusOptions = getNextStatusOptions(status);
+        const nextStatusOptions = getStatusOptions(status);
         const nextOptionsAfterKds = getNextStatusOptionsAfterKds(status);
 
         const isDelivered = status === "Order served";
@@ -360,68 +393,33 @@ function Dinning() {
 
         return (
           <>
-            {isPick ? (
-              <div>
-                {!isCancelled && !isDelivered && (
-                  <Select
-                    value={status}
-                    onChange={(newStatus) =>
-                      handleStatusChange(record, newStatus)
-                    }
-                    className="w-[100%]"
-                  >
-                    {nextOptionsAfterKds.map((option) => (
-                      <Select.Option key={option} value={option}>
-                        {option}
-                      </Select.Option>
-                    ))}
-                    {/* <Select.Option value="Cancelled">Cancelled</Select.Option> */}
-                  </Select>
-                )}
-                {isCancelled ? (
-                  <Button className="bg-red-500 text-white border-none w-[100%]">
-                    Cancelled
-                  </Button>
-                ) : isDelivered ? (
-                  <Button className="bg-green-500 text-white border-none w-[100%]">
-                    Order served
-                  </Button>
-                ) : (
-                  ""
-                )}
-              </div>
-            ) : (
-              <div>
-                {!isCancelled && !isDelivered && (
-                  <Select
-                    value={status}
-                    onChange={(newStatus) =>
-                      handleStatusChange(record, newStatus)
-                    }
-                    className="w-[100%]"
-                  >
-                    {isbeforeKds &&
-                      nextStatusOptions.map((option) => (
-                        <Select.Option key={option} value={option}>
-                          {option}
-                        </Select.Option>
-                      ))}
-                    {/* <Select.Option value="Cancelled">Cancelled</Select.Option> */}
-                  </Select>
-                )}
-                {isCancelled ? (
-                  <Button className="bg-red-500 text-white border-none w-[100%]">
-                    Cancelled
-                  </Button>
-                ) : isDelivered ? (
-                  <Button className="bg-green-500 text-white border-none w-[100%]">
-                    Order served
-                  </Button>
-                ) : (
-                  ""
-                )}
-              </div>
-            )}
+            <div>
+              {isCancelled ? (
+                <Button className="bg-red-500 text-white border-none w-[100%]">
+                  Cancelled
+                </Button>
+              ) : isDelivered ? (
+                <Button className="bg-green-500 text-white border-none w-[100%]">
+                  Order served
+                </Button>
+              ) : (
+                <Select
+                  value={status}
+                  onChange={(newStatus) =>
+                    handleStatusChange(record, newStatus)
+                  }
+                  className="w-[100%]"
+                  id="status"
+                >
+                  {nextStatusOptions.map((option, i) => (
+                    <Select.Option key={i} value={option}>
+                      {option}
+                    </Select.Option>
+                  ))}
+                  <Select.Option value="Cancelled">Cancelled</Select.Option>
+                </Select>
+              )}
+            </div>
           </>
         );
       },
@@ -554,7 +552,7 @@ function Dinning() {
       key: "status",
       align: "center",
       render: (status, record) => {
-        const nextStatusOptions = getNextStatusOptions(status);
+        const nextStatusOptions = getStatusOptions(status);
         const nextOptionsAfterKds = getNextStatusOptionsAfterKds(status);
         const nextStatusOptionspartner = getNextStatusOptionsPartner(status);
         const isDelivered = status === "Order served";
@@ -578,101 +576,28 @@ function Dinning() {
 
         return (
           <>
-            {rolefront ? (
-              <>
-                {isPick ? (
-                  <div>
-                    {!isCancelled && !isDelivered && (
-                      <Select
-                        value={status}
-                        onChange={(newStatus) =>
-                          handleStatusChange(record, newStatus)
-                        }
-                        className="w-[100%]"
-                      >
-                        {nextOptionsAfterKds.map((option) => (
-                          <Select.Option key={option} value={option}>
-                            {option}
-                          </Select.Option>
-                        ))}
-                        {/* <Select.Option value="Cancelled">
-                          Cancelled
-                        </Select.Option> */}
-                      </Select>
-                    )}
-                    {isCancelled ? (
-                      <Button className="bg-red-500 text-white border-none w-[100%]">
-                        Cancelled
-                      </Button>
-                    ) : isDelivered ? (
-                      <Button className="bg-green-500 text-white border-none w-[100%]">
-                        Order served
-                      </Button>
-                    ) : (
-                      ""
-                    )}
-                  </div>
-                ) : (
-                  <div>
-                    {!isCancelled && (
-                      <Select
-                        value={status}
-                        onChange={(newStatus) =>
-                          handleStatusChange(record, newStatus)
-                        }
-                        className="w-[100%]"
-                      >
-                        {isbeforeKds &&
-                          nextStatusOptions.map((option) => (
-                            <Select.Option key={option} value={option}>
-                              {option}
-                            </Select.Option>
-                          ))}
-                        {/* <Select.Option value="Cancelled">
-                          Cancelled
-                        </Select.Option> */}
-                      </Select>
-                    )}
-                    {isCancelled ? (
-                      <Button className="bg-red-500 text-white border-none w-[100%]">
-                        Cancelled
-                      </Button>
-                    ) : isDelivered ? (
-                      <Button className="bg-green-500 text-white border-none w-[100%]">
-                        Order served
-                      </Button>
-                    ) : (
-                      ""
-                    )}
-                  </div>
-                )}
-              </>
+            {isCancelled ? (
+              <Button className="bg-red-500 text-white border-none w-[100%]">
+                Cancelled
+              </Button>
+            ) : isDelivered ? (
+              <Button className="bg-green-500 text-white border-none w-[100%]">
+                Order served
+              </Button>
             ) : (
-              <div>
-                {!isCancelled && (
-                  <Select
-                    value={isMovedToKDS ? "Order received" : status}
-                    onChange={(newStatus) =>
-                      handleStatusChange(record, newStatus)
-                    }
-                    className="w-[100%]"
-                    id="status"
-                  >
-                    {!isAfterKds &&
-                      nextStatusOptionspartner?.map((option, i) => (
-                        <Select.Option key={i} value={option}>
-                          {option}
-                        </Select.Option>
-                      ))}
-                  </Select>
-                )}
-
-                {isCancelled && (
-                  <Button className="bg-red-500 text-white border-none w-[100%]">
-                    Cancelled
-                  </Button>
-                )}
-              </div>
+              <Select
+                value={status}
+                onChange={(newStatus) => handleStatusChange(record, newStatus)}
+                className="w-[100%]"
+                id="status"
+              >
+                {nextStatusOptions.map((option, i) => (
+                  <Select.Option key={i} value={option}>
+                    {option}
+                  </Select.Option>
+                ))}
+                <Select.Option value="Cancelled">Cancelled</Select.Option>
+              </Select>
             )}
           </>
         );
