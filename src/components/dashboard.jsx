@@ -112,12 +112,13 @@ function Dashboard() {
       .filter((res) => {
         return get(res, "status") === "Delivered";
       })
-      .reduce((total, order) => total + Number(get(order, "billAmount")), 0);
+      .reduce((total, order) => total + Number(get(order, "itemPrice")), 1);
 
     const totalDeliveredCallForOrder = callforOrder
       .filter((res) => {
         return (
-          get(res, "status") === "Delivered" || get(res, "status") === "Picked"
+          get(res, "status") === "Delivered" ||
+          get(res, "status") === "Foods Handoff"
         );
       })
       .reduce((total, order) => total + Number(get(order, "billAmount")), 0);
@@ -126,16 +127,17 @@ function Dashboard() {
       .filter((res) => {
         return get(res, "status") === "Order served";
       })
-      .reduce((total, order) => total + Number(get(order, "billAmount")), 0);
+      .reduce((total, order) => total + Number(get(order, "item_price")), 0);
 
     const totalDeliveredTakeOrder = takeAway
       .filter((res) => {
-        return get(res, "status") === "Picked";
+        return get(res, "status") === "Foods Handoff";
       })
-      .reduce((total, order) => total + Number(get(order, "billAmount")), 0);
+      .reduce((total, order) => total + Number(get(order, "item_price")), 0);
 
     // yesterday sales
     const yesterday = moment().subtract(1, "day").startOf("day");
+    console.log(yesterday, "yesterday");
     const totalDeliveredYesterdayOnlineOrder = onlineOrder
       .filter((res) => {
         return (
@@ -143,14 +145,14 @@ function Dashboard() {
           moment(res.createdAt).isSame(yesterday, "day")
         );
       })
-      .reduce((total, order) => total + Number(get(order, "billAmount")), 0);
+      .reduce((total, order) => total + Number(get(order, "itemPrice")), 0);
 
     const totalDeliveredYesterdayCallForOrder = callforOrder
       .filter((res) => {
         return (
-          get(res, "status") === "Delivered" ||
-          (get(res, "status") === "Picked" &&
-            moment(res.createdAt).isSame(yesterday, "day"))
+          get(res, "status") === "Delivered" &&
+          get(res, "status") === "Foods Handoff" &&
+          moment(res.createdAt).isSame(yesterday, "day")
         );
       })
       .reduce((total, order) => total + Number(get(order, "billAmount")), 0);
@@ -162,17 +164,24 @@ function Dashboard() {
           moment(res.createdAt).isSame(yesterday, "day")
         );
       })
-      .reduce((total, order) => total + Number(get(order, "billAmount")), 0);
+      .reduce((total, order) => total + Number(get(order, "itemPrice")), 0);
 
     const totalDeliveredYesterdayTakeOrder = takeAway
       .filter((res) => {
         return (
-          get(res, "status") === "Picked" &&
+          get(res, "status") === "Foods Handoff" &&
           moment(res.createdAt).isSame(yesterday, "day")
         );
       })
-      .reduce((total, order) => total + Number(get(order, "billAmount")), 0);
+      .reduce((total, order) => total + Number(get(order, "itemPrice")), 0);
 
+    console.log(
+      totalDeliveredYesterdayOnlineOrder,
+      totalDeliveredYesterdayCallForOrder,
+      totalDeliveredYesterdayDinningOrder,
+      totalDeliveredYesterdayTakeOrder,
+      "yesterday"
+    );
     // Last week sales
     const currentWeekStart = moment().startOf("week");
     const previousWeekStart = moment(currentWeekStart).subtract(1, "week");
@@ -188,19 +197,19 @@ function Dashboard() {
           )
         );
       })
-      .reduce((total, order) => total + Number(get(order, "billAmount")), 0);
+      .reduce((total, order) => total + Number(get(order, "itemPrice")), 0);
 
     const totalDeliveredLastWeekCallForOrder = callforOrder
       .filter((res) => {
         return (
-          get(res, "status") === "Delivered" ||
-          (get(res, "status") === "Picked" &&
-            moment(res.createdAt).isBetween(
-              previousWeekStart,
-              currentWeekStart,
-              null,
-              "[]"
-            ))
+          get(res, "status") === "Delivered" &&
+          get(res, "status") === "Foods Handoff" &&
+          moment(res.createdAt).isBetween(
+            previousWeekStart,
+            currentWeekStart,
+            null,
+            "[]"
+          )
         );
       })
       .reduce((total, order) => total + Number(get(order, "billAmount")), 0);
@@ -217,7 +226,7 @@ function Dashboard() {
           )
         );
       })
-      .reduce((total, order) => total + Number(get(order, "billAmount")), 0);
+      .reduce((total, order) => total + Number(get(order, "itemPrice")), 0);
 
     const totalDeliveredLastWeekTakeOrder = takeAway
       .filter((res) => {
@@ -231,7 +240,7 @@ function Dashboard() {
           )
         );
       })
-      .reduce((total, order) => total + Number(get(order, "billAmount")), 0);
+      .reduce((total, order) => total + Number(get(order, "itemPrice")), 0);
 
     // Last month sales
     const currentMonthStart = moment().startOf("month");
@@ -248,19 +257,19 @@ function Dashboard() {
           )
         );
       })
-      .reduce((total, order) => total + Number(get(order, "billAmount")), 0);
+      .reduce((total, order) => total + Number(get(order, "itemPrice")), 0);
 
     const totalDeliveredLastMonthCallForOrder = callforOrder
       .filter((res) => {
         return (
-          get(res, "status") === "Delivered" ||
-          (get(res, "status") === "Picked" &&
-            moment(res.createdAt).isBetween(
-              previousMonthStart,
-              currentMonthStart,
-              null,
-              "[]"
-            ))
+          get(res, "status") === "Delivered" &&
+          get(res, "status") === "Foods Handoff" &&
+          moment(res.createdAt).isBetween(
+            previousMonthStart,
+            currentMonthStart,
+            null,
+            "[]"
+          )
         );
       })
       .reduce((total, order) => total + Number(get(order, "billAmount")), 0);
@@ -277,12 +286,12 @@ function Dashboard() {
           )
         );
       })
-      .reduce((total, order) => total + Number(get(order, "billAmount")), 0);
+      .reduce((total, order) => total + Number(get(order, "itemPrice")), 0);
 
     const totalDeliveredLastMonthTakeOrder = takeAway
       .filter((res) => {
         return (
-          get(res, "status") === "Picked" &&
+          get(res, "status") === "Foods Handoff" &&
           moment(res.createdAt).isBetween(
             previousMonthStart,
             currentMonthStart,
@@ -291,7 +300,7 @@ function Dashboard() {
           )
         );
       })
-      .reduce((total, order) => total + Number(get(order, "billAmount")), 0);
+      .reduce((total, order) => total + Number(get(order, "itemPrice")), 0);
 
     // Last year sales
 
@@ -310,19 +319,19 @@ function Dashboard() {
           )
         );
       })
-      .reduce((total, order) => total + Number(get(order, "billAmount")), 0);
+      .reduce((total, order) => total + Number(get(order, "itemPrice")), 0);
 
     const totalDeliveredLastYearCallForOrder = callforOrder
       .filter((res) => {
         return (
-          get(res, "status") === "Delivered" ||
-          (get(res, "status") === "Picked" &&
-            moment(res.createdAt).isBetween(
-              previousYearStart,
-              currentYearStart,
-              null,
-              "[]"
-            ))
+          get(res, "status") === "Delivered" &&
+          get(res, "status") === "Foods Handoff" &&
+          moment(res.createdAt).isBetween(
+            previousYearStart,
+            currentYearStart,
+            null,
+            "[]"
+          )
         );
       })
       .reduce((total, order) => total + Number(get(order, "billAmount")), 0);
@@ -339,7 +348,7 @@ function Dashboard() {
           )
         );
       })
-      .reduce((total, order) => total + Number(get(order, "billAmount")), 0);
+      .reduce((total, order) => total + Number(get(order, "itemPrice")), 0);
 
     const totalDeliveredLastYearTakeOrder = takeAway
       .filter((res) => {
@@ -353,7 +362,7 @@ function Dashboard() {
           )
         );
       })
-      .reduce((total, order) => total + Number(get(order, "billAmount")), 0);
+      .reduce((total, order) => total + Number(get(order, "itemPrice")), 0);
 
     // Total sales for last year
     const totalDeliveredLastYearSales =
@@ -400,7 +409,8 @@ function Dashboard() {
 
     const totalDeliveredCallForOrder = callforOrder.filter((res) => {
       return (
-        get(res, "status") === "Delivered" || get(res, "status") === "Picked"
+        get(res, "status") === "Delivered" ||
+        get(res, "status") === "Foods Handoff"
       );
     });
 
@@ -409,7 +419,7 @@ function Dashboard() {
     });
 
     const totalDeliveredTakeOrder = takeAway.filter((res) => {
-      return get(res, "status") === "Picked";
+      return get(res, "status") === "Foods Handoff";
     });
 
     const totalDelivered =
@@ -417,7 +427,16 @@ function Dashboard() {
       get(totalDeliveredCallForOrder, "length", "") +
       get(totalDeliveredTakeOrder, "length", "") +
       get(totalDeliveredDinningOrder, "length", "");
+
     setDeliveredOrders(totalDelivered);
+
+    // console.log(
+    //   get(totalDeliveredOnlineOrder, "length", ""),
+    //   get(totalDeliveredCallForOrder, "length", ""),
+    //   get(totalDeliveredTakeOrder, "length", ""),
+    //   get(totalDeliveredDinningOrder, "length", ""),
+    //   "deli"
+    // );
 
     // Total cancelled
     const totalCancelledOnlineOrder = onlineOrder.filter(
@@ -455,7 +474,7 @@ function Dashboard() {
       return (
         get(res, "status") !== "Cancelled" &&
         get(res, "status") !== "Delivered" &&
-        get(res, "status") !== "Picked"
+        get(res, "status") !== "Foods Handoff"
       );
     });
 
@@ -468,7 +487,8 @@ function Dashboard() {
 
     const totalPendingTakeAwayOrder = takeAway.filter((res) => {
       return (
-        get(res, "status") !== "Cancelled" && get(res, "status") !== "Picked"
+        get(res, "status") !== "Cancelled" &&
+        get(res, "status") !== "Foods Handoff"
       );
     });
 
@@ -704,7 +724,6 @@ function Dashboard() {
               className={` w-96 m-auto lg:m-0 lg:w-[220px] py-4 px-4 h-[308px] bg-gradient-to-r from-blue-500 via-sky-500 to-white/50 rounded-md ${
                 get(user, "name", "")?.split("@")?.includes("kds") ||
                 get(user, "name", "")?.split("@")?.includes("frontdesk") ||
-                get(user, "name", "")?.split("@")?.includes("partner") ||
                 get(user, "name", "")?.split("@")?.includes("scratch") ||
                 get(user, "name", "")?.split("@")?.includes("menu") ||
                 get(user, "name", "")?.split("@")?.includes("banner") ||

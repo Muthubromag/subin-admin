@@ -472,7 +472,7 @@ function TakeAway() {
       render: (status, record) => {
         const nextStatusOptions = getStatusOptions(status);
         const nextOptionsAfterKds = getNextStatusOptionsAfterKds(status);
-        const isDelivered = status === "Food Handsoff";
+        const isDelivered = status === "Foods Handoff";
         const isCancelled = status === "Cancelled";
         const isPick = status === "Order ready to pickup";
         const isbeforeKds =
@@ -1069,6 +1069,7 @@ function TakeAway() {
                 "Order moved to KDS",
                 "Order ready to preparing",
                 "Order ready to pack",
+                "Foods Handoff",
               ];
               return (
                 <>
