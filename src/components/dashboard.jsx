@@ -112,7 +112,7 @@ function Dashboard() {
       .filter((res) => {
         return get(res, "status") === "Delivered";
       })
-      .reduce((total, order) => total + Number(get(order, "billAmount")), 0);
+      .reduce((total, order) => total + Number(get(order, "billAmount")), 1);
 
     const totalDeliveredCallForOrder = callforOrder
       .filter((res) => {
@@ -130,7 +130,7 @@ function Dashboard() {
 
     const totalDeliveredTakeOrder = takeAway
       .filter((res) => {
-        return get(res, "status") === "Picked";
+        return get(res, "status") === "Foods Handoff";
       })
       .reduce((total, order) => total + Number(get(order, "billAmount")), 0);
 
@@ -167,7 +167,7 @@ function Dashboard() {
     const totalDeliveredYesterdayTakeOrder = takeAway
       .filter((res) => {
         return (
-          get(res, "status") === "Picked" &&
+          get(res, "status") === "Foods Handoff" &&
           moment(res.createdAt).isSame(yesterday, "day")
         );
       })
@@ -282,7 +282,7 @@ function Dashboard() {
     const totalDeliveredLastMonthTakeOrder = takeAway
       .filter((res) => {
         return (
-          get(res, "status") === "Picked" &&
+          get(res, "status") === "Foods Handoff" &&
           moment(res.createdAt).isBetween(
             previousMonthStart,
             currentMonthStart,
@@ -409,7 +409,7 @@ function Dashboard() {
     });
 
     const totalDeliveredTakeOrder = takeAway.filter((res) => {
-      return get(res, "status") === "Picked";
+      return get(res, "status") === "Foods Handoff";
     });
 
     const totalDelivered =
@@ -417,7 +417,16 @@ function Dashboard() {
       get(totalDeliveredCallForOrder, "length", "") +
       get(totalDeliveredTakeOrder, "length", "") +
       get(totalDeliveredDinningOrder, "length", "");
+
     setDeliveredOrders(totalDelivered);
+
+    console.log(
+      get(totalDeliveredOnlineOrder, "length", ""),
+      get(totalDeliveredCallForOrder, "length", ""),
+      get(totalDeliveredTakeOrder, "length", ""),
+      get(totalDeliveredDinningOrder, "length", ""),
+      "deli"
+    );
 
     // Total cancelled
     const totalCancelledOnlineOrder = onlineOrder.filter(
@@ -704,7 +713,6 @@ function Dashboard() {
               className={` w-96 m-auto lg:m-0 lg:w-[220px] py-4 px-4 h-[308px] bg-gradient-to-r from-blue-500 via-sky-500 to-white/50 rounded-md ${
                 get(user, "name", "")?.split("@")?.includes("kds") ||
                 get(user, "name", "")?.split("@")?.includes("frontdesk") ||
-                get(user, "name", "")?.split("@")?.includes("partner") ||
                 get(user, "name", "")?.split("@")?.includes("scratch") ||
                 get(user, "name", "")?.split("@")?.includes("menu") ||
                 get(user, "name", "")?.split("@")?.includes("banner") ||

@@ -593,8 +593,8 @@ function CallForOrder() {
     console.log({ edit: val });
     form.setFieldsValue(val);
     setUpdateId(get(val, "_id"));
-    setDistance(val?.distance);
-    setOrderType(val?.deliveryStatus);
+    setDistance(val?.distance);    
+    
     console.log("edit val", form.getFieldValue("orderedFood"));
   };
   //--
@@ -1699,7 +1699,9 @@ function CallForOrder() {
               <Select.Option value="Delivery">Delivery</Select.Option>
             </Select>
           </Form.Item>
-          {orderType === "Delivery" ? (
+
+          {form.getFieldValue("deliveryStatus") === "Delivery" ? (
+          
             <>
               <div>
                 <div className="text-dark3a_color">
