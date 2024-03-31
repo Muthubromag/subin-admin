@@ -109,10 +109,11 @@ function Dashboard() {
   useEffect(() => {
     // total sales
     const totalDeliveredOnlineOrder = onlineOrder
+
       .filter((res) => {
         return get(res, "status") === "Delivered";
       })
-      .reduce((total, order) => total + Number(get(order, "itemPrice")), 1);
+      .reduce((total, order) => total + Number(get(order, "itemPrice")), 0);
 
     const totalDeliveredCallForOrder = callforOrder
       .filter((res) => {
@@ -127,7 +128,7 @@ function Dashboard() {
       .filter((res) => {
         return get(res, "status") === "Order served";
       })
-      .reduce((total, order) => total + Number(get(order, "item_price")), 0);
+      .reduce((total, order) => total + get(order, "item_price"), 0);
 
     const totalDeliveredTakeOrder = takeAway
       .filter((res) => {
@@ -137,7 +138,7 @@ function Dashboard() {
 
     // yesterday sales
     const yesterday = moment().subtract(1, "day").startOf("day");
-    console.log(yesterday, "yesterday");
+
     const totalDeliveredYesterdayOnlineOrder = onlineOrder
       .filter((res) => {
         return (
@@ -150,8 +151,8 @@ function Dashboard() {
     const totalDeliveredYesterdayCallForOrder = callforOrder
       .filter((res) => {
         return (
-          get(res, "status") === "Delivered" &&
-          get(res, "status") === "Foods Handoff" &&
+          (get(res, "status") === "Delivered" ||
+            get(res, "status") === "Foods Handoff") &&
           moment(res.createdAt).isSame(yesterday, "day")
         );
       })
@@ -164,7 +165,7 @@ function Dashboard() {
           moment(res.createdAt).isSame(yesterday, "day")
         );
       })
-      .reduce((total, order) => total + Number(get(order, "itemPrice")), 0);
+      .reduce((total, order) => total + Number(get(order, "item_price")), 0);
 
     const totalDeliveredYesterdayTakeOrder = takeAway
       .filter((res) => {
@@ -173,15 +174,8 @@ function Dashboard() {
           moment(res.createdAt).isSame(yesterday, "day")
         );
       })
-      .reduce((total, order) => total + Number(get(order, "itemPrice")), 0);
+      .reduce((total, order) => total + Number(get(order, "item_price")), 0);
 
-    console.log(
-      totalDeliveredYesterdayOnlineOrder,
-      totalDeliveredYesterdayCallForOrder,
-      totalDeliveredYesterdayDinningOrder,
-      totalDeliveredYesterdayTakeOrder,
-      "yesterday"
-    );
     // Last week sales
     const currentWeekStart = moment().startOf("week");
     const previousWeekStart = moment(currentWeekStart).subtract(1, "week");
@@ -202,8 +196,8 @@ function Dashboard() {
     const totalDeliveredLastWeekCallForOrder = callforOrder
       .filter((res) => {
         return (
-          get(res, "status") === "Delivered" &&
-          get(res, "status") === "Foods Handoff" &&
+          (get(res, "status") === "Delivered" ||
+            get(res, "status") === "Foods Handoff") &&
           moment(res.createdAt).isBetween(
             previousWeekStart,
             currentWeekStart,
@@ -226,12 +220,12 @@ function Dashboard() {
           )
         );
       })
-      .reduce((total, order) => total + Number(get(order, "itemPrice")), 0);
+      .reduce((total, order) => total + Number(get(order, "item_price")), 0);
 
     const totalDeliveredLastWeekTakeOrder = takeAway
       .filter((res) => {
         return (
-          get(res, "status") === "Delivered" &&
+          get(res, "status") === "Foods Handoff" &&
           moment(res.createdAt).isBetween(
             previousWeekStart,
             currentWeekStart,
@@ -240,11 +234,12 @@ function Dashboard() {
           )
         );
       })
-      .reduce((total, order) => total + Number(get(order, "itemPrice")), 0);
+      .reduce((total, order) => total + Number(get(order, "item_price")), 0);
 
     // Last month sales
     const currentMonthStart = moment().startOf("month");
     const previousMonthStart = moment(currentMonthStart).subtract(1, "month");
+
     const totalDeliveredLastMonthOnlineOrder = onlineOrder
       .filter((res) => {
         return (
@@ -262,8 +257,8 @@ function Dashboard() {
     const totalDeliveredLastMonthCallForOrder = callforOrder
       .filter((res) => {
         return (
-          get(res, "status") === "Delivered" &&
-          get(res, "status") === "Foods Handoff" &&
+          (get(res, "status") === "Delivered" ||
+            get(res, "status") === "Foods Handoff") &&
           moment(res.createdAt).isBetween(
             previousMonthStart,
             currentMonthStart,
@@ -286,7 +281,7 @@ function Dashboard() {
           )
         );
       })
-      .reduce((total, order) => total + Number(get(order, "itemPrice")), 0);
+      .reduce((total, order) => total + Number(get(order, "item_price")), 0);
 
     const totalDeliveredLastMonthTakeOrder = takeAway
       .filter((res) => {
@@ -300,7 +295,7 @@ function Dashboard() {
           )
         );
       })
-      .reduce((total, order) => total + Number(get(order, "itemPrice")), 0);
+      .reduce((total, order) => total + Number(get(order, "item_price")), 0);
 
     // Last year sales
 
@@ -324,8 +319,8 @@ function Dashboard() {
     const totalDeliveredLastYearCallForOrder = callforOrder
       .filter((res) => {
         return (
-          get(res, "status") === "Delivered" &&
-          get(res, "status") === "Foods Handoff" &&
+          (get(res, "status") === "Delivered" ||
+            get(res, "status") === "Foods Handoff") &&
           moment(res.createdAt).isBetween(
             previousYearStart,
             currentYearStart,
@@ -348,12 +343,12 @@ function Dashboard() {
           )
         );
       })
-      .reduce((total, order) => total + Number(get(order, "itemPrice")), 0);
+      .reduce((total, order) => total + Number(get(order, "item_price")), 0);
 
     const totalDeliveredLastYearTakeOrder = takeAway
       .filter((res) => {
         return (
-          get(res, "status") === "Picked" &&
+          get(res, "status") === "Foods Handoff" &&
           moment(res.createdAt).isBetween(
             previousYearStart,
             currentYearStart,
@@ -362,7 +357,7 @@ function Dashboard() {
           )
         );
       })
-      .reduce((total, order) => total + Number(get(order, "itemPrice")), 0);
+      .reduce((total, order) => total + Number(get(order, "item_price")), 0);
 
     // Total sales for last year
     const totalDeliveredLastYearSales =
