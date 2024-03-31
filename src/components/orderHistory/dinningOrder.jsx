@@ -9,6 +9,7 @@ function HistoryDinningOrder() {
   const [dinning, setDinning] = useState([]);
   const [loading, setLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
+  const [dayWiseData, setDayWiseData] = useState({}); // Store day-wise data in state
 
   const fetchData = async () => {
     try {
@@ -31,6 +32,20 @@ function HistoryDinningOrder() {
   useEffect(() => {
     fetchData();
   }, []);
+
+  useEffect(() => {
+    const calculateDayWiseData = () => {
+      const newData = {};
+      dinning.forEach((entry) => {
+        const createdAtDate = new Date(entry.createdAt)
+          .toISOString()
+          .split("T")[0];
+        newData[createdAtDate] = (newData[createdAtDate] || 0) + 1;
+      });
+      setDayWiseData(newData);
+    };
+    calculateDayWiseData();
+  }, [dinning]);
 
   const itemsPerPage = 5;
   const startIndex = (currentPage - 1) * itemsPerPage;
@@ -58,7 +73,7 @@ function HistoryDinningOrder() {
               size="large"
             />
             <div className="!bg-white p-4 rounded-lg ">
-              {paginatedData.map((item) => {
+              {/* {paginatedData.map((item) => {
                 const dateTimeString = item.createdAt;
 
                 // Split the date and time using the 'T' delimiter
@@ -92,7 +107,10 @@ function HistoryDinningOrder() {
                 console.log(occurrences, "occurrences");
 
                 return <HistoryCards date={date} order={occurrences} />;
-              })}
+              })} */}
+              {Object.entries(dayWiseData).map(([date, count]) => (
+                <HistoryCards key={date} date={date} order={count} />
+              ))}
             </div>
           </div>
           <div className="mt-4 mb-2">
