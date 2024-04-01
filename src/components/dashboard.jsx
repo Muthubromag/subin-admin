@@ -1179,7 +1179,7 @@ function Dashboard() {
 
             {/* Start Orders */}
             <div
-              className={`w-96 m-auto lg:m-0 lg:w-[270px] py-4 px-4 h-[500px] bg-gradient-to-r from-yellow-700 via-yellow-500 to-white/50 rounded-md ${
+              className={`w-96 m-auto lg:m-0 lg:w-[500px] py-4 px-4 rounded-md ${
                 get(user, "name", "")?.split("@")?.includes("kds") ||
                 get(user, "name", "")?.split("@")?.includes("frontdesk") ||
                 get(user, "name", "")?.split("@")?.includes("scratch") ||
@@ -1189,56 +1189,66 @@ function Dashboard() {
                   ? "hidden"
                   : "block"
               } `}
+              style={{
+                boxShadow: " 0 8px 32px 0 rgba( 31, 38, 135, 0.37 )",
+                backdropFilter: "blur( 8px )",
+                webkitBackdropFilter: "blur( 8px )",
+                borderRadius: "10px",
+                border: "1px solid rgba( 255, 255, 255, 0.18 )",
+                background: "rgba( 255, 255, 255, 0.35 )",
+              }}
             >
-              <h1 className="text-white font-bold text-center">Order's</h1>
-              {totalForKds.map((res, i) => {
-                const percentage = (res.value / 100) * 100;
-                return (
-                  <div
-                    key={i}
-                    className="flex items-center justify-center gap-5 border-b"
-                  >
-                    <div className="flex w-[270px] flex-col items-center justify-center pt-2 ">
-                      <span className="!text-white">{res.icon}</span>
-                      <Statistic
-                        title={
-                          <h1 className="text-white font-semibold text-[14px]">
-                            {res.heading}
-                          </h1>
-                        }
-                        value={get(res, "value")}
-                        valueStyle={{
-                          color: "white",
-                          textAlign: "center",
-                          fontSize: "15px",
-                        }}
-                        formatter={formatter}
-                      />
+              <h1 className="text-white font-bold text-center mb-4">Order's</h1>
+              <div className="flex flex-wrap gap-10">
+                {totalForKds.map((res, i) => {
+                  const percentage = (res.value / 100) * 100;
+                  return (
+                    <div
+                      key={i}
+                      className="flex w-full items-center  justify-around gap-5 border-b"
+                    >
+                      <div className="flex flex-col items-center justify-center pt-2 ">
+                        <span className="!text-white">{res.icon}</span>
+                        <Statistic
+                          title={
+                            <h1 className="text-white font-semibold text-[14px]">
+                              {res.heading}
+                            </h1>
+                          }
+                          value={get(res, "value")}
+                          valueStyle={{
+                            color: "white",
+                            textAlign: "center",
+                            fontSize: "15px",
+                          }}
+                          formatter={formatter}
+                        />
+                      </div>
+                      <div style={{ width: "70px" }}>
+                        <CircularProgressbar
+                          value={percentage}
+                          text={`${percentage.toFixed(1)}%`}
+                          styles={buildStyles({
+                            textSize: "16px",
+                            pathColor: "rgba(75,192,192,1)",
+                            textColor: "white",
+                            trailColor: "rgba(255,255,255,0.2)",
+                          })}
+                        />
+                      </div>
                     </div>
-                    <div style={{ width: "70px" }}>
-                      <CircularProgressbar
-                        value={percentage}
-                        text={`${percentage.toFixed(1)}%`}
-                        styles={buildStyles({
-                          textSize: "16px",
-                          pathColor: "rgba(75,192,192,1)",
-                          textColor: "white",
-                          trailColor: "rgba(255,255,255,0.2)",
-                        })}
-                      />
-                    </div>
-                  </div>
-                );
-              })}
+                  );
+                })}
+              </div>
             </div>
-            {/* End Orders */}
+            {/* Start Orders */}
             {/* Start Total Menu */}
             <div
               className={` w-96 m-auto lg:m-0 py-4 px-4 ${
                 get(user, "name", "")?.split("@")?.includes("menu")
                   ? "w-[75vw] flex flex-row gap-16 justify-between px-20"
                   : " h-[308px]"
-              } bg-gradient-to-r from-[--primary-color] via-orange-500 to-white/50 rounded-md ${
+              }  ${
                 get(user, "name", "")?.split("@")?.includes("kds") ||
                 get(user, "name", "")?.split("@")?.includes("frontdesk") ||
                 // get(user, "name", "")?.split("@")?.includes("partner") ||
@@ -1248,6 +1258,14 @@ function Dashboard() {
                   ? "hidden"
                   : "block"
               }`}
+              style={{
+                boxShadow: " 0 8px 32px 0 rgba( 31, 38, 135, 0.37 )",
+                backdropFilter: "blur( 8px )",
+                webkitBackdropFilter: "blur( 8px )",
+                borderRadius: "10px",
+                border: "1px solid rgba( 255, 255, 255, 0.18 )",
+                background: "rgba( 255, 255, 255, 0.35 )",
+              }}
             >
               <h1
                 className={`text-white font-bold text-center ${
@@ -1317,7 +1335,7 @@ function Dashboard() {
 
             {/* Start Total User */}
             <div
-              className={` w-96 m-auto lg:m-0 lg:w-[220px] py-4 px-4 h-[308px] bg-gradient-to-r from-blue-500 via-sky-500 to-white/50 rounded-md ${
+              className={` w-96 m-auto lg:m-0 lg:w-[220px] py-4 px-4 h-[308px] rounded-md ${
                 get(user, "name", "")?.split("@")?.includes("kds") ||
                 get(user, "name", "")?.split("@")?.includes("frontdesk") ||
                 get(user, "name", "")?.split("@")?.includes("scratch") ||
@@ -1327,6 +1345,14 @@ function Dashboard() {
                   ? "hidden"
                   : "block"
               }`}
+              style={{
+                boxShadow: " 0 8px 32px 0 rgba( 31, 38, 135, 0.37 )",
+                backdropFilter: "blur( 8px )",
+                webkitBackdropFilter: "blur( 8px )",
+                borderRadius: "10px",
+                border: "1px solid rgba( 255, 255, 255, 0.18 )",
+                background: "rgba( 255, 255, 255, 0.35 )",
+              }}
             >
               <h1 className="text-white font-bold text-center">
                 Total Users's
