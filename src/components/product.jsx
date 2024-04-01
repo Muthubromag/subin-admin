@@ -185,7 +185,7 @@ function Product() {
       );
       data.append("status", value.status || false);
       data.append("offer", value.offer || "");
-
+      data.append("takeawayOffer", value.takeawayOffer || "");
       // types.forEach((type, index) => {
       //   data.append(`type[${index}]`, type.type);
       //   data.append(`price[${index}]`, type.price);
@@ -216,6 +216,7 @@ function Product() {
       setFileList([]);
       setIsAvailable(false);
     } catch (e) {
+      console.log(e);
       if (get(e, "response.data")?.split(" ").includes("limit")) {
         Modal.warning({
           title: get(e, "response.data"),
@@ -842,8 +843,14 @@ function Product() {
           setFileList([]);
           setUpdateId("");
         }}
+        width={400}
       >
-        <Form onFinish={handleFinish} layout="vertical" form={form}>
+        <Form
+          onFinish={handleFinish}
+          layout="vertical"
+          form={form}
+          className="p-3"
+        >
           <Form.Item
             label="Cuisine Name"
             name="categoryId"
@@ -977,6 +984,19 @@ function Product() {
               >
                 <Input type="number" placeholder="offer..." size="large" />
               </Form.Item>
+              <Form.Item
+                name="takeawayOffer"
+                label="Takeaway Offer"
+                initialValue={0}
+                rules={[
+                  {
+                    required: false,
+                    message: "Please enter  Offer",
+                  },
+                ]}
+              >
+                <Input type="number" placeholder="offer..." size="large" />
+              </Form.Item>
             </>
           )}
 
@@ -1041,7 +1061,22 @@ function Product() {
                           >
                             <Input placeholder="Offer" />
                           </Form.Item>
-
+                          <Form.Item
+                            {...restField}
+                            name={[name, "TypeTakeAwayOfferPercentage"]}
+                            initialValue={0}
+                            rules={[
+                              {
+                                required: true,
+                                message: "Enter valid Offer Percentage",
+                                pattern: new RegExp(
+                                  /^[0-9]$|^[1-9][0-9]?$|^99$/
+                                ),
+                              },
+                            ]}
+                          >
+                            <Input placeholder="Offer" />
+                          </Form.Item>
                           <MinusCircleOutlined
                             className="minus-circle"
                             onClick={() => remove(name)}
