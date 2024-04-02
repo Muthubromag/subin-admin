@@ -55,7 +55,7 @@ function Notification() {
     setCurrentPage(page);
   };
 
-  const statusOrder = data.filter((item) => item.heading == statusName);
+  const statusOrder = data.filter((item) => item.heading === statusName);
   console.log("statusOrder", statusOrder);
 
   return (
