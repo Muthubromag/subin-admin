@@ -1335,7 +1335,7 @@ function Dashboard() {
 
             {/* Start Total User */}
             <div
-              className={` w-96 m-auto lg:m-0 lg:w-[220px] py-4 px-4 h-[308px] rounded-md ${
+              className={` w-96 m-auto lg:m-0 lg:w-[220px] py-4 px-4  rounded-md ${
                 get(user, "name", "")?.split("@")?.includes("kds") ||
                 get(user, "name", "")?.split("@")?.includes("frontdesk") ||
                 get(user, "name", "")?.split("@")?.includes("scratch") ||
