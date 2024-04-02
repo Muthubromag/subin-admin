@@ -1,74 +1,57 @@
 import React, { useState, useEffect } from "react";
 
-function HistoryCards({ date, order }) {
-  const [isVisible, setIsVisible] = useState(false);
-  useEffect(() => {
-    // Set isVisible to true after component mounts
-    setIsVisible(true);
-  }, []);
-
+function HistoryCards({
+  date,
+  order,
+  id,
+  time,
+  deliveryStatus,
+  itemPrice,
+  preview,
+  paymentMode,
+}) {
   return (
-    <div className="">
-      <div className="border-[#ED7802] border-2 flex flex-col p-2 mt-2 rounded-lg">
-        <div className="mb-2">{date}</div>
-        <div className="!bg-[#EDEDED]  rounded-full">
-          <div
-            className={`bg-[#ED7802] rounded-full p-2 text-white transition-transform duration-500 transform ${
-              isVisible ? "translate-x-0" : "-translate-x-full"
-            }`}
-            style={{ width: `${order}%` }}
-          >
-            {order}
+    <div className="w-80">
+      <div className="border-[#ED7802] flex flex-col  rounded-lg bg-white">
+        <div className="flex bg-[#ED7802] rounded-t-lg justify-between  p-4 ">
+          <div>S.No: {id}</div>
+          <div>{date}</div>
+          <div>{time}</div>
+        </div>
+        <div className="p-4 flex  flex-col space-y-3">
+          <div className="text-[#828282] font-medium">
+            Order Id : <span className="font-bold text-black">{order}</span>{" "}
           </div>
+          {deliveryStatus && (
+            <div className="text-[#828282] font-medium">
+              Delivery Status :{" "}
+              <span className="font-bold text-black">{deliveryStatus}</span>{" "}
+            </div>
+          )}
+          {itemPrice && (
+            <div className="text-[#828282] font-medium">
+              Bill Amount :{" "}
+              <span className="font-bold text-black">{itemPrice}</span>{" "}
+            </div>
+          )}
+          {paymentMode && (
+            <div className="text-[#828282] font-medium">
+              Payment Mode :{" "}
+              <span className="font-bold text-black">{paymentMode}</span>{" "}
+            </div>
+          )}
+        </div>
+        <div className="mb-2 px-4">
+          <button
+            className=" bg-[#222222] text-white rounded-lg p-2  !text-[10px]"
+            onClick={preview}
+          >
+            View Order
+          </button>
         </div>
       </div>
-
-      {/* {HistoryOrder.map((item) => {
-        const order = item.order;
-        return (
-          <div
-            div
-            className="border-[#ED7802] border-2 flex flex-col p-2 mt-2 rounded-lg"
-          >
-            <div className="mb-2">{item.date}</div>
-            <div className="!bg-[#EDEDED]  rounded-full">
-              <div
-                className={`bg-[#ED7802] rounded-full p-2 text-white transition-transform duration-500 transform ${
-                  isVisible ? "translate-x-0" : "-translate-x-full"
-                }`}
-                style={{ width: `${order}%` }}
-              >
-                {order}
-              </div>
-            </div>
-          </div>
-        );
-      })} */}
     </div>
   );
 }
 
 export default HistoryCards;
-
-const HistoryOrder = [
-  {
-    date: "01/02/2024",
-    order: 84,
-  },
-  {
-    date: "01/02/2024",
-    order: 14,
-  },
-  {
-    date: "01/02/2024",
-    order: 54,
-  },
-  {
-    date: "01/02/2024",
-    order: 64,
-  },
-  {
-    date: "01/02/2024",
-    order: 34,
-  },
-];
