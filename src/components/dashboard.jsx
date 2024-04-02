@@ -32,6 +32,7 @@ import { CircularProgressbar, buildStyles } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
 import WalletDepositsChart from "../charts/walletChart";
 import NavigateNextIcon from "@mui/icons-material/NavigateNext";
+import deleivered from "../assets/delivered.jpg";
 
 function Dashboard() {
   const [users, setUsers] = useState([]);
@@ -50,6 +51,7 @@ function Dashboard() {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const [totalSales, setTotalSales] = useState("");
+  const [todaySales, setTodaySales] = useState("");
   const [yesterdaySales, setYesterdaySales] = useState("");
   const [lastWeekSales, setLastWeekSales] = useState("");
   const [lastMonthSales, setLastMonthSales] = useState("");
@@ -58,6 +60,9 @@ function Dashboard() {
   const [pendingOrders, setPendingOrders] = useState("");
   const [cancelledOrders, setCancelledOrders] = useState("");
   const [scratchCards, setScratchCards] = useState([]);
+  const [totalCompletedOrderPrice, setTotoalCompletedOrderPrice] = useState("");
+  const [totalCancelOrderPrice, setTotalCancelOrderPrice] = useState("");
+  const [totalPendingOrderPrice, setTotalPendingOrderPrice] = useState("");
 
   const fetchData = async () => {
     try {
@@ -136,6 +141,49 @@ function Dashboard() {
       })
       .reduce((total, order) => total + Number(get(order, "item_price")), 0);
 
+    // Today Order
+
+    const todays = moment().startOf("day");
+
+    const todayDeliveredOnlineOrder = onlineOrder
+      .filter((res) => {
+        return (
+          get(res, "status") === "Delivered" &&
+          moment(res.createdAt).isSame(todays, "day")
+        );
+      })
+      .reduce((total, order) => total + Number(get(order, "itemPrice")), 0);
+
+    const todayDeliveredCallForOrder = callforOrder
+      .filter((res) => {
+        return (
+          (get(res, "status") === "Delivered" ||
+            get(res, "status") === "Foods Handoff") &&
+          moment(res.createdAt).isSame(todays, "day")
+        );
+      })
+      .reduce((total, order) => total + Number(get(order, "billAmount")), 0);
+
+    const todayDeliveredDinningOrder = dinning
+      .filter((res) => {
+        return (
+          get(res, "status") === "Order served" &&
+          moment(res.createdAt).isSame(todays, "day")
+        );
+      })
+      .reduce((total, order) => total + Number(get(order, "item_price")), 0);
+
+    const todayDeliveredTakeOrder = takeAway
+      .filter((res) => {
+        return (
+          get(res, "status") === "Foods Handoff" &&
+          moment(res.createdAt).isSame(todays, "day")
+        );
+      })
+      .reduce((total, order) => total + Number(get(order, "item_price")), 0);
+
+    // end Today order
+
     // yesterday sales
     const yesterday = moment().subtract(1, "day").startOf("day");
 
@@ -175,6 +223,14 @@ function Dashboard() {
         );
       })
       .reduce((total, order) => total + Number(get(order, "item_price")), 0);
+
+    console.log(
+      "yesterday",
+      totalDeliveredYesterdayOnlineOrder,
+      totalDeliveredYesterdayDinningOrder,
+      totalDeliveredYesterdayTakeOrder,
+      totalDeliveredYesterdayCallForOrder
+    );
 
     // Last week sales
     const currentWeekStart = moment().startOf("week");
@@ -373,6 +429,13 @@ function Dashboard() {
         totalDeliveredCallForOrder,
       "pow"
     );
+    setTodaySales(
+      todayDeliveredOnlineOrder +
+        todayDeliveredDinningOrder +
+        todayDeliveredTakeOrder +
+        todayDeliveredCallForOrder,
+      "pow"
+    );
     setYesterdaySales(
       totalDeliveredYesterdayOnlineOrder +
         totalDeliveredYesterdayDinningOrder +
@@ -425,13 +488,48 @@ function Dashboard() {
 
     setDeliveredOrders(totalDelivered);
 
-    // console.log(
-    //   get(totalDeliveredOnlineOrder, "length", ""),
-    //   get(totalDeliveredCallForOrder, "length", ""),
-    //   get(totalDeliveredTakeOrder, "length", ""),
-    //   get(totalDeliveredDinningOrder, "length", ""),
-    //   "deli"
-    // );
+    // Start Total Order Amount
+
+    const totalOnlineItemPrice = onlineOrder
+      .filter((res) => {
+        return get(res, "status") === "Delivered";
+      })
+      .reduce((total, order) => {
+        return total + order.itemPrice;
+      }, 0);
+    const totalCallorderItemPrice = callforOrder
+      .filter((res) => {
+        return (
+          get(res, "status") === "Delivered" ||
+          get(res, "status") === "Foods Handoff"
+        );
+      })
+      .reduce((total, order) => {
+        return total + Number(order.billAmount);
+      }, 0);
+    const totalDinningorderItemPrice = dinning
+      .filter((res) => {
+        return get(res, "status") === "Order served";
+      })
+      .reduce((total, order) => {
+        return total + Number(order.item_price);
+      }, 0);
+    const totalTakeAwayorderItemPrice = takeAway
+      .filter((res) => {
+        return get(res, "status") === "Foods Handoff";
+      })
+      .reduce((total, order) => {
+        return total + Number(order.item_price);
+      }, 0);
+
+    setTotoalCompletedOrderPrice(
+      totalOnlineItemPrice +
+        totalCallorderItemPrice +
+        totalDinningorderItemPrice +
+        totalTakeAwayorderItemPrice
+    );
+
+    // End Total Order Amount
 
     // Total cancelled
     const totalCancelledOnlineOrder = onlineOrder.filter(
@@ -456,6 +554,46 @@ function Dashboard() {
       get(totalCancelledDinningOrder, "length", "") +
       get(totalCancelledTakeOrder, "length", "");
     setCancelledOrders(totalCancelled);
+
+    // Start Total cancel Price
+
+    const totalcancelOnlineItemPrice = onlineOrder
+      .filter((res) => get(res, "status") === "Cancelled")
+      .reduce((total, order) => {
+        return total + order.itemPrice;
+      }, 0);
+    const totalcancelCallorderItemPrice = callforOrder
+      .filter((res) => get(res, "status") === "Cancelled")
+      .reduce((total, order) => {
+        return total + Number(order.billAmount);
+      }, 0);
+    const totalcancelDinningorderItemPrice = dinning
+      .filter((res) => get(res, "status") === "Cancelled")
+      .reduce((total, order) => {
+        return total + Number(order.item_price);
+      }, 0);
+    const totalcancelTakeAwayorderItemPrice = takeAway
+      .filter((res) => get(res, "status") === "Cancelled")
+      .reduce((total, order) => {
+        return total + Number(order.item_price);
+      }, 0);
+
+    setTotalCancelOrderPrice(
+      totalcancelOnlineItemPrice +
+        totalcancelCallorderItemPrice +
+        totalcancelDinningorderItemPrice +
+        totalcancelTakeAwayorderItemPrice
+    );
+
+    console.log(
+      totalcancelOnlineItemPrice,
+      totalcancelCallorderItemPrice,
+      totalcancelDinningorderItemPrice,
+      totalcancelTakeAwayorderItemPrice,
+      "CancelAMount"
+    );
+
+    // End Total Cancel Price
 
     //Pending Orders
 
@@ -493,6 +631,59 @@ function Dashboard() {
       get(totalPendingDinningOrder, "length", "") +
       get(totalPendingTakeAwayOrder, "length", "");
     setPendingOrders(totalPending);
+
+    // Start PendingOrder Amount
+
+    const totalPendingOnlineItemPrice = onlineOrder
+      .filter((res) => {
+        return (
+          get(res, "status") !== "Cancelled" &&
+          get(res, "status") !== "Delivered"
+        );
+      })
+      .reduce((total, order) => {
+        return total + order.itemPrice;
+      }, 0);
+    const totalPendingCallorderItemPrice = callforOrder
+      .filter((res) => {
+        return (
+          get(res, "status") !== "Cancelled" &&
+          get(res, "status") !== "Delivered" &&
+          get(res, "status") !== "Foods Handoff"
+        );
+      })
+      .reduce((total, order) => {
+        return total + Number(order.billAmount);
+      }, 0);
+    const totalPendingDinningorderItemPrice = dinning
+      .filter((res) => {
+        return (
+          get(res, "status") !== "Cancelled" &&
+          get(res, "status") !== "Order served"
+        );
+      })
+      .reduce((total, order) => {
+        return total + Number(order.item_price);
+      }, 0);
+    const totalPendingTakeAwayorderItemPrice = takeAway
+      .filter((res) => {
+        return (
+          get(res, "status") !== "Cancelled" &&
+          get(res, "status") !== "Foods Handoff"
+        );
+      })
+      .reduce((total, order) => {
+        return total + Number(order.item_price);
+      }, 0);
+
+    setTotalPendingOrderPrice(
+      totalPendingOnlineItemPrice +
+        totalPendingCallorderItemPrice +
+        totalPendingDinningorderItemPrice +
+        totalPendingTakeAwayorderItemPrice
+    );
+
+    // End PendingOrder Amount
   }, [onlineOrder, dinning, callforOrder, takeAway]);
 
   useEffect(() => {
@@ -627,29 +818,454 @@ function Dashboard() {
   ];
 
   return (
-    <div className="pb-5 md:pl-[20vw]  flex items-center justify-center md:items-start md:justify-start mt-28 md:mt-24 mb-48 lg:mb-0">
+    <div className="pb-5 md:pl-[20vw]  flex items-center justify-center md:items-start md:justify-start mt-28 md:mt-24 mb-48 lg:mb-0 ">
       {!localStorage.getItem("token") ? (
         <LoadingPage />
       ) : (
         <Spin spinning={loading}>
           <div
-            className={`flex flex-wrap  items-center justify-center md:items-start md:justify-start  gap-4 md:w-[80vw]  `}
+            className={`flex  flex-wrap  items-center justify-center md:items-start md:justify-start  gap-4 md:w-[80vw]  `}
           >
+            {/* Start Total Orders */}
+            <div
+              className={`w-96 m-auto lg:m-0 lg:w-full py-4 px-4   ${
+                get(user, "name", "")?.split("@")?.includes("kds") ||
+                get(user, "name", "")?.split("@")?.includes("frontdesk") ||
+                get(user, "name", "")?.split("@")?.includes("scratch") ||
+                get(user, "name", "")?.split("@")?.includes("menu") ||
+                get(user, "name", "")?.split("@")?.includes("banner") ||
+                get(user, "name", "")?.split("@")?.includes("rider")
+                  ? "hidden"
+                  : "block"
+              }  rounded-md
+              `}
+              style={{
+                boxShadow: " 0 8px 32px 0 rgba( 31, 38, 135, 0.37 )",
+                backdropFilter: "blur( 8px )",
+                webkitBackdropFilter: "blur( 8px )",
+                borderRadius: "10px",
+                border: "1px solid rgba( 255, 255, 255, 0.18 )",
+                background: "rgba( 255, 255, 255, 0.35 )",
+              }}
+            >
+              <h1 className="text-white font-bold text-center text-lg mb-6">
+                Total Order's
+              </h1>
+              <div className="w-full">
+                <div className="flex lg:flex-row flex-col gap-5 items-center justify-between pt-2 ">
+                  <div className="flex flex-col gap-5  justify-between p-4  w-full bg-blue-400  rounded-2xl">
+                    <div className="flex gap-5  justify-between   ">
+                      <Statistic
+                        title={
+                          <h1 className="text-white font-semibold text-[16px]">
+                            Total orders
+                          </h1>
+                        }
+                        value={deliveredOrders + cancelledOrders}
+                        valueStyle={{
+                          color: "white",
+                          textAlign: "start",
+                        }}
+                        formatter={formatter}
+                      />
+                      <div style={{ width: "70px" }}>
+                        <CircularProgressbar
+                          value={deliveredOrders + cancelledOrders}
+                          text={`${Number(
+                            deliveredOrders + cancelledOrders
+                          ).toFixed(1)}%`}
+                          styles={buildStyles({
+                            textSize: "24px",
+                            pathColor: "blue",
+                            textColor: "black",
+                            trailColor: "#e4e4e4",
+                          })}
+                        />
+                      </div>
+                    </div>
+                    <h1 className="text-lg">
+                      Total Amount:{" "}
+                      {totalCompletedOrderPrice + totalCancelOrderPrice}
+                    </h1>
+                  </div>
+
+                  <div className="flex gap-5 flex-col  justify-between p-4  w-full bg-green-400  rounded-2xl">
+                    <div className="flex gap-5  justify-between">
+                      <Statistic
+                        title={
+                          <h1 className="text-white font-semibold text-[16px]">
+                            Completed orders
+                          </h1>
+                        }
+                        value={deliveredOrders}
+                        valueStyle={{
+                          color: "white",
+                          textAlign: "start",
+                        }}
+                        formatter={formatter}
+                      />
+                      <div style={{ width: "70px" }}>
+                        <CircularProgressbar
+                          value={deliveredOrders}
+                          text={`${Number(deliveredOrders).toFixed(1)}%`}
+                          styles={buildStyles({
+                            textSize: "24px",
+                            pathColor: "green",
+                            textColor: "black",
+                            trailColor: "#e4e4e4",
+                          })}
+                        />
+                      </div>
+                    </div>
+                    <h1 className="text-lg">
+                      Total Amount: {totalCompletedOrderPrice}
+                    </h1>
+                  </div>
+
+                  <div className="flex gap-5 flex-col  justify-between p-4 bg-orange-200  w-full  rounded-2xl">
+                    <div className="flex gap-5  justify-between">
+                      <Statistic
+                        title={
+                          <h1 className="text-orange-500 font-semibold text-[16px]">
+                            Pending orders
+                          </h1>
+                        }
+                        value={pendingOrders}
+                        valueStyle={{
+                          color: "#ff6100ed ",
+                          textAlign: "start",
+                        }}
+                        formatter={formatter}
+                      />
+                      <div style={{ width: "70px" }}>
+                        <CircularProgressbar
+                          value={pendingOrders}
+                          text={`${Number(pendingOrders).toFixed(1)}%`}
+                          styles={buildStyles({
+                            textSize: "24px",
+                            pathColor: "orange",
+                            textColor: "black",
+                            trailColor: "#e4e4e4",
+                          })}
+                        />
+                      </div>
+                    </div>
+                    <h1 className="text-lg">
+                      Total Amount: {totalPendingOrderPrice}
+                    </h1>
+                  </div>
+
+                  <div className="flex gap-5 flex-col justify-between p-4 bg-red-400  w-full rounded-2xl">
+                    <div className="flex gap-5 justify-between ">
+                      <Statistic
+                        title={
+                          <h1 className="text-white font-semibold text-[16px]">
+                            Cancelled orders
+                          </h1>
+                        }
+                        value={cancelledOrders}
+                        valueStyle={{
+                          color: "white",
+                          textAlign: "start",
+                        }}
+                        formatter={formatter}
+                      />
+                      <div style={{ width: "70px" }}>
+                        <CircularProgressbar
+                          value={cancelledOrders}
+                          text={`${Number(cancelledOrders).toFixed(1)}%`}
+                          styles={buildStyles({
+                            textSize: "16px",
+                            pathColor: "red",
+                            textColor: "white",
+                            trailColor: "rgba(255,255,255,0.2)",
+                          })}
+                        />
+                      </div>
+                    </div>
+                    <h1 className="text-lg">
+                      Total Amount: {totalCancelOrderPrice}
+                    </h1>
+                  </div>
+                </div>
+              </div>
+            </div>
+            {/* End Total Orders */}
+
+            {/* <div
+              className={`w-96 m-auto lg:m-0 lg:w-[330px] py-4 px-4 h-[308px] bg-gradient-to-r from-red-800 via-red-500 to-white/50 rounded-md ${
+                get(user, "name", "")?.split("@")?.includes("kds") ||
+                get(user, "name", "")?.split("@")?.includes("frontdesk") ||
+                get(user, "name", "")?.split("@")?.includes("partner") ||
+                get(user, "name", "")?.split("@")?.includes("scratch") ||
+                get(user, "name", "")?.split("@")?.includes("menu") ||
+                get(user, "name", "")?.split("@")?.includes("banner") ||
+                get(user, "name", "")?.split("@")?.includes("rider")
+                  ? "hidden"
+                  : "block"
+              }  `}
+            >
+              <h1 className="text-white font-bold text-center">
+                Total Wallet Deposits
+              </h1>
+              <div className="flex items-center justify-center">
+                <div className="flex w-[300px] flex-col items-center justify-center pt-1">
+                  <div className="flex flex-col">
+                    <Statistic
+                      title={
+                        <h1 className="text-white text-center font-semibold text-[12px]">
+                          Total Amount
+                        </h1>
+                      }
+                      value={98219}
+                      valueStyle={{
+                        color: "white",
+                        textAlign: "center",
+                        fontSize: "18px",
+                      }}
+                      formatter={formatter}
+                    />
+                    <div className="text-white flex justify-between px-1 text-[10px] pt-1 border-b pb-2">
+                      <p> Last deposit on 20-13-2023</p>
+                      <p className="text-blue-800 font-bold cursor-pointer">
+                        View Deposits
+                        <NavigateNextIcon className="!text-[14px]" />
+                      </p>
+                    </div>
+                    <div>
+                      <h1 className="text-white font-bold text-center pt-3 text-[15px]">
+                        Last Five Deposits
+                      </h1>
+                      <WalletDepositsChart />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div> */}
+            {/* start Total sales */}
+            <div
+              className={`w-96 m-auto lg:m-0 lg:w-full py-4 px-4   rounded-md ${
+                get(user, "name", "")?.split("@")?.includes("kds") ||
+                get(user, "name", "")?.split("@")?.includes("frontdesk") ||
+                get(user, "name", "")?.split("@")?.includes("scratch") ||
+                get(user, "name", "")?.split("@")?.includes("menu") ||
+                get(user, "name", "")?.split("@")?.includes("banner") ||
+                get(user, "name", "")?.split("@")?.includes("rider")
+                  ? "hidden"
+                  : "block"
+              }`}
+              style={{
+                boxShadow: " 0 8px 32px 0 rgba( 31, 38, 135, 0.37 )",
+                backdropFilter: "blur( 8px )",
+                webkitBackdropFilter: "blur( 8px )",
+                borderRadius: "10px",
+                border: "1px solid rgba( 255, 255, 255, 0.18 )",
+                background: "rgba( 255, 255, 255, 0.35 )",
+              }}
+            >
+              <h1 className="text-white font-bold text-lg text-center mb-4">
+                Sales
+              </h1>
+              <div className="flex  justify-between ">
+                <div className="flex w-full lg:flex-row flex-col gap-5 items-center justify-between pt-2 ">
+                  <div className="flex bg-white p-2 rounded-lg white w-full">
+                    <Statistic
+                      className="w-[100%]"
+                      title={
+                        <h1 className="text-black font-semibold text-[18px] text-center">
+                          Total sales
+                        </h1>
+                      }
+                      value={totalSales}
+                      valueStyle={{
+                        color: "black",
+                        textAlign: "center",
+                        fontSize: "18px",
+                      }}
+                      formatter={formatter}
+                    />
+                  </div>
+                  <div className="flex bg-white  p-2 rounded-lg bgwhite w-full">
+                    <Statistic
+                      className="w-[100%]"
+                      title={
+                        <h1 className="text-black font-semibold text-[18px] text-center w-full">
+                          Today sales
+                        </h1>
+                      }
+                      value={todaySales}
+                      valueStyle={{
+                        color: "black",
+                        textAlign: "center",
+                        fontSize: "18px",
+                      }}
+                      formatter={formatter}
+                    />
+                  </div>
+
+                  <div className="flex  p-2 rounded-lg bg-white w-full">
+                    <Statistic
+                      className="w-[100%]"
+                      title={
+                        <h1 className="text-black font-semibold text-[18px] text-center w-full">
+                          Yesterday sales
+                        </h1>
+                      }
+                      value={yesterdaySales}
+                      valueStyle={{
+                        color: "black",
+                        textAlign: "center",
+                        fontSize: "18px",
+                      }}
+                      formatter={formatter}
+                    />
+                  </div>
+                  <div className="flex  p-2 rounded-lg bg-white w-full">
+                    <Statistic
+                      className="w-[100%]"
+                      title={
+                        <h1 className="text-black font-semibold text-[18px] text-center w-full">
+                          Last week sales
+                        </h1>
+                      }
+                      value={lastWeekSales}
+                      valueStyle={{
+                        color: "black",
+                        textAlign: "center",
+                        fontSize: "18px",
+                      }}
+                      formatter={formatter}
+                    />
+                  </div>
+                  <div className="flex  p-2 rounded-lg bg-white w-full">
+                    <Statistic
+                      className="w-[100%]"
+                      title={
+                        <h1 className="text-black font-semibold text-[18px] text-center w-full">
+                          Last month sales
+                        </h1>
+                      }
+                      value={lastMonthSales}
+                      valueStyle={{
+                        color: "black",
+                        textAlign: "center",
+                        fontSize: "18px",
+                      }}
+                      formatter={formatter}
+                    />
+                  </div>
+                  <div className="flex  p-2 rounded-lg bg-white w-full">
+                    <Statistic
+                      className="w-[100%]"
+                      title={
+                        <h1 className="text-black font-semibold text-[18px] text-center">
+                          Last year sales
+                        </h1>
+                      }
+                      value={lastYearSales}
+                      valueStyle={{
+                        color: "black",
+                        textAlign: "center",
+                        fontSize: "18px",
+                      }}
+                      formatter={formatter}
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* end Total sales */}
+
+            {/* Start Orders */}
+            <div
+              className={`w-96 m-auto lg:m-0 lg:w-[500px] py-4 px-4 rounded-md ${
+                get(user, "name", "")?.split("@")?.includes("kds") ||
+                get(user, "name", "")?.split("@")?.includes("frontdesk") ||
+                get(user, "name", "")?.split("@")?.includes("scratch") ||
+                get(user, "name", "")?.split("@")?.includes("menu") ||
+                get(user, "name", "")?.split("@")?.includes("banner") ||
+                get(user, "name", "")?.split("@")?.includes("rider")
+                  ? "hidden"
+                  : "block"
+              } `}
+              style={{
+                boxShadow: " 0 8px 32px 0 rgba( 31, 38, 135, 0.37 )",
+                backdropFilter: "blur( 8px )",
+                webkitBackdropFilter: "blur( 8px )",
+                borderRadius: "10px",
+                border: "1px solid rgba( 255, 255, 255, 0.18 )",
+                background: "rgba( 255, 255, 255, 0.35 )",
+              }}
+            >
+              <h1 className="text-white font-bold text-center mb-4">Order's</h1>
+              <div className="flex flex-wrap gap-10">
+                {totalForKds.map((res, i) => {
+                  const percentage = (res.value / 100) * 100;
+                  return (
+                    <div
+                      key={i}
+                      className="flex w-full items-center  justify-around gap-5 border-b"
+                    >
+                      <div className="flex flex-col items-center justify-center pt-2 ">
+                        <span className="!text-white">{res.icon}</span>
+                        <Statistic
+                          title={
+                            <h1 className="text-white font-semibold text-[14px]">
+                              {res.heading}
+                            </h1>
+                          }
+                          value={get(res, "value")}
+                          valueStyle={{
+                            color: "white",
+                            textAlign: "center",
+                            fontSize: "15px",
+                          }}
+                          formatter={formatter}
+                        />
+                      </div>
+                      <div style={{ width: "70px" }}>
+                        <CircularProgressbar
+                          value={percentage}
+                          text={`${percentage.toFixed(1)}%`}
+                          styles={buildStyles({
+                            textSize: "16px",
+                            pathColor: "rgba(75,192,192,1)",
+                            textColor: "white",
+                            trailColor: "rgba(255,255,255,0.2)",
+                          })}
+                        />
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+            {/* Start Orders */}
+            {/* Start Total Menu */}
             <div
               className={` w-96 m-auto lg:m-0 py-4 px-4 ${
                 get(user, "name", "")?.split("@")?.includes("menu")
                   ? "w-[75vw] flex flex-row gap-16 justify-between px-20"
                   : " h-[308px]"
-              } bg-gradient-to-r from-[--primary-color] via-orange-500 to-white/50 rounded-md ${
+              }  ${
                 get(user, "name", "")?.split("@")?.includes("kds") ||
                 get(user, "name", "")?.split("@")?.includes("frontdesk") ||
-                get(user, "name", "")?.split("@")?.includes("partner") ||
+                // get(user, "name", "")?.split("@")?.includes("partner") ||
                 get(user, "name", "")?.split("@")?.includes("scratch") ||
                 get(user, "name", "")?.split("@")?.includes("banner") ||
                 get(user, "name", "")?.split("@")?.includes("rider")
                   ? "hidden"
                   : "block"
               }`}
+              style={{
+                boxShadow: " 0 8px 32px 0 rgba( 31, 38, 135, 0.37 )",
+                backdropFilter: "blur( 8px )",
+                webkitBackdropFilter: "blur( 8px )",
+                borderRadius: "10px",
+                border: "1px solid rgba( 255, 255, 255, 0.18 )",
+                background: "rgba( 255, 255, 255, 0.35 )",
+              }}
             >
               <h1
                 className={`text-white font-bold text-center ${
@@ -715,8 +1331,11 @@ function Dashboard() {
                 })}
               </div>
             </div>
+            {/* Start Total menu */}
+
+            {/* Start Total User */}
             <div
-              className={` w-96 m-auto lg:m-0 lg:w-[220px] py-4 px-4 h-[308px] bg-gradient-to-r from-blue-500 via-sky-500 to-white/50 rounded-md ${
+              className={` w-96 m-auto lg:m-0 lg:w-[220px] py-4 px-4 h-[308px] rounded-md ${
                 get(user, "name", "")?.split("@")?.includes("kds") ||
                 get(user, "name", "")?.split("@")?.includes("frontdesk") ||
                 get(user, "name", "")?.split("@")?.includes("scratch") ||
@@ -726,6 +1345,14 @@ function Dashboard() {
                   ? "hidden"
                   : "block"
               }`}
+              style={{
+                boxShadow: " 0 8px 32px 0 rgba( 31, 38, 135, 0.37 )",
+                backdropFilter: "blur( 8px )",
+                webkitBackdropFilter: "blur( 8px )",
+                borderRadius: "10px",
+                border: "1px solid rgba( 255, 255, 255, 0.18 )",
+                background: "rgba( 255, 255, 255, 0.35 )",
+              }}
             >
               <h1 className="text-white font-bold text-center">
                 Total Users's
@@ -770,210 +1397,8 @@ function Dashboard() {
                 );
               })}
             </div>
-            <div
-              className={`w-96 m-auto lg:m-0 lg:w-[330px]${
-                get(user, "name", "")?.split("@")?.includes("kds") ||
-                get(user, "name", "")?.split("@")?.includes("frontdesk") ||
-                get(user, "name", "")?.split("@")?.includes("scratch") ||
-                get(user, "name", "")?.split("@")?.includes("menu") ||
-                get(user, "name", "")?.split("@")?.includes("banner") ||
-                get(user, "name", "")?.split("@")?.includes("rider")
-                  ? "hidden"
-                  : "block"
-              } py-4 px-4 h-[308px] bg-gradient-to-r from-green-700 via-green-400 to-white/50 rounded-md`}
-            >
-              <h1 className="text-white font-bold text-center">
-                Total Order's
-              </h1>
-              <div className="flex items-center justify-center ">
-                <div className="flex w-[330px] lg:w-[220px] flex-col items-center justify-center pt-2 ">
-                  <div className="flex gap-5 border-b pb-2">
-                    <Statistic
-                      title={
-                        <h1 className="text-white font-semibold text-[15px]">
-                          Delivered orders
-                        </h1>
-                      }
-                      value={deliveredOrders}
-                      valueStyle={{
-                        color: "white",
-                        textAlign: "center",
-                      }}
-                      formatter={formatter}
-                    />
-                    <div style={{ width: "70px" }}>
-                      <CircularProgressbar
-                        value={deliveredOrders}
-                        text={`${Number(deliveredOrders).toFixed(1)}%`}
-                        styles={buildStyles({
-                          textSize: "16px",
-                          pathColor: "rgba(75,192,192,1)",
-                          textColor: "white",
-                          trailColor: "rgba(255,255,255,0.2)",
-                        })}
-                      />
-                    </div>
-                  </div>
-                  <div className="flex gap-5 border-b pt-2 pb-2">
-                    <Statistic
-                      title={
-                        <h1 className="text-white font-semibold text-[15px]">
-                          Pending orders
-                        </h1>
-                      }
-                      value={pendingOrders}
-                      valueStyle={{
-                        color: "white",
-                        textAlign: "center",
-                      }}
-                      formatter={formatter}
-                    />
-                    <div style={{ width: "70px" }}>
-                      <CircularProgressbar
-                        value={pendingOrders}
-                        text={`${Number(pendingOrders).toFixed(1)}%`}
-                        styles={buildStyles({
-                          textSize: "16px",
-                          pathColor: "rgba(75,192,192,1)",
-                          textColor: "white",
-                          trailColor: "rgba(255,255,255,0.2)",
-                        })}
-                      />
-                    </div>
-                  </div>
-                  <div className="flex gap-5 border-b pt-2 pb-2">
-                    <Statistic
-                      title={
-                        <h1 className="text-white font-semibold text-[15px]">
-                          Cancelled orders
-                        </h1>
-                      }
-                      value={cancelledOrders}
-                      valueStyle={{
-                        color: "white",
-                        textAlign: "center",
-                      }}
-                      formatter={formatter}
-                    />
-                    <div style={{ width: "70px" }}>
-                      <CircularProgressbar
-                        value={cancelledOrders}
-                        text={`${Number(cancelledOrders).toFixed(1)}%`}
-                        styles={buildStyles({
-                          textSize: "16px",
-                          pathColor: "rgba(75,192,192,1)",
-                          textColor: "white",
-                          trailColor: "rgba(255,255,255,0.2)",
-                        })}
-                      />
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            {/* <div
-              className={`w-96 m-auto lg:m-0 lg:w-[330px] py-4 px-4 h-[308px] bg-gradient-to-r from-red-800 via-red-500 to-white/50 rounded-md ${
-                get(user, "name", "")?.split("@")?.includes("kds") ||
-                get(user, "name", "")?.split("@")?.includes("frontdesk") ||
-                get(user, "name", "")?.split("@")?.includes("partner") ||
-                get(user, "name", "")?.split("@")?.includes("scratch") ||
-                get(user, "name", "")?.split("@")?.includes("menu") ||
-                get(user, "name", "")?.split("@")?.includes("banner") ||
-                get(user, "name", "")?.split("@")?.includes("rider")
-                  ? "hidden"
-                  : "block"
-              }  `}
-            >
-              <h1 className="text-white font-bold text-center">
-                Total Wallet Deposits
-              </h1>
-              <div className="flex items-center justify-center">
-                <div className="flex w-[300px] flex-col items-center justify-center pt-1">
-                  <div className="flex flex-col">
-                    <Statistic
-                      title={
-                        <h1 className="text-white text-center font-semibold text-[12px]">
-                          Total Amount
-                        </h1>
-                      }
-                      value={98219}
-                      valueStyle={{
-                        color: "white",
-                        textAlign: "center",
-                        fontSize: "18px",
-                      }}
-                      formatter={formatter}
-                    />
-                    <div className="text-white flex justify-between px-1 text-[10px] pt-1 border-b pb-2">
-                      <p> Last deposit on 20-13-2023</p>
-                      <p className="text-blue-800 font-bold cursor-pointer">
-                        View Deposits
-                        <NavigateNextIcon className="!text-[14px]" />
-                      </p>
-                    </div>
-                    <div>
-                      <h1 className="text-white font-bold text-center pt-3 text-[15px]">
-                        Last Five Deposits
-                      </h1>
-                      <WalletDepositsChart />
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div> */}
-            <div
-              className={`w-96 m-auto lg:m-0 lg:w-[270px] py-4 px-4 h-[500px] bg-gradient-to-r from-yellow-700 via-yellow-500 to-white/50 rounded-md ${
-                get(user, "name", "")?.split("@")?.includes("kds") ||
-                get(user, "name", "")?.split("@")?.includes("frontdesk") ||
-                get(user, "name", "")?.split("@")?.includes("scratch") ||
-                get(user, "name", "")?.split("@")?.includes("menu") ||
-                get(user, "name", "")?.split("@")?.includes("banner") ||
-                get(user, "name", "")?.split("@")?.includes("rider")
-                  ? "hidden"
-                  : "block"
-              } `}
-            >
-              <h1 className="text-white font-bold text-center">Order's</h1>
-              {totalForKds.map((res, i) => {
-                const percentage = (res.value / 100) * 100;
-                return (
-                  <div
-                    key={i}
-                    className="flex items-center justify-center gap-5 border-b"
-                  >
-                    <div className="flex w-[270px] flex-col items-center justify-center pt-2 ">
-                      <span className="!text-white">{res.icon}</span>
-                      <Statistic
-                        title={
-                          <h1 className="text-white font-semibold text-[14px]">
-                            {res.heading}
-                          </h1>
-                        }
-                        value={get(res, "value")}
-                        valueStyle={{
-                          color: "white",
-                          textAlign: "center",
-                          fontSize: "15px",
-                        }}
-                        formatter={formatter}
-                      />
-                    </div>
-                    <div style={{ width: "70px" }}>
-                      <CircularProgressbar
-                        value={percentage}
-                        text={`${percentage.toFixed(1)}%`}
-                        styles={buildStyles({
-                          textSize: "16px",
-                          pathColor: "rgba(75,192,192,1)",
-                          textColor: "white",
-                          trailColor: "rgba(255,255,255,0.2)",
-                        })}
-                      />
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
+            {/* End Total User */}
+
             <div
               className={`py-4 px-4 w-[90vw] md:w-[75vw] flex flex-wrap bg-gradient-to-r from-yellow-500 via-yellow-300 to-white/50 rounded-md ${
                 get(user, "name", "")?.split("@")?.includes("kds") ||
@@ -1021,104 +1446,6 @@ function Dashboard() {
                   </div>
                 );
               })}
-            </div>
-            <div
-              className={`w-96 m-auto lg:m-0 lg:w-[330px] py-4 px-4 h-[500px] bg-gradient-to-r from-emerald-800 via-emerald-500 to-white/50 rounded-md ${
-                get(user, "name", "")?.split("@")?.includes("kds") ||
-                get(user, "name", "")?.split("@")?.includes("frontdesk") ||
-                get(user, "name", "")?.split("@")?.includes("scratch") ||
-                get(user, "name", "")?.split("@")?.includes("menu") ||
-                get(user, "name", "")?.split("@")?.includes("banner") ||
-                get(user, "name", "")?.split("@")?.includes("rider")
-                  ? "hidden"
-                  : "block"
-              }`}
-            >
-              <h1 className="text-white font-bold text-center">Sales</h1>
-              <div className="flex items-center justify-center ">
-                <div className="flex w-[330px] flex-col gap-5 items-center justify-center pt-2 ">
-                  <div className="flex  border-b pb-2">
-                    <Statistic
-                      title={
-                        <h1 className="text-white font-semibold text-[18px]">
-                          Total sales
-                        </h1>
-                      }
-                      value={totalSales}
-                      valueStyle={{
-                        color: "white",
-                        textAlign: "center",
-                        fontSize: "18px",
-                      }}
-                      formatter={formatter}
-                    />
-                  </div>
-                  <div className="flex gap-5 border-b pb-2">
-                    <Statistic
-                      title={
-                        <h1 className="text-white font-semibold text-[18px]">
-                          Yesterday sales
-                        </h1>
-                      }
-                      value={yesterdaySales}
-                      valueStyle={{
-                        color: "white",
-                        textAlign: "center",
-                        fontSize: "18px",
-                      }}
-                      formatter={formatter}
-                    />
-                  </div>
-                  <div className="flex gap-5 border-b pb-2">
-                    <Statistic
-                      title={
-                        <h1 className="text-white font-semibold text-[18px]">
-                          Last week sales
-                        </h1>
-                      }
-                      value={lastWeekSales}
-                      valueStyle={{
-                        color: "white",
-                        textAlign: "center",
-                        fontSize: "18px",
-                      }}
-                      formatter={formatter}
-                    />
-                  </div>
-                  <div className="flex gap-5 border-b pb-2">
-                    <Statistic
-                      title={
-                        <h1 className="text-white font-semibold text-[18px]">
-                          Last month sales
-                        </h1>
-                      }
-                      value={lastMonthSales}
-                      valueStyle={{
-                        color: "white",
-                        textAlign: "center",
-                        fontSize: "18px",
-                      }}
-                      formatter={formatter}
-                    />
-                  </div>
-                  <div className="flex gap-5 border-b pb-2">
-                    <Statistic
-                      title={
-                        <h1 className="text-white font-semibold text-[18px]">
-                          Last year sales
-                        </h1>
-                      }
-                      value={lastYearSales}
-                      valueStyle={{
-                        color: "white",
-                        textAlign: "center",
-                        fontSize: "18px",
-                      }}
-                      formatter={formatter}
-                    />
-                  </div>
-                </div>
-              </div>
             </div>
 
             {/* <div
