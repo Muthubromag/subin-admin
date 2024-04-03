@@ -455,7 +455,13 @@ function BookingOrder() {
               }
               extra={
                 <div
-                  className="cursor-pointer"
+                  className={`cursor-pointer ${
+                    get(user, "name", "").split("@").includes("frontdesk") ||
+                    get(user, "name", "").split("@").includes("partner")
+                      ? "hidden"
+                      : "inline"
+                  }
+              `}
                   onClick={() => {
                     setOpen(!open);
                   }}

@@ -47,6 +47,12 @@ function TableSlot() {
   const [loadingButton, setLoadingButton] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
 
+  console.log("user", user);
+
+  // get(user, "name", "")
+  // .split("@")
+  // .includes("frontdesk")
+
   const handleChange = ({ fileList }) => {
     setFileList(fileList);
   };
@@ -180,7 +186,13 @@ function TableSlot() {
             }
             extra={
               <div
-                className="cursor-pointer"
+                className={`cursor-pointer ${
+                  get(user, "name", "").split("@").includes("frontdesk") ||
+                  get(user, "name", "").split("@").includes("partner")
+                    ? "hidden"
+                    : "inline"
+                }
+                `}
                 onClick={() => {
                   setOpen(!open);
                 }}
@@ -189,7 +201,7 @@ function TableSlot() {
               </div>
             }
             key="1"
-            className="h-[80vh] overflow-y-scroll"
+            className={"h-[80vh] overflow-y-scroll "}
           >
             <Spin spinning={loading}>
               <div className="!h-[68vh]">

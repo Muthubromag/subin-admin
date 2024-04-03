@@ -760,6 +760,7 @@ function CallForOrder() {
         return <h1 className="text-[10px] md:text-[14px]">{name}</h1>;
       },
     },
+
     {
       title: <h1 className="text-[10px] md:text-[14px]">Edit</h1>,
       width: 100,
@@ -774,6 +775,7 @@ function CallForOrder() {
         );
       },
     },
+
     {
       title: <h1 className="text-[10px] md:text-[14px]">Status</h1>,
       dataIndex: "status",
