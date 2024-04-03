@@ -85,7 +85,7 @@ function Notification() {
       <div className=" w-full lg:pt-28 pt-36 lg:pl-[20vw] p-4  text-black flex items-center justify-center">
         <Spin spinning={loading}>
           {statusName === "" ? (
-            <div className="lg:flex lg:justify-between lg:flex-wrap lg:flex-row  grid grid-cols-2 gap-4  md:grid-cols-3 ">
+            <div className="lg:flex lg:justify-between lg:flex-wrap lg:flex-row  grid grid-cols-2 gap-6 lg:gap-5  md:grid-cols-3 ">
               <Badge
                 // count={
                 //   data.filter((item) => item.heading === "Order accepted")
@@ -99,7 +99,7 @@ function Notification() {
                 showZero
               >
                 <div
-                  className="border-2 border-red-400 text-white p-4 rounded-lg w-44  lg:w-36 text-center h-20 flex  "
+                  className="border-2 border-red-400 text-white p-4 rounded-lg w-40  lg:w-36 text-center h-20 flex  "
                   // onClick={() => setStatusName("Order accepted")}
                   onClick={() => handleBadgeClick("Order accepted")}
                 >
@@ -115,7 +115,7 @@ function Notification() {
                 showZero
               >
                 <div
-                  className="border-2 border-red-400 text-white p-4 rounded-lg w-44 text-center lg:w-36 h-20 flex  "
+                  className="border-2 border-red-400 text-white p-4 rounded-lg w-40 text-center lg:w-36 h-20 flex  "
                   // onClick={() => setStatusName("Order moved to KDS")}
                   onClick={() => handleBadgeClick("Order moved to KDS")}
                 >
@@ -129,7 +129,7 @@ function Notification() {
                 }
               >
                 <div
-                  className="border-2 border-red-400 text-white p-4 rounded-lg w-44 lg:w-36 h-20 flex  text-center "
+                  className="border-2 border-red-400 text-white p-4 rounded-lg w-40 lg:w-36 h-20 flex  text-center "
                   onClick={() => setStatusName("Order ready to pack")}
                 >
                   Order ready to pack
@@ -142,7 +142,7 @@ function Notification() {
                 }
               >
                 <div
-                  className="border-2 border-red-400 text-white p-4 rounded-lg w-44 lg:w-36 h-20 flex  text-center"
+                  className="border-2 border-red-400 text-white p-4 rounded-lg w-40 lg:w-36 h-20 flex  text-center"
                   onClick={() => setStatusName("Order ready to pick")}
                 >
                   Order ready to pick
@@ -156,7 +156,7 @@ function Notification() {
                 }
               >
                 <div
-                  className="border-2 border-red-400 text-white p-4 rounded-lg w-44 lg:w-36 h-20 flex  text-center"
+                  className="border-2 border-red-400 text-white p-4 rounded-lg w-40 lg:w-36 h-20 flex  text-center"
                   onClick={() => setStatusName("Order out for delivery")}
                 >
                   Order out for delivery
@@ -168,7 +168,7 @@ function Notification() {
                 }
               >
                 <div
-                  className="border-2 border-red-400 text-white p-4 rounded-lg w-44 lg:w-36 h-20 flex  text-center"
+                  className="border-2 border-red-400 text-white p-4 rounded-lg w-40 lg:w-36 h-20 flex  text-center"
                   onClick={() => setStatusName("Delivered")}
                 >
                   Delivered
@@ -180,7 +180,7 @@ function Notification() {
                 }
               >
                 <div
-                  className="border-2 border-red-400 text-white p-4 rounded-lg w-44 lg:w-36 h-20 flex  text-center"
+                  className="border-2 border-red-400 text-white p-4 rounded-lg w-40 lg:w-36 h-20 flex  text-center"
                   onClick={() => setStatusName("Cancelled")}
                 >
                   Cancelled
