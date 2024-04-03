@@ -931,6 +931,7 @@ function Dinning() {
                     deliveryStatus={item.status}
                     billAmount={item.billAmount}
                     preview={() => openPreviewModal(item?.orderedFood)}
+                    printBill={item._id}
                     handleStatusChange={(newstatus) =>
                       handleStatusChange(item, newstatus)
                     }
@@ -939,6 +940,7 @@ function Dinning() {
                         ? statusOptionsFDS
                         : statusOptions
                     }
+                    pathName="dining"
                   />
                 );
               })}

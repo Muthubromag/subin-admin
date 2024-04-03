@@ -1107,6 +1107,8 @@ function TakeAway() {
                         ? statusOptionsFDS
                         : statusOptions
                     }
+                    printBill={item._id}
+                    pathName="takeaway"
                   />
                 </>
               );
