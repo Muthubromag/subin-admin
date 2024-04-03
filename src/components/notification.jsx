@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { get } from "lodash";
 import axios from "axios";
 import moment from "moment";
-import { Pagination, Spin } from "antd";
+import { Badge, Button, Pagination, Spin } from "antd";
 import { useLocation } from "react-router-dom";
 import { NotificationCard } from "../cards/OrdersCard";
 
@@ -12,6 +12,7 @@ function Notification() {
   const location = useLocation();
   let pathname = location?.pathname;
   const [currentPage, setCurrentPage] = useState(1);
+  const [statusName, setStatusName] = useState("");
 
   const fetchData = async () => {
     try {
@@ -31,6 +32,8 @@ function Notification() {
       setLoading(false);
     }
   };
+
+  console.log("data", data);
 
   useEffect(() => {
     fetchData();
@@ -52,100 +55,140 @@ function Notification() {
     setCurrentPage(page);
   };
 
+  const statusOrder = data.filter((item) => item.heading === statusName);
+  console.log("statusOrder", statusOrder);
+
   return (
-    <div className="">
-      <div className="hidden lg:inline">
-        <div className="  pt-28 pl-[20vw]  md:pl-[28vw] w-[80vw] text-black flex items-center justify-center">
-          <Spin spinning={loading}>
-            {data.map((res, i) => {
-              const headingStyle = {
-                color: getRandomColor(),
-              };
-              return (
-                <div
-                  key={i}
-                  className="w-[95vw] md:w-[70vw] bg-black mt-2 text-white py-4 px-3 rounded-md text-[10px] sm:text-[12px] md:text-[15px] flex justify-between"
-                >
-                  <div>
-                    <h1
-                      style={headingStyle}
-                      className="font-bold text-[12px] sm:text-[14px] md:text-[18px]"
-                    >
-                      {res.heading}
-                    </h1>
-                    <p>{res.status}</p>
-                  </div>
-                  <div>
-                    <p
-                      className={`${
-                        res.field === "Online order"
-                          ? "text-red-500"
-                          : res.field === "Dinning order"
-                          ? "text-green-500"
-                          : res.field === "Call for order"
-                          ? "text-blue-500"
-                          : "text-yellow-500"
-                      }`}
-                    >
-                      {res.field}
-                    </p>
-                    <h1>
-                      {moment(res.createdAt).format("DD-MM-YYYY, h:mm:ss a")}
-                    </h1>
-                  </div>
-                </div>
-              );
-            })}
-          </Spin>
-        </div>
-      </div>
-      <div className="inline lg:hidden">
+    <div className="w-full">
+      <div className=" w-full lg:pt-28 pt-36 lg:pl-[20vw] p-4  text-black flex items-center justify-center">
         <Spin spinning={loading}>
-          <div className=" mt-24 ">
-            {paginatedData.map((item, index) => {
-              // console.log("item", item);
-              const dateTimeString = item.createdAt;
-
-              // Split the date and time using the 'T' delimiter
-              const [datePart] = dateTimeString.split("T");
-              const date = datePart;
-
-              const indianStandardTime = new Date(item.createdAt);
-
-              const hours = indianStandardTime.getHours() % 12 || 12;
-              const minutes = indianStandardTime.getMinutes();
-              const seconds = indianStandardTime.getSeconds();
-              const ampm = indianStandardTime.getHours() >= 12 ? "PM" : "AM";
-              return (
-                <div className="shadow-2xl p-3 ">
-                  <NotificationCard
-                    confirmed={item.heading}
-                    date={date}
-                    time={`${hours}:${
-                      minutes < 10 ? "0" : ""
-                    }${minutes}: ${seconds} ${ampm}`}
-                    orderId={
-                      item.status.length > 24
-                        ? item.status.slice(0, 24)
-                        : item.status
-                    }
-                    // res={item.field}
-                    className={` font-bold ${
-                      item.heading === "Cancelled"
-                        ? "text-[#FF4F4F]"
-                        : item.heading === "Order moved to KDS"
-                        ? "text-[#3365C6]"
-                        : item.heading === "Order accepted"
-                        ? "text-[#3FB408]"
-                        : item.heading === "Order ready to pick"
-                        ? "text-[#390cffd7]"
-                        : "text-[#FF9E0C]"
-                    }`}
-                  />
+          {statusName === "" ? (
+            <div className="flex justify-between flex-wrap lg:flex-row gap-5 ">
+              <Badge
+                count={
+                  data.filter((item) => item.heading === "Order accepted")
+                    .length
+                }
+              >
+                <div
+                  className="border-2 border-red-400 text-white p-4 rounded-lg w-full text-center lg:w-36 h-20 flex  "
+                  onClick={() => setStatusName("Order accepted")}
+                >
+                  Order accepted
                 </div>
-              );
-            })}
-            <div className="mt-4 mb-2">
+              </Badge>
+              <Badge
+                count={
+                  data.filter((item) => item.heading === "Order moved to KDS")
+                    .length
+                }
+              >
+                <div
+                  className="border-2 border-red-400 text-white p-4 rounded-lg w-full text-center lg:w-36 h-20 flex  "
+                  onClick={() => setStatusName("Order moved to KDS")}
+                >
+                  Order moved to KDS
+                </div>
+              </Badge>
+              <Badge
+                count={
+                  data.filter((item) => item.heading === "Order ready to pack")
+                    .length
+                }
+              >
+                <div
+                  className="border-2 border-red-400 text-white p-4 rounded-lg w-full lg:w-36 h-20 flex  text-center "
+                  onClick={() => setStatusName("Order ready to pack")}
+                >
+                  Order ready to pack
+                </div>
+              </Badge>
+              <Badge
+                count={
+                  data.filter((item) => item.heading === "Order ready to pick")
+                    .length
+                }
+              >
+                <div
+                  className="border-2 border-red-400 text-white p-4 rounded-lg w-full lg:w-36 h-20 flex  text-center"
+                  onClick={() => setStatusName("Order ready to pick")}
+                >
+                  Order ready to pick
+                </div>
+              </Badge>
+              <Badge
+                count={
+                  data.filter(
+                    (item) => item.heading === "Order out for delivery"
+                  ).length
+                }
+              >
+                <div
+                  className="border-2 border-red-400 text-white p-4 rounded-lg w-full lg:w-36 h-20 flex  text-center"
+                  onClick={() => setStatusName("Order out for delivery")}
+                >
+                  Order out for delivery
+                </div>
+              </Badge>
+              <Badge
+                count={
+                  data.filter((item) => item.heading === "Delivered").length
+                }
+              >
+                <div
+                  className="border-2 border-red-400 text-white p-4 rounded-lg w-full lg:w-36 h-20 flex  text-center"
+                  onClick={() => setStatusName("Delivered")}
+                >
+                  Delivered
+                </div>
+              </Badge>
+              <Badge
+                count={
+                  data.filter((item) => item.heading === "Cancelled").length
+                }
+              >
+                <div
+                  className="border-2 border-red-400 text-white p-4 rounded-lg w-full lg:w-36 h-20 flex  text-center"
+                  onClick={() => setStatusName("Cancelled")}
+                >
+                  Cancelled
+                </div>
+              </Badge>
+            </div>
+          ) : (
+            <div className="">
+              <Button
+                onClick={() => setStatusName("")}
+                className=" text-white mb-4"
+              >
+                Back
+              </Button>
+              <div className="text-white">
+                {statusOrder.map((res, i) => {
+                  return (
+                    <div
+                      key={i}
+                      className="w-[95vw] md:w-[70vw] bg-white mt-2 text-black py-4 px-3 rounded-md text-[10px] sm:text-[12px] md:text-[15px] flex justify-between"
+                    >
+                      <div>
+                        <h1 className="font-bold text-[12px] sm:text-[14px] md:text-[18px]">
+                          {res.heading}
+                        </h1>
+                        <p>{res.status}</p>
+                      </div>
+                      <div>
+                        <p>{res.field}</p>
+                        <h1>
+                          {moment(res.createdAt).format(
+                            "DD-MM-YYYY, h:mm:ss a"
+                          )}
+                        </h1>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+
               <Pagination
                 current={currentPage}
                 total={data.length}
@@ -153,7 +196,7 @@ function Notification() {
                 onChange={handlePageChange}
               />
             </div>
-          </div>
+          )}
         </Spin>
       </div>
     </div>

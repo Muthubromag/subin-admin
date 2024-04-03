@@ -1161,7 +1161,8 @@ function OnlineOrder() {
                         ? item?.inventory[0]?.quantity
                         : 0
                     }`}
-                    print={item._id}
+                    printBill={item._id}
+                    pathName="online"
                     handleStatusChange={(newstatus) =>
                       handleStatusChange(item, newstatus)
                     }

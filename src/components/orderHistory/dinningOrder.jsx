@@ -1,15 +1,21 @@
 import React, { useEffect, useState } from "react";
-import { DatePicker, Pagination, Spin } from "antd";
+
 import axios from "axios";
 import { get } from "lodash";
 import HistoryCards from "../../cards/HistoryCards";
+import { DatePicker, Modal, Pagination, Spin, Image } from "antd";
+import { useSelector } from "react-redux";
 
 function HistoryDinningOrder() {
   const { RangePicker } = DatePicker;
   const [dinning, setDinning] = useState([]);
+
   const [loading, setLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
-  const [dayWiseData, setDayWiseData] = useState({}); // Store day-wise data in state
+  const refresher = useSelector((state) => state.user.refreshData);
+  const [previewData, setPreviewData] = useState(null);
+  const [foodInformationList, setFoodInformationList] = useState([]);
+  const [selectedProduct, setSelectedProduct] = useState({});
 
   const fetchData = async () => {
     try {
@@ -27,27 +33,11 @@ function HistoryDinningOrder() {
     }
   };
 
-  console.log("onlineOrder", dinning);
-
   useEffect(() => {
     fetchData();
   }, []);
 
-  useEffect(() => {
-    const calculateDayWiseData = () => {
-      const newData = {};
-      dinning.forEach((entry) => {
-        const createdAtDate = new Date(entry.createdAt)
-          .toISOString()
-          .split("T")[0];
-        newData[createdAtDate] = (newData[createdAtDate] || 0) + 1;
-      });
-      setDayWiseData(newData);
-    };
-    calculateDayWiseData();
-  }, [dinning]);
-
-  const itemsPerPage = 5;
+  const itemsPerPage = 10;
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
   const paginatedData = dinning.slice(startIndex, endIndex);
@@ -57,11 +47,26 @@ function HistoryDinningOrder() {
     setCurrentPage(page);
   };
 
+  const closePreviewModal = () => {
+    setPreviewData(null);
+  };
+
+  const calculateModalWidth = () => {
+    const baseWidth = 400;
+    const minWidth = 400;
+    const maxWidth = 800;
+
+    const dataCount = foodInformationList.length;
+    const calculatedWidth = baseWidth + dataCount * 100;
+
+    return Math.max(minWidth, Math.min(calculatedWidth, maxWidth));
+  };
+
   return (
     <div className="pt-28 md:pl-[20vw]">
-      <div className="w-[98vw] md:w-[78vw]">
+      <div className="w-full  md:w-[78vw]">
         <Spin spinning={loading}>
-          <div className=" w-full lg:w-1/2 m-auto">
+          <div className=" w-full  m-auto">
             <h1 className="text-center text-[12px] lg:text-[16px] text-[--primary-color] font-bold">
               Last 5 Days Online Order
             </h1>
@@ -72,8 +77,8 @@ function HistoryDinningOrder() {
               className="flex mt-1 items-center justify-center"
               size="large"
             />
-            <div className="!bg-white p-4 rounded-lg ">
-              {/* {paginatedData.map((item) => {
+            <div className=" p-4 rounded-lg flex flex-wrap lg:justify-between justify-center gap-5">
+              {paginatedData.map((item, index) => {
                 const dateTimeString = item.createdAt;
 
                 // Split the date and time using the 'T' delimiter
@@ -81,36 +86,32 @@ function HistoryDinningOrder() {
                 const date = datePart;
 
                 const indianStandardTime = new Date(item.createdAt);
+                const hours = indianStandardTime.getHours() % 12 || 12;
+                const minutes = indianStandardTime.getMinutes();
+                const ampm = indianStandardTime.getHours() >= 12 ? "PM" : "AM";
 
-                indianStandardTime.setUTCHours(
-                  indianStandardTime.getUTCHours() + 5
-                ); // IST is UTC+5:30
-                indianStandardTime.setUTCMinutes(
-                  indianStandardTime.getUTCMinutes() + 30
+                const mobilePreviewModal = (orderedFood) => {
+                  setPreviewData(!previewData);
+                  console.log(orderedFood[0]?.foodName, "orderedFood");
+                  setFoodInformationList(orderedFood);
+                  setSelectedProduct(orderedFood);
+                };
+                return (
+                  <HistoryCards
+                    key={index}
+                    id={index + 1}
+                    date={date}
+                    time={`${hours}:${
+                      minutes < 10 ? "0" : ""
+                    }${minutes} ${ampm}`}
+                    order={item.orderId}
+                    deliveryStatus={item.status}
+                    itemPrice={item.billAmount}
+                    preview={() => mobilePreviewModal(item?.orderedFood)}
+                    paymentMode={item.payment_mode}
+                  />
                 );
-
-                function countOccurrences(data, dateToCount) {
-                  var count = 1;
-                  for (var i = 0; i < data.length; i++) {
-                    if (data[i].date === dateToCount) {
-                      count++;
-                    }
-                  }
-                  return count;
-                }
-
-                // Date to count occurrences for
-                var dateToCount = date;
-                console.log(dateToCount, "dateToCount");
-                // Count occurrences of the specified date
-                var occurrences = countOccurrences(item, dateToCount);
-                console.log(occurrences, "occurrences");
-
-                return <HistoryCards date={date} order={occurrences} />;
-              })} */}
-              {Object.entries(dayWiseData).map(([date, count]) => (
-                <HistoryCards key={date} date={date} order={count} />
-              ))}
+              })}
             </div>
           </div>
           <div className="mt-4 mb-2">
@@ -123,6 +124,61 @@ function HistoryDinningOrder() {
           </div>
         </Spin>
       </div>
+      <Modal
+        open={!!previewData}
+        onCancel={closePreviewModal}
+        footer={null}
+        closable={false}
+        width={calculateModalWidth()}
+      >
+        <div>
+          <h1 className="font-bold">Ordered Food Details</h1>
+          <div className="flex flex-wrap gap-8">
+            {foodInformationList?.map((res, i) => {
+              console.log(res, "foodimfo");
+              return (
+                <div className="flex  gap-5 pt-5" key={i}>
+                  <div>
+                    <Image width={100} src={res.pic} key={i} />
+                  </div>
+                  <div>
+                    <p className="text-black font-bold">
+                      Food Name: {res?.foodName}
+                    </p>
+
+                    <p className="text-black font-bold">
+                      Quantity: {res?.foodQuantity}
+                    </p>
+                    {/* <p className="text-black font-bold">
+                      Type: {res?.orderType}
+                    </p> */}
+                    <p className="text-black font-bold">Type: {res?.type}</p>
+                    {selectedProduct?.instructions?.[0]?.[res?.id]?.length ? (
+                      <div key={res?.id} className="w-full flex">
+                        <p className="text-black font-bold mr-2">
+                          Instruction:{" "}
+                        </p>
+                        <ul>
+                          {selectedProduct?.instructions?.[0]?.[res?.id]?.map(
+                            (instructions, index) => {
+                              return (
+                                <li className="font-bold" key={index}>
+                                  {" "}
+                                  * {instructions}
+                                </li>
+                              );
+                            }
+                          )}
+                        </ul>
+                      </div>
+                    ) : null}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </Modal>
     </div>
   );
 }

@@ -156,7 +156,21 @@ function App() {
 
     socket.on("demo", async (data) => {
       console.log("=== Socket setWebsocketData ===");
-      console.log("=== Socket message ===", data);
+      console.log("=== Socket message getonline data ===", data);
+
+      // Get existing data from local storage
+      const existingData =
+        JSON.parse(localStorage.getItem("notificationData")) || [];
+
+      // Add new data to the existing array
+      existingData.push(data);
+
+      // Convert the updated array to JSON string
+      const jsonData = JSON.stringify(existingData);
+
+      // Store JSON string in local storage
+      localStorage.setItem("notificationData", jsonData);
+
       console.log({ audio });
       if (audio) {
         await audio?.play();
