@@ -13,6 +13,7 @@ function Notification() {
   let pathname = location?.pathname;
   const [currentPage, setCurrentPage] = useState(1);
   const [statusName, setStatusName] = useState("");
+  const [notificationCount, setNotificationCount] = useState(0);
 
   const fetchData = async () => {
     try {
@@ -26,27 +27,29 @@ function Notification() {
       const result = await axios.get(
         `${process.env.REACT_APP_URL}/getnotification?filter=${filter}`
       );
-      setData(get(result, "data.data", []));
+      // Count the number of new notifications
+      const newNotifications = get(result, "data.data", []);
+      const newNotificationCount = newNotifications.filter(
+        (notification) => !notification.read
+      ).length;
+
+      // Update the notification count in the state
+      setNotificationCount(newNotificationCount);
+
+      setData(newNotifications);
+
+      // setData(get(result, "data.data", []));
     } catch (err) {
     } finally {
       setLoading(false);
     }
   };
-
-  console.log("data", data);
+  console.log(notificationCount, "notification count");
 
   useEffect(() => {
     fetchData();
   }, [pathname]);
 
-  const getRandomColor = () => {
-    const letters = "0123456789ABCDEF";
-    let color = "#";
-    for (let i = 0; i < 6; i++) {
-      color += letters[Math.floor(Math.random() * 16)];
-    }
-    return color;
-  };
   const itemsPerPage = 5;
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
@@ -55,37 +58,66 @@ function Notification() {
     setCurrentPage(page);
   };
 
+  const notifiData = JSON.parse(localStorage.getItem("notificationData"));
+  const resultnewnotifi = [...new Set(notifiData)];
+  console.log(resultnewnotifi, "resultnewnotifi");
+  const getNotifidata = resultnewnotifi.filter(
+    (item) => item.status === "Order moved to KDS"
+  );
+
+  const handleBadgeClick = (status) => {
+    if (status === "Order moved to KDS") {
+      // Remove "Order accepted" data from local storage
+      setStatusName("Order moved to KDS");
+      localStorage.removeItem("notificationData");
+      // Reset notification count to 0
+      setNotificationCount(0);
+    } else {
+      setStatusName(status);
+    }
+  };
+
+  console.log(getNotifidata, "getNotifidata");
   const statusOrder = data.filter((item) => item.heading === statusName);
-  console.log("statusOrder", statusOrder);
 
   return (
     <div className="w-full">
       <div className=" w-full lg:pt-28 pt-36 lg:pl-[20vw] p-4  text-black flex items-center justify-center">
         <Spin spinning={loading}>
           {statusName === "" ? (
-            <div className="flex justify-between flex-wrap lg:flex-row gap-5 ">
+            <div className="lg:flex lg:justify-between lg:flex-wrap lg:flex-row  grid grid-cols-2 gap-6 lg:gap-5  md:grid-cols-3 ">
               <Badge
+                // count={
+                //   data.filter((item) => item.heading === "Order accepted")
+                //     .length
+                // }
                 count={
-                  data.filter((item) => item.heading === "Order accepted")
-                    .length
+                  notificationCount > 0 && pathname === "/conotifications"
+                    ? notificationCount
+                    : 0
                 }
+                showZero
               >
                 <div
-                  className="border-2 border-red-400 text-white p-4 rounded-lg w-full text-center lg:w-36 h-20 flex  "
-                  onClick={() => setStatusName("Order accepted")}
+                  className="border-2 border-red-400 text-white p-4 rounded-lg w-40  lg:w-36 text-center h-20 flex  "
+                  // onClick={() => setStatusName("Order accepted")}
+                  onClick={() => handleBadgeClick("Order accepted")}
                 >
                   Order accepted
                 </div>
               </Badge>
               <Badge
-                count={
-                  data.filter((item) => item.heading === "Order moved to KDS")
-                    .length
-                }
+                // count={
+                //   data.filter((item) => item.heading === "Order moved to KDS")
+                //     .length
+                // }
+                count={getNotifidata.length}
+                showZero
               >
                 <div
-                  className="border-2 border-red-400 text-white p-4 rounded-lg w-full text-center lg:w-36 h-20 flex  "
-                  onClick={() => setStatusName("Order moved to KDS")}
+                  className="border-2 border-red-400 text-white p-4 rounded-lg w-40 text-center lg:w-36 h-20 flex  "
+                  // onClick={() => setStatusName("Order moved to KDS")}
+                  onClick={() => handleBadgeClick("Order moved to KDS")}
                 >
                   Order moved to KDS
                 </div>
@@ -97,7 +129,7 @@ function Notification() {
                 }
               >
                 <div
-                  className="border-2 border-red-400 text-white p-4 rounded-lg w-full lg:w-36 h-20 flex  text-center "
+                  className="border-2 border-red-400 text-white p-4 rounded-lg w-40 lg:w-36 h-20 flex  text-center "
                   onClick={() => setStatusName("Order ready to pack")}
                 >
                   Order ready to pack
@@ -110,7 +142,7 @@ function Notification() {
                 }
               >
                 <div
-                  className="border-2 border-red-400 text-white p-4 rounded-lg w-full lg:w-36 h-20 flex  text-center"
+                  className="border-2 border-red-400 text-white p-4 rounded-lg w-40 lg:w-36 h-20 flex  text-center"
                   onClick={() => setStatusName("Order ready to pick")}
                 >
                   Order ready to pick
@@ -124,7 +156,7 @@ function Notification() {
                 }
               >
                 <div
-                  className="border-2 border-red-400 text-white p-4 rounded-lg w-full lg:w-36 h-20 flex  text-center"
+                  className="border-2 border-red-400 text-white p-4 rounded-lg w-40 lg:w-36 h-20 flex  text-center"
                   onClick={() => setStatusName("Order out for delivery")}
                 >
                   Order out for delivery
@@ -136,7 +168,7 @@ function Notification() {
                 }
               >
                 <div
-                  className="border-2 border-red-400 text-white p-4 rounded-lg w-full lg:w-36 h-20 flex  text-center"
+                  className="border-2 border-red-400 text-white p-4 rounded-lg w-40 lg:w-36 h-20 flex  text-center"
                   onClick={() => setStatusName("Delivered")}
                 >
                   Delivered
@@ -148,7 +180,7 @@ function Notification() {
                 }
               >
                 <div
-                  className="border-2 border-red-400 text-white p-4 rounded-lg w-full lg:w-36 h-20 flex  text-center"
+                  className="border-2 border-red-400 text-white p-4 rounded-lg w-40 lg:w-36 h-20 flex  text-center"
                   onClick={() => setStatusName("Cancelled")}
                 >
                   Cancelled
