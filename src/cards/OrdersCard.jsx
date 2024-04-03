@@ -20,6 +20,7 @@ export const OrdersCard = ({
   handleStatusChange,
   statusOptionsList,
   orderstatus,
+  pathName,
 }) => {
   const user = useSelector((state) => state.user.user);
   const navigate = useNavigate();
@@ -40,6 +41,8 @@ export const OrdersCard = ({
       ? [statusOptions[currentIndex + 1]]
       : [];
   };
+
+  console.log("printBill", printBill);
 
   const nextStatusOptions = getNextStatusOptionsPartner(deliveryStatus);
   const isDelivered = deliveryStatus === "Delivered";
@@ -148,7 +151,7 @@ export const OrdersCard = ({
                 <button
                   className="bg-[#ED7802] text-black  w-full rounded-lg p-2  !text-[12px]"
                   onClick={() => {
-                    navigate(`/printer/${printBill}/online`);
+                    navigate(`/printer/${printBill}/${pathName}`);
                   }}
                 >
                   Print Bill
