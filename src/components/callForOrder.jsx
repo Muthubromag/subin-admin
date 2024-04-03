@@ -593,8 +593,8 @@ function CallForOrder() {
     console.log({ edit: val });
     form.setFieldsValue(val);
     setUpdateId(get(val, "_id"));
-    setDistance(val?.distance);    
-    
+    setDistance(val?.distance);
+
     console.log("edit val", form.getFieldValue("orderedFood"));
   };
   //--
@@ -1573,6 +1573,7 @@ function CallForOrder() {
                       minutes < 10 ? "0" : ""
                     }${minutes} ${ampm}`}
                     orderId={item.orderId}
+                    printBill={item._id}
                     deliveryStatus={item.status}
                     orderstatus={item.deliveryStatus}
                     billAmount={
@@ -1600,6 +1601,7 @@ function CallForOrder() {
                         ? statusOptionsFDS
                         : statusOptions
                     }
+                    pathName="callorder"
                   />
                 );
               })}
@@ -1701,7 +1703,6 @@ function CallForOrder() {
           </Form.Item>
 
           {form.getFieldValue("deliveryStatus") === "Delivery" ? (
-          
             <>
               <div>
                 <div className="text-dark3a_color">
